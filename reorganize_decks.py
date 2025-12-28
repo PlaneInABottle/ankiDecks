@@ -11,8 +11,8 @@ def invoke(action, **params):
         return None
 
 def move_cards():
-    source_deck = "4000 Essential English Words::7.UserAdded"
-    target_deck = "4000 Essential English Words::7.Book"
+    source_deck = "4000 Essential English Words::7.Book"
+    target_deck = "My English Words"
     
     print(f"🔍 Searching for cards in: {source_deck}")
     
