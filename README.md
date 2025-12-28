@@ -32,12 +32,21 @@ PEXELS_API_KEY=your_api_key_here
 ## 📖 Usage
 
 ### Add or Update a Word
-The primary script. It will fetch data, generate media, and create/update the card in the `4000 Essential English Words::7.Book` deck.
+The primary script. It will fetch data, generate media, and create/update the card in the `My English Words` deck.
 ```bash
 python3 add_word_to_anki.py [word]
 ```
 - If the word exists, it will ask if you want to **update** it (useful for fixing missing examples).
 - If an example sentence is missing from the dictionary, it will prompt you to type one.
+
+### Dynamic Add/Update Tool
+A more flexible version that allows you to specify the deck and prefix via arguments.
+```bash
+python3 anki_tools.py [word] --deck "My English Words" --prefix "user_"
+```
+- `--deck`: Target deck name (defaults to "My English Words").
+- `--model`: Note type name (defaults to "4000 EEW").
+- `--prefix`: Prefix for media filenames (defaults to "user_").
 
 ### Check for Duplicates
 Check if a word already exists in the original `4000 Essential English Words.txt` file.
