@@ -60,6 +60,12 @@ Download an image for a specific word to your Anki media folder.
 python3 get_pexels_image.py [word]
 ```
 
+## 🧪 Testing
+Run the unit test suite to verify script logic:
+```bash
+python3 test_scripts.py
+```
+
 ## 📁 File Structure
 - `add_word_to_anki.py`: The main automation logic.
 - `check_word.py`: Local duplicate checker.
