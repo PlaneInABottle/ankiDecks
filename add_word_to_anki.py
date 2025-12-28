@@ -7,7 +7,7 @@ import subprocess
 import base64
 
 # --- CONFIGURATION ---
-DECK_NAME = "4000 Essential English Words::7.UserAdded"
+DECK_NAME = "My English Words"
 MODEL_NAME = "4000 EEW"
 MEDIA_PREFIX = "user_"
 
