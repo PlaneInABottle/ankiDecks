@@ -1,0 +1,4 @@
+#separator:tab
+#html:true
+#tags column:9
+user_001	"<img src=""transliterated.jpg"" />"	transliterated	[træns-LIT-uh-ray-tid]		[tɹænsˈlɪtəreɪtɪd]	[trænsˈlɪtəreɪtɪd]	BrE [tɹa.nslˈ.ɪ.tə.ɹeɪtɪd] NAmE [tɹæ.nslˈ.ɪ.ɾɚ.ɹeɪɾᵻd]	added_by_user
