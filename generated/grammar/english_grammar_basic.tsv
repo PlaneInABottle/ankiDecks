@@ -1,0 +1,591 @@
+#separator:tab
+#html:true
+Front	Back	Tags
+I _____ a student.	am	english_grammar level_1 be_verbs rule
+I _____ a teacher.	am	english_grammar level_1 be_verbs rule
+I _____ in the office.	am	english_grammar level_1 be_verbs rule
+I _____ ready.	am	english_grammar level_1 be_verbs rule
+I _____ on time.	am	english_grammar level_1 be_verbs rule
+I _____ at home.	am	english_grammar level_1 be_verbs rule
+I _____ very busy.	am	english_grammar level_1 be_verbs rule
+You _____ a student.	are	english_grammar level_1 be_verbs rule
+You _____ a teacher.	are	english_grammar level_1 be_verbs rule
+You _____ in the office.	are	english_grammar level_1 be_verbs rule
+You _____ ready.	are	english_grammar level_1 be_verbs rule
+You _____ on time.	are	english_grammar level_1 be_verbs rule
+You _____ at home.	are	english_grammar level_1 be_verbs rule
+You _____ very busy.	are	english_grammar level_1 be_verbs rule
+He _____ a student.	is	english_grammar level_1 be_verbs rule
+He _____ a teacher.	is	english_grammar level_1 be_verbs rule
+He _____ in the office.	is	english_grammar level_1 be_verbs rule
+He _____ ready.	is	english_grammar level_1 be_verbs rule
+He _____ on time.	is	english_grammar level_1 be_verbs rule
+He _____ at home.	is	english_grammar level_1 be_verbs rule
+He _____ very busy.	is	english_grammar level_1 be_verbs rule
+She _____ a student.	is	english_grammar level_1 be_verbs rule
+She _____ a teacher.	is	english_grammar level_1 be_verbs rule
+She _____ in the office.	is	english_grammar level_1 be_verbs rule
+She _____ ready.	is	english_grammar level_1 be_verbs rule
+She _____ on time.	is	english_grammar level_1 be_verbs rule
+She _____ at home.	is	english_grammar level_1 be_verbs rule
+She _____ very busy.	is	english_grammar level_1 be_verbs rule
+It _____ a student.	is	english_grammar level_1 be_verbs rule
+It _____ a teacher.	is	english_grammar level_1 be_verbs rule
+It _____ in the office.	is	english_grammar level_1 be_verbs rule
+It _____ ready.	is	english_grammar level_1 be_verbs rule
+It _____ on time.	is	english_grammar level_1 be_verbs rule
+It _____ at home.	is	english_grammar level_1 be_verbs rule
+It _____ very busy.	is	english_grammar level_1 be_verbs rule
+We _____ a student.	are	english_grammar level_1 be_verbs rule
+We _____ a teacher.	are	english_grammar level_1 be_verbs rule
+We _____ in the office.	are	english_grammar level_1 be_verbs rule
+We _____ ready.	are	english_grammar level_1 be_verbs rule
+We _____ on time.	are	english_grammar level_1 be_verbs rule
+We _____ at home.	are	english_grammar level_1 be_verbs rule
+We _____ very busy.	are	english_grammar level_1 be_verbs rule
+They _____ a student.	are	english_grammar level_1 be_verbs rule
+They _____ a teacher.	are	english_grammar level_1 be_verbs rule
+They _____ in the office.	are	english_grammar level_1 be_verbs rule
+They _____ ready.	are	english_grammar level_1 be_verbs rule
+They _____ on time.	are	english_grammar level_1 be_verbs rule
+They _____ at home.	are	english_grammar level_1 be_verbs rule
+They _____ very busy.	are	english_grammar level_1 be_verbs rule
+I _____ from home every day.	work	english_grammar level_1 simple_present rule
+I _____ at 9 AM every day.	start	english_grammar level_1 simple_present rule
+I _____ documentaries every day.	watch	english_grammar level_1 simple_present rule
+I _____ support every day.	need	english_grammar level_1 simple_present rule
+I _____ the museum every day.	visit	english_grammar level_1 simple_present rule
+I _____ slides every day.	prepare	english_grammar level_1 simple_present rule
+I _____ on time every day.	finish	english_grammar level_1 simple_present rule
+You _____ from home every day.	work	english_grammar level_1 simple_present rule
+You _____ at 9 AM every day.	start	english_grammar level_1 simple_present rule
+You _____ documentaries every day.	watch	english_grammar level_1 simple_present rule
+You _____ support every day.	need	english_grammar level_1 simple_present rule
+You _____ the museum every day.	visit	english_grammar level_1 simple_present rule
+You _____ slides every day.	prepare	english_grammar level_1 simple_present rule
+You _____ on time every day.	finish	english_grammar level_1 simple_present rule
+He _____ from home every day.	works	english_grammar level_1 simple_present rule
+He _____ at 9 AM every day.	starts	english_grammar level_1 simple_present rule
+He _____ documentaries every day.	watches	english_grammar level_1 simple_present rule
+He _____ support every day.	needs	english_grammar level_1 simple_present rule
+He _____ the museum every day.	visits	english_grammar level_1 simple_present rule
+He _____ slides every day.	prepares	english_grammar level_1 simple_present rule
+He _____ on time every day.	finishes	english_grammar level_1 simple_present rule
+She _____ from home every day.	works	english_grammar level_1 simple_present rule
+She _____ at 9 AM every day.	starts	english_grammar level_1 simple_present rule
+She _____ documentaries every day.	watches	english_grammar level_1 simple_present rule
+She _____ support every day.	needs	english_grammar level_1 simple_present rule
+She _____ the museum every day.	visits	english_grammar level_1 simple_present rule
+She _____ slides every day.	prepares	english_grammar level_1 simple_present rule
+She _____ on time every day.	finishes	english_grammar level_1 simple_present rule
+It _____ from home every day.	works	english_grammar level_1 simple_present rule
+It _____ at 9 AM every day.	starts	english_grammar level_1 simple_present rule
+It _____ documentaries every day.	watches	english_grammar level_1 simple_present rule
+It _____ support every day.	needs	english_grammar level_1 simple_present rule
+It _____ the museum every day.	visits	english_grammar level_1 simple_present rule
+It _____ slides every day.	prepares	english_grammar level_1 simple_present rule
+It _____ on time every day.	finishes	english_grammar level_1 simple_present rule
+We _____ from home every day.	work	english_grammar level_1 simple_present rule
+We _____ at 9 AM every day.	start	english_grammar level_1 simple_present rule
+We _____ documentaries every day.	watch	english_grammar level_1 simple_present rule
+We _____ support every day.	need	english_grammar level_1 simple_present rule
+We _____ the museum every day.	visit	english_grammar level_1 simple_present rule
+We _____ slides every day.	prepare	english_grammar level_1 simple_present rule
+We _____ on time every day.	finish	english_grammar level_1 simple_present rule
+They _____ from home every day.	work	english_grammar level_1 simple_present rule
+They _____ at 9 AM every day.	start	english_grammar level_1 simple_present rule
+They _____ documentaries every day.	watch	english_grammar level_1 simple_present rule
+They _____ support every day.	need	english_grammar level_1 simple_present rule
+They _____ the museum every day.	visit	english_grammar level_1 simple_present rule
+They _____ slides every day.	prepare	english_grammar level_1 simple_present rule
+They _____ on time every day.	finish	english_grammar level_1 simple_present rule
+I _____ to school yesterday.	went	english_grammar level_1 simple_past rule
+I _____ the train yesterday.	took	english_grammar level_1 simple_past rule
+I _____ the presentation yesterday.	saw	english_grammar level_1 simple_past rule
+I _____ breakfast yesterday.	ate	english_grammar level_1 simple_past rule
+I _____ a notebook yesterday.	bought	english_grammar level_1 simple_past rule
+I _____ a short note yesterday.	wrote	english_grammar level_1 simple_past rule
+I _____ a simple solution yesterday.	found	english_grammar level_1 simple_past rule
+You _____ to school yesterday.	went	english_grammar level_1 simple_past rule
+You _____ the train yesterday.	took	english_grammar level_1 simple_past rule
+You _____ the presentation yesterday.	saw	english_grammar level_1 simple_past rule
+You _____ breakfast yesterday.	ate	english_grammar level_1 simple_past rule
+You _____ a notebook yesterday.	bought	english_grammar level_1 simple_past rule
+You _____ a short note yesterday.	wrote	english_grammar level_1 simple_past rule
+You _____ a simple solution yesterday.	found	english_grammar level_1 simple_past rule
+He _____ to school yesterday.	went	english_grammar level_1 simple_past rule
+He _____ the train yesterday.	took	english_grammar level_1 simple_past rule
+He _____ the presentation yesterday.	saw	english_grammar level_1 simple_past rule
+He _____ breakfast yesterday.	ate	english_grammar level_1 simple_past rule
+He _____ a notebook yesterday.	bought	english_grammar level_1 simple_past rule
+He _____ a short note yesterday.	wrote	english_grammar level_1 simple_past rule
+He _____ a simple solution yesterday.	found	english_grammar level_1 simple_past rule
+She _____ to school yesterday.	went	english_grammar level_1 simple_past rule
+She _____ the train yesterday.	took	english_grammar level_1 simple_past rule
+She _____ the presentation yesterday.	saw	english_grammar level_1 simple_past rule
+She _____ breakfast yesterday.	ate	english_grammar level_1 simple_past rule
+She _____ a notebook yesterday.	bought	english_grammar level_1 simple_past rule
+She _____ a short note yesterday.	wrote	english_grammar level_1 simple_past rule
+She _____ a simple solution yesterday.	found	english_grammar level_1 simple_past rule
+It _____ to school yesterday.	went	english_grammar level_1 simple_past rule
+It _____ the train yesterday.	took	english_grammar level_1 simple_past rule
+It _____ the presentation yesterday.	saw	english_grammar level_1 simple_past rule
+It _____ breakfast yesterday.	ate	english_grammar level_1 simple_past rule
+It _____ a notebook yesterday.	bought	english_grammar level_1 simple_past rule
+It _____ a short note yesterday.	wrote	english_grammar level_1 simple_past rule
+It _____ a simple solution yesterday.	found	english_grammar level_1 simple_past rule
+We _____ to school yesterday.	went	english_grammar level_1 simple_past rule
+We _____ the train yesterday.	took	english_grammar level_1 simple_past rule
+We _____ the presentation yesterday.	saw	english_grammar level_1 simple_past rule
+We _____ breakfast yesterday.	ate	english_grammar level_1 simple_past rule
+We _____ a notebook yesterday.	bought	english_grammar level_1 simple_past rule
+We _____ a short note yesterday.	wrote	english_grammar level_1 simple_past rule
+We _____ a simple solution yesterday.	found	english_grammar level_1 simple_past rule
+They _____ to school yesterday.	went	english_grammar level_1 simple_past rule
+They _____ the train yesterday.	took	english_grammar level_1 simple_past rule
+They _____ the presentation yesterday.	saw	english_grammar level_1 simple_past rule
+They _____ breakfast yesterday.	ate	english_grammar level_1 simple_past rule
+They _____ a notebook yesterday.	bought	english_grammar level_1 simple_past rule
+They _____ a short note yesterday.	wrote	english_grammar level_1 simple_past rule
+They _____ a simple solution yesterday.	found	english_grammar level_1 simple_past rule
+Correct question order: She likes coffee	Does she like coffee?	english_grammar level_1 basic_questions rule
+Correct question order: You speak clearly	Do you speak clearly?	english_grammar level_1 basic_questions rule
+Correct question order: He visits the office	Does he visit the office?	english_grammar level_1 basic_questions rule
+Correct question order: They are ready	Are they ready?	english_grammar level_1 basic_questions rule
+Correct question order: It works today	Does it work today?	english_grammar level_1 basic_questions rule
+Correct question order: We need time	Do we need time?	english_grammar level_1 basic_questions rule
+Correct question order: Your friends like music	Do your friends like music?	english_grammar level_1 basic_questions rule
+Correct question order: My brother plays guitar	Does my brother play guitar?	english_grammar level_1 basic_questions rule
+Choose article: ___ apple	a	english_grammar level_1 basic_articles rule
+Choose article: ___ umbrella	an	english_grammar level_1 basic_articles rule
+Choose article: ___ hour	an	english_grammar level_1 basic_articles rule
+Choose article: ___ idea	an	english_grammar level_1 basic_articles rule
+Choose article: ___ euro	a	english_grammar level_1 basic_articles rule
+Choose article: ___ honest person	an	english_grammar level_1 basic_articles rule
+Choose article: ___ university	a	english_grammar level_1 basic_articles rule
+Choose article: ___ orange	an	english_grammar level_1 basic_articles rule
+Choose article: ___ cat	a	english_grammar level_1 basic_articles rule
+Choose article: ___ e-mail	an	english_grammar level_1 basic_articles rule
+Choose article: ___ engineer	an	english_grammar level_1 basic_articles rule
+Choose article: ___ house	a	english_grammar level_1 basic_articles rule
+Choose article: ___ elephant	an	english_grammar level_1 basic_articles rule
+Choose article: ___ one-way	a	english_grammar level_1 basic_articles rule
+Choose article: ___ honour	an	english_grammar level_1 basic_articles rule
+Choose article: ___ university	a	english_grammar level_1 basic_articles rule
+Choose preposition: The book is ___ the table.	on	english_grammar level_1 basic_prepositions rule
+Choose preposition: The cat is ___ the box.	in	english_grammar level_1 basic_prepositions rule
+Choose preposition: The notebook is ___ the desk.	under	english_grammar level_1 basic_prepositions rule
+Choose preposition: The chair is ___ the sofa and the table.	between	english_grammar level_1 basic_prepositions rule
+Choose preposition: I walked ___ my friend.	with	english_grammar level_1 basic_prepositions rule
+Choose preposition: We met ___ noon.	at	english_grammar level_1 basic_prepositions rule
+Choose preposition: The meeting starts ___ Monday.	on	english_grammar level_1 basic_prepositions rule
+Choose preposition: She lives ___ London.	in	english_grammar level_1 basic_prepositions rule
+Choose preposition: This guide is for students.	for	english_grammar level_1 basic_prepositions rule
+Choose preposition: We go ___ the office at 8.	to	english_grammar level_1 basic_prepositions rule
+I handed in ____ document.	my	english_grammar level_1 pronouns rule
+You handed in ____ document.	your	english_grammar level_1 pronouns rule
+He handed in ____ document.	his	english_grammar level_1 pronouns rule
+She handed in ____ document.	her	english_grammar level_1 pronouns rule
+We handed in ____ document.	our	english_grammar level_1 pronouns rule
+They handed in ____ document.	their	english_grammar level_1 pronouns rule
+It handed in ____ document.	its	english_grammar level_1 pronouns rule
+Correct the sentence: She don't like tea.	She doesn't like tea.	english_grammar level_1 basic_forms correction
+Correct the sentence: He don't live here.	He doesn't live here.	english_grammar level_1 basic_forms correction
+Correct the sentence: They is going now.	They are going now.	english_grammar level_1 basic_forms correction
+Correct the sentence: I doesn't have time.	I don't have time.	english_grammar level_1 basic_forms correction
+Correct the sentence: She are my friend.	She is my friend.	english_grammar level_1 basic_forms correction
+Correct the sentence: There is many dogs.	There are many dogs.	english_grammar level_1 basic_forms correction
+Correct the sentence: An apple is red.	An apple is red.	english_grammar level_1 basic_forms correction
+Correct the sentence: He don't know.	He doesn't know.	english_grammar level_1 basic_forms correction
+Correct the sentence: She is very usefuls.	She is very useful.	english_grammar level_1 basic_forms correction
+Correct the sentence: They has finished.	They have finished.	english_grammar level_1 basic_forms correction
+Correct the sentence: I am happy because she are here.	I am happy because she is here.	english_grammar level_1 basic_forms correction
+Correct the sentence: There are too much water.	There is too much water.	english_grammar level_1 basic_forms correction
+Correct the sentence: He need to wait.	He needs to wait.	english_grammar level_1 basic_forms correction
+Correct the sentence: She can to drive now.	She can drive now.	english_grammar level_1 basic_forms correction
+Correct the sentence: You was late.	You were late.	english_grammar level_1 basic_forms correction
+Correct the sentence: It rains yesterday.	It rained yesterday.	english_grammar level_1 basic_forms correction
+Correct the sentence: He don't likes games.	He doesn't like games.	english_grammar level_1 basic_forms correction
+Correct the sentence: They was coming.	They were coming.	english_grammar level_1 basic_forms correction
+Formula: present simple (affirmative)	subject + V1; he/she/it uses V-s	english_grammar level_2 simple_present rule
+Formula: present continuous	am / is / are + V-ing	english_grammar level_2 present_continuous rule
+Formula: past simple + past continuous in questions/negatives	affirmative: subject + V2; question/negative: Did + subject + V1	english_grammar level_2 simple_past rule
+Formula: past continuous	was / were + V-ing	english_grammar level_2 past_continuous rule
+Formula: present perfect	subject + have/has + V3	english_grammar level_2 present_perfect rule
+Formula: past perfect	subject + had + V3	english_grammar level_2 past_perfect rule
+Formula: future simple	subject + will + V1	english_grammar level_2 future_tense rule
+Formula: going to future	am / is / are + going to + V1	english_grammar level_2 future_forms rule
+Formula: future perfect	subject + will have + V3	english_grammar level_2 future_perfect rule
+Formula: passive	be + V3	english_grammar level_2 passive_voice rule
+Formula: modal (base form)	modal + V1	english_grammar level_2 common_modals rule
+Formula: modal perfect	modal + have + V3	english_grammar level_2 common_modals rule
+Formula: zero conditional	if + present simple, present simple	english_grammar level_2 conditionals rule
+Formula: first conditional	if + present simple, will + V1	english_grammar level_2 conditionals rule
+Formula: second conditional	if + V2, would + V1	english_grammar level_2 conditionals rule
+Formula: third conditional	if + had + V3, would have + V3	english_grammar level_2 conditionals rule
+I _____ reading a book right now.	am reading a book right now.	english_grammar level_2 present_continuous rule
+You _____ waiting for confirmation right now.	are waiting for confirmation right now.	english_grammar level_2 present_continuous rule
+She _____ working on the project right now.	is working on the project right now.	english_grammar level_2 present_continuous rule
+He _____ studying for the interview at the moment.	is studying for the interview at the moment.	english_grammar level_2 present_continuous rule
+We _____ preparing the release notes currently.	are preparing the release notes currently.	english_grammar level_2 present_continuous rule
+They _____ using the new tool now.	are using the new tool now.	english_grammar level_2 present_continuous rule
+I _____ already finished the proposal.	have already finished the proposal.	english_grammar level_2 present_perfect rule
+She _____ recently reviewed the pull request.	has recently reviewed the pull request.	english_grammar level_2 present_perfect rule
+We _____ just started the deployment.	have just started the deployment.	english_grammar level_2 present_perfect rule
+They _____ never missed a weekly status update.	have never missed a weekly status update.	english_grammar level_2 present_perfect rule
+He _____ so far completed all pre-release checks.	has so far completed all pre-release checks.	english_grammar level_2 present_perfect rule
+I _____ visited a production outage review before.	have visited a production outage review before.	english_grammar level_2 present_perfect rule
+Has _____ ever reported a critical issue?	has ever reported	english_grammar level_2 present_perfect rule
+Correct: The team has ate the final tests.	The team has eaten the final tests.	english_grammar level_2 present_perfect correction
+Correct: By the time the report arrived, we had review it.	By the time the report arrived, we had reviewed it.	english_grammar level_2 past_perfect correction
+Correct: The proposal was approved by the board.	The proposal was approved by the board.	english_grammar level_2 passive_voice correction
+Correct: She should called the supplier immediately.	She should have called the supplier immediately.	english_grammar level_2 common_modals correction
+I will start the session tomorrow.	I will start the session tomorrow.	english_grammar level_2 future_forms rule
+I will finish the draft tomorrow.	I will finish the draft tomorrow.	english_grammar level_2 future_forms rule
+I will arrive at 9 PM tomorrow.	I will arrive at 9 PM tomorrow.	english_grammar level_2 future_forms rule
+I will join the project tomorrow.	I will join the project tomorrow.	english_grammar level_2 future_forms rule
+I will review your notes tomorrow.	I will review your notes tomorrow.	english_grammar level_2 future_forms rule
+I will travel to the office tomorrow.	I will travel to the office tomorrow.	english_grammar level_2 future_forms rule
+You will start the session tomorrow.	You will start the session tomorrow.	english_grammar level_2 future_forms rule
+You will finish the draft tomorrow.	You will finish the draft tomorrow.	english_grammar level_2 future_forms rule
+You will arrive at 9 PM tomorrow.	You will arrive at 9 PM tomorrow.	english_grammar level_2 future_forms rule
+You will join the project tomorrow.	You will join the project tomorrow.	english_grammar level_2 future_forms rule
+You will review your notes tomorrow.	You will review your notes tomorrow.	english_grammar level_2 future_forms rule
+You will travel to the office tomorrow.	You will travel to the office tomorrow.	english_grammar level_2 future_forms rule
+He will start the session tomorrow.	He will start the session tomorrow.	english_grammar level_2 future_forms rule
+He will finish the draft tomorrow.	He will finish the draft tomorrow.	english_grammar level_2 future_forms rule
+He will arrive at 9 PM tomorrow.	He will arrive at 9 PM tomorrow.	english_grammar level_2 future_forms rule
+He will join the project tomorrow.	He will join the project tomorrow.	english_grammar level_2 future_forms rule
+He will review your notes tomorrow.	He will review your notes tomorrow.	english_grammar level_2 future_forms rule
+He will travel to the office tomorrow.	He will travel to the office tomorrow.	english_grammar level_2 future_forms rule
+She will start the session tomorrow.	She will start the session tomorrow.	english_grammar level_2 future_forms rule
+She will finish the draft tomorrow.	She will finish the draft tomorrow.	english_grammar level_2 future_forms rule
+She will arrive at 9 PM tomorrow.	She will arrive at 9 PM tomorrow.	english_grammar level_2 future_forms rule
+She will join the project tomorrow.	She will join the project tomorrow.	english_grammar level_2 future_forms rule
+She will review your notes tomorrow.	She will review your notes tomorrow.	english_grammar level_2 future_forms rule
+She will travel to the office tomorrow.	She will travel to the office tomorrow.	english_grammar level_2 future_forms rule
+We will start the session tomorrow.	We will start the session tomorrow.	english_grammar level_2 future_forms rule
+We will finish the draft tomorrow.	We will finish the draft tomorrow.	english_grammar level_2 future_forms rule
+We will arrive at 9 PM tomorrow.	We will arrive at 9 PM tomorrow.	english_grammar level_2 future_forms rule
+We will join the project tomorrow.	We will join the project tomorrow.	english_grammar level_2 future_forms rule
+We will review your notes tomorrow.	We will review your notes tomorrow.	english_grammar level_2 future_forms rule
+We will travel to the office tomorrow.	We will travel to the office tomorrow.	english_grammar level_2 future_forms rule
+They will start the session tomorrow.	They will start the session tomorrow.	english_grammar level_2 future_forms rule
+They will finish the draft tomorrow.	They will finish the draft tomorrow.	english_grammar level_2 future_forms rule
+They will arrive at 9 PM tomorrow.	They will arrive at 9 PM tomorrow.	english_grammar level_2 future_forms rule
+They will join the project tomorrow.	They will join the project tomorrow.	english_grammar level_2 future_forms rule
+They will review your notes tomorrow.	They will review your notes tomorrow.	english_grammar level_2 future_forms rule
+They will travel to the office tomorrow.	They will travel to the office tomorrow.	english_grammar level_2 future_forms rule
+It will start the session tomorrow.	It will start the session tomorrow.	english_grammar level_2 future_forms rule
+It will finish the draft tomorrow.	It will finish the draft tomorrow.	english_grammar level_2 future_forms rule
+It will arrive at 9 PM tomorrow.	It will arrive at 9 PM tomorrow.	english_grammar level_2 future_forms rule
+It will join the project tomorrow.	It will join the project tomorrow.	english_grammar level_2 future_forms rule
+It will review your notes tomorrow.	It will review your notes tomorrow.	english_grammar level_2 future_forms rule
+It will travel to the office tomorrow.	It will travel to the office tomorrow.	english_grammar level_2 future_forms rule
+This book is ___ than that one.	easier	english_grammar level_2 comparatives rule
+Correct: This route is more easiest than that one.	This route is easier than that one, close to the easiest option.	english_grammar level_2 comparatives correction
+This book is ___ than that one.	harder	english_grammar level_2 comparatives rule
+Correct: This route is more easiest than that one.	This route is harder than that one, close to the hardest option.	english_grammar level_2 comparatives correction
+This book is ___ than that one.	more useful	english_grammar level_2 comparatives rule
+Correct: This route is more easiest than that one.	This route is more useful than that one, close to the most useful option.	english_grammar level_2 comparatives correction
+This book is ___ than that one.	more careful	english_grammar level_2 comparatives rule
+Correct: This route is more easiest than that one.	This route is more careful than that one, close to the most careful option.	english_grammar level_2 comparatives correction
+This book is ___ than that one.	taller	english_grammar level_2 comparatives rule
+Correct: This route is more easiest than that one.	This route is taller than that one, close to the tallest option.	english_grammar level_2 comparatives correction
+This book is ___ than that one.	better	english_grammar level_2 comparatives rule
+Correct: This route is more easiest than that one.	This route is better than that one, close to the best option.	english_grammar level_2 comparatives correction
+This book is ___ than that one.	worse	english_grammar level_2 comparatives rule
+Correct: This route is more easiest than that one.	This route is worse than that one, close to the worst option.	english_grammar level_2 comparatives correction
+This book is ___ than that one.	clearer	english_grammar level_2 comparatives rule
+Correct: This route is more easiest than that one.	This route is clearer than that one, close to the clearest option.	english_grammar level_2 comparatives correction
+There is ___ useful information in the report.	much	english_grammar level_2 countable_and_uncountable_nouns rule
+The dashboard listed ___ issues from last week.	many	english_grammar level_2 countable_and_uncountable_nouns rule
+Can you share ___ practical advice with the analyst?	some	english_grammar level_2 countable_and_uncountable_nouns rule
+She added ___ examples to the minutes.	a few	english_grammar level_2 countable_and_uncountable_nouns rule
+We have ___ time left before the close.	a little	english_grammar level_2 countable_and_uncountable_nouns rule
+The release has ___ errors than the beta version.	fewer	english_grammar level_2 countable_and_uncountable_nouns rule
+The model used ___ power than the baseline.	less	english_grammar level_2 countable_and_uncountable_nouns rule
+You _____ complete the form today.	must	english_grammar level_2 common_modals rule
+You _____ access the archived files.	can	english_grammar level_2 common_modals rule
+You _____ review the test results.	should	english_grammar level_2 common_modals rule
+You _____ need an additional patch.	might	english_grammar level_2 common_modals rule
+You _____ ask security for approval.	need to	english_grammar level_2 common_modals rule
+Correct the sentence: She can to drive now.	She can drive now.	english_grammar level_2 common_modals correction
+Correct the sentence: You should to call her.	You should call her.	english_grammar level_2 common_modals correction
+Correct the sentence: He must to finish it.	He must finish it.	english_grammar level_2 common_modals correction
+Correct the sentence: They can goes now.	They can go now.	english_grammar level_2 common_modals correction
+Correct the sentence: She might of told me.	She might have told me.	english_grammar level_2 common_modals correction
+Complete: The train arrives ___ the station.	at	english_grammar level_2 common_preposition_patterns rule
+Complete: The team arrives ___ time for meetings.	on	english_grammar level_2 common_preposition_patterns rule
+Complete: She is interested ___ robotics.	in	english_grammar level_2 common_preposition_patterns rule
+Complete: The result depends ___ the data quality.	on	english_grammar level_2 common_preposition_patterns rule
+Complete: He is responsible ___ the final release.	for	english_grammar level_2 common_preposition_patterns rule
+Complete: He is good ___ coding.	at	english_grammar level_2 common_preposition_patterns rule
+Complete: They are afraid ___ public speaking.	of	english_grammar level_2 common_preposition_patterns rule
+Complete: This design is similar ___ the prototype.	to	english_grammar level_2 common_preposition_patterns rule
+If you study, we will pass the exam.	Present condition + future result	english_grammar level_3 conditionals rule
+If it rains, the event will be postponed.	Present condition + future result	english_grammar level_3 conditionals rule
+If she arrives, she will join the meeting.	Present condition + future result	english_grammar level_3 conditionals rule
+If we start, we will receive support.	Present condition + future result	english_grammar level_3 conditionals rule
+If he calls, he will be credited.	Present condition + future result	english_grammar level_3 conditionals rule
+If they continue, they will improve.	Present condition + future result	english_grammar level_3 conditionals rule
+If I were in charge, I would take ownership.	Second conditional pattern	english_grammar level_3 conditionals rule
+If she spoke clearly, we would trust her answer.	Second conditional pattern	english_grammar level_3 conditionals rule
+If they trained, they would solve it.	Second conditional pattern	english_grammar level_3 conditionals rule
+If we had more time, we would finish the draft.	Second conditional pattern	english_grammar level_3 conditionals rule
+If you had studied, we would have passed.	Third conditional pattern	english_grammar level_3 conditionals rule
+If they had checked, the team would have fixed the issue.	Third conditional pattern	english_grammar level_3 conditionals rule
+If she had started, she would have been ready.	Third conditional pattern	english_grammar level_3 conditionals rule
+The report _____ on Monday.	was approved	english_grammar level_3 passive_voice rule
+The report _____ yesterday.	was approved	english_grammar level_3 passive_voice rule
+The files _____ on Monday.	were approved	english_grammar level_3 passive_voice rule
+The files _____ yesterday.	were approved	english_grammar level_3 passive_voice rule
+The team _____ on Monday.	was prepared	english_grammar level_3 passive_voice rule
+The team _____ yesterday.	was prepared	english_grammar level_3 passive_voice rule
+The project _____ on Monday.	was launched	english_grammar level_3 passive_voice rule
+The project _____ yesterday.	was launched	english_grammar level_3 passive_voice rule
+The letters _____ on Monday.	were sent	english_grammar level_3 passive_voice rule
+The letters _____ yesterday.	were sent	english_grammar level_3 passive_voice rule
+The door _____ on Monday.	was closed	english_grammar level_3 passive_voice rule
+The door _____ yesterday.	was closed	english_grammar level_3 passive_voice rule
+The meetings _____ on Monday.	were postponed	english_grammar level_3 passive_voice rule
+The meetings _____ yesterday.	were postponed	english_grammar level_3 passive_voice rule
+The engineer _____ fixed the bug explained the cause.	who	english_grammar level_3 relative_clauses rule
+The file _____ you sent yesterday is corrupted.	that	english_grammar level_3 relative_clauses rule
+The office _____ we met is closed today.	where	english_grammar level_3 relative_clauses rule
+Monday was the day _____ the audit started.	when	english_grammar level_3 relative_clauses rule
+That is the reason _____ the server failed.	why	english_grammar level_3 relative_clauses rule
+The tool _____ we use for testing is reliable.	which	english_grammar level_3 relative_clauses rule
+The candidate _____ resume impressed us accepted the offer.	whose	english_grammar level_3 relative_clauses rule
+The client _____ I called this morning answered quickly.	whom	english_grammar level_3 relative_clauses rule
+I enjoy _____ quiet work in the morning.	doing	english_grammar level_3 gerund_vs_infinitive rule
+She avoids _____ late at night.	eating	english_grammar level_3 gerund_vs_infinitive rule
+They decided _____ the meeting early.	to leave	english_grammar level_3 gerund_vs_infinitive rule
+He managed _____ the report before noon.	to finish	english_grammar level_3 gerund_vs_infinitive rule
+We promised _____ the client tomorrow.	to call	english_grammar level_3 gerund_vs_infinitive rule
+She refused _____ the document without review.	to sign	english_grammar level_3 gerund_vs_infinitive rule
+He stopped _____ sugar in his coffee.	using	english_grammar level_3 gerund_vs_infinitive rule
+I remember _____ that email yesterday.	sending	english_grammar level_3 gerund_vs_infinitive rule
+They suggested _____ the plan again.	reviewing	english_grammar level_3 gerund_vs_infinitive rule
+We hope _____ the issue today.	to solve	english_grammar level_3 gerund_vs_infinitive rule
+She offered _____ with the migration.	to help	english_grammar level_3 gerund_vs_infinitive rule
+He admitted _____ the mistake.	making	english_grammar level_3 gerund_vs_infinitive rule
+I said that he would arrive late.	I was would arrive late.	english_grammar level_3 reported_speech rule
+Correct: She said that she is coming tomorrow.	She said that she was coming the next day.	english_grammar level_3 reported_speech correction
+She said that he would arrive late.	she was would arrive late.	english_grammar level_3 reported_speech rule
+Correct: She said that she is coming tomorrow.	She said that she was coming the next day.	english_grammar level_3 reported_speech correction
+They said that he would arrive late.	they were would arrive late.	english_grammar level_3 reported_speech rule
+Correct: She said that she is coming tomorrow.	She said that she was coming the next day.	english_grammar level_3 reported_speech correction
+He said that he would arrive late.	he was would arrive late.	english_grammar level_3 reported_speech rule
+Correct: She said that she is coming tomorrow.	She said that she was coming the next day.	english_grammar level_3 reported_speech correction
+The manager said that he would arrive late.	the manager said would arrive late.	english_grammar level_3 reported_speech rule
+Correct: She said that she is coming tomorrow.	She said that she was coming the next day.	english_grammar level_3 reported_speech correction
+Please carry _____ with the work.	on	english_grammar level_3 phrasal_verb_grammar rule
+She turned _____ the offer politely.	down	english_grammar level_3 phrasal_verb_grammar rule
+We are looking _____ the missing file.	for	english_grammar level_3 phrasal_verb_grammar rule
+They set _____ the new account yesterday.	up	english_grammar level_3 phrasal_verb_grammar rule
+I ran _____ an old colleague downtown.	into	english_grammar level_3 phrasal_verb_grammar rule
+He gave _____ smoking last year.	up	english_grammar level_3 phrasal_verb_grammar rule
+The policy brought _____ several changes.	about	english_grammar level_3 phrasal_verb_grammar rule
+We worked _____ the problem together.	through	english_grammar level_3 phrasal_verb_grammar rule
+Can you fill _____ this form?	out	english_grammar level_3 phrasal_verb_grammar rule
+The meeting was called _____ because of snow.	off	english_grammar level_3 phrasal_verb_grammar rule
+She ____ the plan.	reviews	english_grammar level_3 gerund_vs_infinitive rule
+Correct: They analyse the data yesterday.	They analysed the data yesterday.	english_grammar level_3 phrasal_verb_grammar correction
+I ____ the message.	update	english_grammar level_3 conditionals rule
+Correct: He explain the rule yesterday.	He explained the rule yesterday.	english_grammar level_3 relative_clauses correction
+She ____ the skill.	practices	english_grammar level_3 gerund_vs_infinitive rule
+Correct: They review the plan yesterday.	They reviewed the plan yesterday.	english_grammar level_3 phrasal_verb_grammar correction
+I ____ the form.	submit	english_grammar level_3 conditionals rule
+Correct: He update the message yesterday.	He updated the message yesterday.	english_grammar level_3 relative_clauses correction
+She ____ the prototype.	builds	english_grammar level_3 gerund_vs_infinitive rule
+Correct: They practice the skill yesterday.	They practised the skill yesterday.	english_grammar level_3 phrasal_verb_grammar correction
+I ____ the report.	prepare	english_grammar level_3 conditionals rule
+Correct: He submit the form yesterday.	He submitted the form yesterday.	english_grammar level_3 relative_clauses correction
+She ____ the data.	analyses	english_grammar level_3 gerund_vs_infinitive rule
+Correct: They build the prototype yesterday.	They built the prototype yesterday.	english_grammar level_3 phrasal_verb_grammar correction
+I ____ the rule.	explain	english_grammar level_3 conditionals rule
+Correct: He prepare the report yesterday.	He prepared the report yesterday.	english_grammar level_3 relative_clauses correction
+She ____ the plan.	reviews	english_grammar level_3 gerund_vs_infinitive rule
+Correct: They analyse the data yesterday.	They analysed the data yesterday.	english_grammar level_3 phrasal_verb_grammar correction
+I ____ the message.	update	english_grammar level_3 conditionals rule
+Correct: He explain the rule yesterday.	He explained the rule yesterday.	english_grammar level_3 relative_clauses correction
+She ____ the skill.	practices	english_grammar level_3 gerund_vs_infinitive rule
+Correct: They review the plan yesterday.	They reviewed the plan yesterday.	english_grammar level_3 phrasal_verb_grammar correction
+I ____ the form.	submit	english_grammar level_3 conditionals rule
+Correct: He update the message yesterday.	He updated the message yesterday.	english_grammar level_3 relative_clauses correction
+She ____ the prototype.	builds	english_grammar level_3 gerund_vs_infinitive rule
+Correct: They practice the skill yesterday.	They practised the skill yesterday.	english_grammar level_3 phrasal_verb_grammar correction
+I ____ the report.	prepare	english_grammar level_3 conditionals rule
+Correct: He submit the form yesterday.	He submitted the form yesterday.	english_grammar level_3 relative_clauses correction
+She ____ the data.	analyses	english_grammar level_3 gerund_vs_infinitive rule
+Correct: They build the prototype yesterday.	They built the prototype yesterday.	english_grammar level_3 phrasal_verb_grammar correction
+I ____ the rule.	explain	english_grammar level_3 conditionals rule
+Correct: He prepare the report yesterday.	He prepared the report yesterday.	english_grammar level_3 relative_clauses correction
+She ____ the plan.	reviews	english_grammar level_3 gerund_vs_infinitive rule
+Correct: They analyse the data yesterday.	They analysed the data yesterday.	english_grammar level_3 phrasal_verb_grammar correction
+I ____ the message.	update	english_grammar level_3 conditionals rule
+Correct: He explain the rule yesterday.	He explained the rule yesterday.	english_grammar level_3 relative_clauses correction
+She ____ the skill.	practices	english_grammar level_3 gerund_vs_infinitive rule
+Correct: They review the plan yesterday.	They reviewed the plan yesterday.	english_grammar level_3 phrasal_verb_grammar correction
+I ____ the form.	submit	english_grammar level_3 conditionals rule
+Correct: He update the message yesterday.	He updated the message yesterday.	english_grammar level_3 relative_clauses correction
+She ____ the prototype.	builds	english_grammar level_3 gerund_vs_infinitive rule
+Correct: They practice the skill yesterday.	They practised the skill yesterday.	english_grammar level_3 phrasal_verb_grammar correction
+I ____ the report.	prepare	english_grammar level_3 conditionals rule
+Correct: He submit the form yesterday.	He submitted the form yesterday.	english_grammar level_3 relative_clauses correction
+She ____ the data.	analyses	english_grammar level_3 gerund_vs_infinitive rule
+Correct: They build the prototype yesterday.	They built the prototype yesterday.	english_grammar level_3 phrasal_verb_grammar correction
+I ____ the rule.	explain	english_grammar level_3 conditionals rule
+If she had studied, she would now be accepted.	mixed conditional	english_grammar level_4 mixed_conditionals rule
+If he had worked, he would have arrived.	mixed conditional	english_grammar level_4 mixed_conditionals rule
+If we had left, we would be ahead.	mixed conditional	english_grammar level_4 mixed_conditionals rule
+If I had known, I would have told you.	mixed conditional	english_grammar level_4 mixed_conditionals rule
+If they had practiced, they would be confident.	mixed conditional	english_grammar level_4 mixed_conditionals rule
+Never have I seen this report before.	Use inversion with negative adjunct	english_grammar level_4 inversion rule
+Correct: Never I seen this report.	Never have I seen this report before.	english_grammar level_4 inversion correction
+Rarely do they understand this report before.	Use inversion with negative adjunct	english_grammar level_4 inversion rule
+Correct: Rarely they understand this report.	Rarely do they understand this report before.	english_grammar level_4 inversion correction
+Not until did we finish this report before.	Use inversion with negative adjunct	english_grammar level_4 inversion rule
+Correct: Not until we finish this report.	Not until did we finish this report before.	english_grammar level_4 inversion correction
+Only after had she realized this report before.	Use inversion with negative adjunct	english_grammar level_4 inversion rule
+Correct: Only after she realized this report.	Only after had she realized this report before.	english_grammar level_4 inversion correction
+Never have we forgotten this report before.	Use inversion with negative adjunct	english_grammar level_4 inversion rule
+Correct: Never we forgotten this report.	Never have we forgotten this report before.	english_grammar level_4 inversion correction
+Seldom did I misjudge this report before.	Use inversion with negative adjunct	english_grammar level_4 inversion rule
+Correct: Seldom I misjudge this report.	Seldom did I misjudge this report before.	english_grammar level_4 inversion correction
+She might have missed the deadline.	might have missed the deadline	english_grammar level_4 advanced_modals rule
+Correct: She might have of finished it.	She might have have finished it.	english_grammar level_4 advanced_modals correction
+They could have finished the deadline.	could have finished the deadline	english_grammar level_4 advanced_modals rule
+Correct: They could have of finished it.	They could have have finished it.	english_grammar level_4 advanced_modals correction
+He should have called the deadline.	should have called the deadline	english_grammar level_4 advanced_modals rule
+Correct: He should have of finished it.	He should have have finished it.	english_grammar level_4 advanced_modals correction
+We must have forgotten the deadline.	must have forgotten the deadline	english_grammar level_4 advanced_modals rule
+Correct: We must have of finished it.	We must have have finished it.	english_grammar level_4 advanced_modals correction
+You may have received the deadline.	may have received the deadline	english_grammar level_4 advanced_modals rule
+Correct: You may have of finished it.	You may have have finished it.	english_grammar level_4 advanced_modals correction
+It might have changed the deadline.	might have changed the deadline	english_grammar level_4 advanced_modals rule
+Correct: It might have of finished it.	It might have have finished it.	english_grammar level_4 advanced_modals correction
+Having prepared the draft, they submitted the report.	participle	english_grammar level_4 participle_clauses rule
+Having prepared the draft, we moved to the next task.	participle	english_grammar level_4 participle_clauses rule
+Having prepared the draft, she avoided mistakes.	participle	english_grammar level_4 participle_clauses rule
+Having prepared the draft, the team approved it.	participle	english_grammar level_4 participle_clauses rule
+Having prepared the draft, the manager spoke clearly.	participle	english_grammar level_4 participle_clauses rule
+Knowing the procedure, they submitted the report.	participle	english_grammar level_4 participle_clauses rule
+Knowing the procedure, we moved to the next task.	participle	english_grammar level_4 participle_clauses rule
+Knowing the procedure, she avoided mistakes.	participle	english_grammar level_4 participle_clauses rule
+Knowing the procedure, the team approved it.	participle	english_grammar level_4 participle_clauses rule
+Knowing the procedure, the manager spoke clearly.	participle	english_grammar level_4 participle_clauses rule
+Being prepared, they submitted the report.	participle	english_grammar level_4 participle_clauses rule
+Being prepared, we moved to the next task.	participle	english_grammar level_4 participle_clauses rule
+Being prepared, she avoided mistakes.	participle	english_grammar level_4 participle_clauses rule
+Being prepared, the team approved it.	participle	english_grammar level_4 participle_clauses rule
+Being prepared, the manager spoke clearly.	participle	english_grammar level_4 participle_clauses rule
+Having discussed the issue, they submitted the report.	participle	english_grammar level_4 participle_clauses rule
+Having discussed the issue, we moved to the next task.	participle	english_grammar level_4 participle_clauses rule
+Having discussed the issue, she avoided mistakes.	participle	english_grammar level_4 participle_clauses rule
+Having discussed the issue, the team approved it.	participle	english_grammar level_4 participle_clauses rule
+Having discussed the issue, the manager spoke clearly.	participle	english_grammar level_4 participle_clauses rule
+Working with precision, they submitted the report.	participle	english_grammar level_4 participle_clauses rule
+Working with precision, we moved to the next task.	participle	english_grammar level_4 participle_clauses rule
+Working with precision, she avoided mistakes.	participle	english_grammar level_4 participle_clauses rule
+Working with precision, the team approved it.	participle	english_grammar level_4 participle_clauses rule
+Working with precision, the manager spoke clearly.	participle	english_grammar level_4 participle_clauses rule
+Complete the sentence: I know what she said.	noun clause	english_grammar level_4 noun_clauses rule
+Complete the sentence: We discussed whether they agreed.	noun clause	english_grammar level_4 noun_clauses rule
+Complete the sentence: The report shows why the system failed.	noun clause	english_grammar level_4 noun_clauses rule
+Complete the sentence: I wonder if the team understands.	noun clause	english_grammar level_4 noun_clauses rule
+Complete the sentence: She explained how the script worked.	noun clause	english_grammar level_4 noun_clauses rule
+Complete the sentence: We asked where the test data came from.	noun clause	english_grammar level_4 noun_clauses rule
+Complete the sentence: They confirmed what the team needed.	noun clause	english_grammar level_4 noun_clauses rule
+It was the analyst who found the bug first.	emphasis structure	english_grammar level_4 emphasis_structures rule
+What the team needed most was stable input.	emphasis structure	english_grammar level_4 emphasis_structures rule
+It was during the planning meeting that we set the deadline.	emphasis structure	english_grammar level_4 emphasis_structures rule
+What they wanted most was a clear timeline.	emphasis structure	english_grammar level_4 emphasis_structures rule
+It was your report that convinced the committee.	emphasis structure	english_grammar level_4 emphasis_structures rule
+What the client asked for was a quick fix.	emphasis structure	english_grammar level_4 emphasis_structures rule
+Having completed the security review, the team signed off on production access.	reduced clause	english_grammar level_4 reduced_relative_clauses rule
+Correct: Having completed the security review, the team signed off on production access.	Having completed the security review, the team signed off on production access.	english_grammar level_4 reduced_relative_clauses correction
+Having fixed the regression bug, the release passed smoke testing.	reduced clause	english_grammar level_4 reduced_relative_clauses rule
+Correct: Having fixed the regression bug, the release passed smoke testing.	Having fixed the regression bug, the release passed smoke testing.	english_grammar level_4 reduced_relative_clauses correction
+Having secured stakeholder approval, the team started the rollout.	reduced clause	english_grammar level_4 reduced_relative_clauses rule
+Correct: Having secured stakeholder approval, the team started the rollout.	Having secured stakeholder approval, the team started the rollout.	english_grammar level_4 reduced_relative_clauses correction
+Having reviewed the client notes, we revised the final draft.	reduced clause	english_grammar level_4 reduced_relative_clauses rule
+Correct: Having reviewed the client notes, we revised the final draft.	Having reviewed the client notes, we revised the final draft.	english_grammar level_4 reduced_relative_clauses correction
+Having collected user feedback, the roadmap changed immediately.	reduced clause	english_grammar level_4 reduced_relative_clauses rule
+Correct: Having collected user feedback, the roadmap changed immediately.	Having collected user feedback, the roadmap changed immediately.	english_grammar level_4 reduced_relative_clauses correction
+Having updated the schedule, the launch date shifted by one week.	reduced clause	english_grammar level_4 reduced_relative_clauses rule
+Correct: Having updated the schedule, the launch date shifted by one week.	Having updated the schedule, the launch date shifted by one week.	english_grammar level_4 reduced_relative_clauses correction
+Having closed the budget gap, the vendor accepted the contract.	reduced clause	english_grammar level_4 reduced_relative_clauses rule
+Correct: Having closed the budget gap, the vendor accepted the contract.	Having closed the budget gap, the vendor accepted the contract.	english_grammar level_4 reduced_relative_clauses correction
+Having validated the migration, we moved traffic to the new cluster.	reduced clause	english_grammar level_4 reduced_relative_clauses rule
+Correct: Having validated the migration, we moved traffic to the new cluster.	Having validated the migration, we moved traffic to the new cluster.	english_grammar level_4 reduced_relative_clauses correction
+Use 'however' for contrast.	however	english_grammar level_5 sentence_connectors rule
+Use 'moreover' for addition.	moreover	english_grammar level_5 sentence_connectors rule
+Use 'nevertheless' for concession.	nevertheless	english_grammar level_5 sentence_connectors rule
+Use 'therefore' for result.	therefore	english_grammar level_5 sentence_connectors rule
+Use 'although' for contrast.	although	english_grammar level_5 sentence_connectors rule
+Use 'because' for reason.	because	english_grammar level_5 sentence_connectors rule
+Use 'furthermore' for addition.	furthermore	english_grammar level_5 sentence_connectors rule
+Rewrite formally: Could you please share the figures?	Could you please share the figures?	english_grammar level_5 formal_grammar rule
+Rewrite formally: It appears that the report is ready.	It appears that the report is ready.	english_grammar level_5 formal_grammar rule
+Rewrite formally: Please ensure the file is complete.	Please ensure the file is complete.	english_grammar level_5 formal_grammar rule
+Rewrite formally: The committee approved the proposal.	The committee approved the proposal.	english_grammar level_5 formal_grammar rule
+Rewrite formally: The meeting was rescheduled due to travel delays.	The meeting was rescheduled due to travel delays.	english_grammar level_5 formal_grammar rule
+Rewrite formally: Please verify that all citations are up to date.	Please verify that all citations are up to date.	english_grammar level_5 formal_grammar rule
+Rewrite formally: The board will review the final proposal tomorrow.	The board will review the final proposal tomorrow.	english_grammar level_5 formal_grammar rule
+Rewrite formally: Kindly submit your final comments by close of business.	Kindly submit your final comments by close of business.	english_grammar level_5 formal_grammar rule
+Rewrite formally: The committee formally confirmed the revised milestones.	The committee formally confirmed the revised milestones.	english_grammar level_5 formal_grammar rule
+Add hedging language: The timeline may shift unexpectedly.	may	english_grammar level_5 hedging rule
+Add hedging language: The results might improve next quarter.	might	english_grammar level_5 hedging rule
+Add hedging language: We may not be fully staffed this week.	may	english_grammar level_5 hedging rule
+Add hedging language: Perhaps we should review this again.	Perhaps	english_grammar level_5 hedging rule
+Add hedging language: This seems potentially useful.	seems	english_grammar level_5 hedging rule
+Add hedging language: This is likely to be delayed.	likely	english_grammar level_5 hedging rule
+Add hedging language: This may not be feasible without extra testing.	may	english_grammar level_5 hedging rule
+Add hedging language: This strategy could be the best option.	could	english_grammar level_5 hedging rule
+Add hedging language: The requirements may change during implementation.	may	english_grammar level_5 hedging rule
+Add hedging language: The change might not be permanent.	might	english_grammar level_5 hedging rule
+She seems to need more data.	seems	english_grammar level_5 modal_nuance rule
+Correct: She seems to need more data.	She seems to need more data.	english_grammar level_5 modal_nuance correction
+It appears to need follow-up.	appears	english_grammar level_5 modal_nuance rule
+Correct: It appears to need follow-up.	It appears to need follow-up.	english_grammar level_5 modal_nuance correction
+The draft may be revised in phase two.	may	english_grammar level_5 modal_nuance rule
+Correct: The draft may be revised in phase two.	The draft may be revised in phase two.	english_grammar level_5 modal_nuance correction
+We could use additional QA.	could	english_grammar level_5 modal_nuance rule
+Correct: We could use additional QA.	We could use additional QA.	english_grammar level_5 modal_nuance correction
+The team might need further validation.	might	english_grammar level_5 modal_nuance rule
+Correct: The team might need further validation.	The team might need further validation.	english_grammar level_5 modal_nuance correction
+This plan should be reviewed for scope.	should	english_grammar level_5 modal_nuance rule
+Correct: This plan should be reviewed for scope.	This plan should be reviewed for scope.	english_grammar level_5 modal_nuance correction
+The timeline should stay stable.	should	english_grammar level_5 modal_nuance rule
+Correct: The timeline should stay stable.	The timeline should stay stable.	english_grammar level_5 modal_nuance correction
+The dataset might need another split.	might	english_grammar level_5 modal_nuance rule
+Correct: The dataset might need another split.	The dataset might need another split.	english_grammar level_5 modal_nuance correction
+The client could approve this next month.	could	english_grammar level_5 modal_nuance rule
+Correct: The client could approve this next month.	The client could approve this next month.	english_grammar level_5 modal_nuance correction
+The interface seems to need simplification.	seems	english_grammar level_5 modal_nuance rule
+Correct: The interface seems to need simplification.	The interface seems to need simplification.	english_grammar level_5 modal_nuance correction
+The estimate may be adjusted soon.	may	english_grammar level_5 modal_nuance rule
+Correct: The estimate may be adjusted soon.	The estimate may be adjusted soon.	english_grammar level_5 modal_nuance correction
+Correct this: I am used to used to go.	I am used to going.	english_grammar level_5 common_learner_mistakes correction
+Correct this: Between you and I, this was hard.	Between you and me, this was hard.	english_grammar level_5 common_learner_mistakes correction
+Correct this: She explained me the details.	She explained the details to me.	english_grammar level_5 common_learner_mistakes correction
+Correct this: He suggested me to stay.	He suggested that I stay.	english_grammar level_5 common_learner_mistakes correction
+Correct this: The data is reliable	The data are reliable	english_grammar level_5 common_learner_mistakes correction
+Correct this: He gave me advise.	He gave me advice.	english_grammar level_5 common_learner_mistakes correction
+Correct this: She said me to leave.	She told me to leave.	english_grammar level_5 common_learner_mistakes correction
+Correct this: The less I see it, the less I likes it.	The less I see it, the less I like it.	english_grammar level_5 common_learner_mistakes correction
+Correct this: I explained him the decision.	I explained the decision to him.	english_grammar level_5 common_learner_mistakes correction
+Correct this: Between Bob and I, we discussed the plan.	Between Bob and me, we discussed the plan.	english_grammar level_5 common_learner_mistakes correction
+Correct this: She suggested me the report.	She suggested the report to me.	english_grammar level_5 common_learner_mistakes correction
+Rewrite for a formal register: The policy is likely to be revised.	The policy is likely to be revised.	english_grammar level_5 style_and_register rule
+Rewrite for a academic register: The result seems clear.	The result seems clear.	english_grammar level_5 style_and_register rule
+Rewrite for a cautious register: He might not be fully certain.	He might not be fully certain.	english_grammar level_5 style_and_register rule
+Rewrite for a technical register: The method was considered robust.	The method was considered robust.	english_grammar level_5 style_and_register rule
+Rewrite for a formal register: The team had substantial concerns.	The team had substantial concerns.	english_grammar level_5 style_and_register rule
+Rewrite for a academic register: The model performed below expectations.	The model performed below expectations.	english_grammar level_5 style_and_register rule
+Rewrite for a technical register: The report contained incomplete metadata.	The report contained incomplete metadata.	english_grammar level_5 style_and_register rule
+Rewrite for a formal register: The schedule was adjusted again.	The schedule was adjusted again.	english_grammar level_5 style_and_register rule
+Rewrite for a technical register: The dashboard showed stable error rates.	The dashboard showed stable error rates.	english_grammar level_5 style_and_register rule
+Rewrite for a formal register: The release was delayed by one week.	The release was delayed by one week.	english_grammar level_5 style_and_register rule
