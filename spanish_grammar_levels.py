@@ -481,6 +481,90 @@ def _topic(level, topic, formula, use, examples, trap, choose, correction, produ
 TOPICS.extend(
     [
         _topic(
+            "a1_1_foundations",
+            "location prepositions",
+            "encima de, debajo de, delante de, detrás de, al lado de, cerca de, lejos de",
+            "Use location chunks with de to describe where things are.",
+            ["El libro está encima de la mesa.", "La tienda está cerca de casa.", "Estoy al lado de Ana."],
+            "Most location phrases need de before the reference noun.",
+            ("Choose: The book is on the table.<br>A) El libro está encima la mesa.<br>B) El libro está encima de la mesa.", "B) El libro está encima de la mesa.", "encima de is the full location phrase."),
+            ("Estoy cerca la escuela.", "Estoy cerca de la escuela.", "cerca needs de before the place."),
+            ("Write in Spanish: The bank is next to the store.", "El banco está al lado de la tienda.", "al lado de means next to."),
+            ("location chunk", "estar + location phrase + de + noun", ["Está detrás de la casa.", "Está lejos del centro.", "Está delante de mí."]),
+        ),
+        _topic(
+            "a1_1_foundations",
+            "ordinal basics",
+            "primero/primer, segundo, tercero/tercer",
+            "Use basic ordinal numbers for order.",
+            ["el primer día", "la segunda clase", "el tercer libro"],
+            "primero and tercero shorten before masculine singular nouns: primer, tercer.",
+            ("Choose: the first day<br>A) el primero día<br>B) el primer día", "B) el primer día", "primero shortens to primer before masculine singular nouns."),
+            ("el tercero libro", "el tercer libro", "tercero shortens to tercer before masculine singular nouns."),
+            ("Write in Spanish: the second class", "la segunda clase", "segunda agrees with clase."),
+            ("ordinal + noun", "primer/segundo/tercer + noun", ["el primer año", "la primera vez", "el tercer piso"]),
+        ),
+        _topic(
+            "a1_2_core_sentences",
+            "muy vs mucho",
+            "muy + adjective/adverb; mucho/mucha/muchos/muchas + noun; verb + mucho",
+            "Use muy for degree and mucho for quantity or action amount.",
+            ["muy bueno", "mucho trabajo", "trabajo mucho"],
+            "Do not put muy before nouns.",
+            ("Choose: a lot of work<br>A) muy trabajo<br>B) mucho trabajo", "B) mucho trabajo", "Before a noun, use mucho/mucha."),
+            ("Tengo muy libros.", "Tengo muchos libros.", "Use muchos with plural masculine nouns."),
+            ("Write in Spanish: very interesting", "muy interesante", "muy modifies adjectives."),
+            ("degree/quantity", "muy + adjective; mucho + noun/verb", ["muy fácil", "mucha agua", "estudio mucho"]),
+        ),
+        _topic(
+            "a1_2_core_sentences",
+            "todo and cada",
+            "todo = all/every; cada = each/every individual",
+            "Use todo with agreement and cada as invariable before singular nouns.",
+            ["todos los días", "toda la semana", "cada día"],
+            "cada does not become plural before a noun.",
+            ("Choose: every day<br>A) cada día<br>B) cadas días", "A) cada día", "cada is invariable and takes singular noun."),
+            ("todo los días", "todos los días", "todo agrees: todos los días."),
+            ("Write in Spanish: all week", "toda la semana", "semana is feminine singular."),
+            ("all/every", "todo/toda/todos/todas or cada + singular", ["todo el día", "todas las noches", "cada semana"]),
+        ),
+        _topic(
+            "a2_1_daily_past",
+            "obligation variants",
+            "tener que; hay que; deber",
+            "Use different obligation patterns for personal, general, and should-like obligation.",
+            ["Tengo que estudiar.", "Hay que practicar.", "Debes descansar."],
+            "hay que is general; it does not name the person.",
+            ("Choose: One must practice.<br>A) Hay que practicar.<br>B) Tengo que practicar.", "A) Hay que practicar.", "hay que gives a general obligation."),
+            ("Hay que yo estudiar.", "Tengo que estudiar.", "Use tener que when naming the person."),
+            ("Write in Spanish: You should rest.", "Debes descansar.", "deber + infinitive gives should/must."),
+            ("obligation", "tener que / hay que / deber + infinitive", ["Tengo que salir.", "Hay que leer.", "Debemos ayudar."]),
+        ),
+        _topic(
+            "a2_2_natural_spanish",
+            "quedar vs quedarse",
+            "quedar = remain/fit/arrange to meet; quedarse = stay",
+            "Use quedar and quedarse in common A2 meanings.",
+            ["Quedan dos entradas.", "Me quedo en casa.", "Quedamos a las ocho."],
+            "quedarse needs a reflexive pronoun for staying.",
+            ("Choose: I am staying at home.<br>A) Quedo en casa.<br>B) Me quedo en casa.", "B) Me quedo en casa.", "staying uses quedarse."),
+            ("Quedan en casa esta noche.", "Quedamos en casa esta noche.", "Use quedamos for we arrange to meet."),
+            ("Write in Spanish: Two tickets remain.", "Quedan dos entradas.", "quedar agrees with the remaining thing."),
+            ("quedar chunk", "quedar/quedarse + complement", ["Queda tiempo.", "Me quedo aquí.", "Quedamos mañana."]),
+        ),
+        _topic(
+            "a2_2_natural_spanish",
+            "emotion verbs with prepositions",
+            "alegrarse de; preocuparse por; tener miedo de",
+            "Use common emotion verb-preposition chunks.",
+            ["Me alegro de verte.", "Me preocupo por mi familia.", "Tengo miedo de fallar."],
+            "Learn the preposition with the expression.",
+            ("Choose: I am happy to see you.<br>A) Me alegro de verte.<br>B) Me alegro verte.", "A) Me alegro de verte.", "alegrarse takes de."),
+            ("Me preocupo de mi familia.", "Me preocupo por mi familia.", "preocuparse commonly takes por for concern about someone/something."),
+            ("Write in Spanish: I am afraid of failing.", "Tengo miedo de fallar.", "tener miedo de + infinitive."),
+            ("emotion chunk", "emotion expression + preposition", ["Me alegro de eso.", "Se preocupa por ti.", "Tengo miedo de salir."]),
+        ),
+        _topic(
             "a0_survival",
             "numbers 0 to 20",
             "cero, uno, dos... veinte",
@@ -1028,7 +1112,7 @@ TOPICS.extend(
             ["Aunque llueve, salgo.", "Aunque llueva, salgo.", "Aunque es caro, lo compro."],
             "At A2, focus on recognizing the contrast before overproducing it.",
             ("Choose known fact: Although it is raining, I am going out.<br>A) Aunque llueve, salgo.<br>B) Aunque llueva, salgo.", "A) Aunque llueve, salgo.", "Indicative presents the rain as known."),
-            ("Aunque es caro, lo compraría if it were cheaper.", "Aunque es caro, lo compraría si fuera más barato.", "Keep Spanish connectors and conditionals in Spanish."),
+            ("Aunque es caro, lo compraría si es más barato.", "Aunque es caro, lo compraría si fuera más barato.", "Use the hypothetical form after si in this conditional meaning."),
             ("Write in Spanish: Although it is expensive, I buy it.", "Aunque es caro, lo compro.", "Known fact uses indicative."),
             ("concession", "aunque + clause", ["Aunque estoy cansado, estudio.", "Aunque llueve, camino.", "Aunque es difícil, sigo."]),
         ),
@@ -1082,12 +1166,6 @@ TOPICS.extend(
         ),
     ]
 )
-
-TOPICS = [
-    topic
-    for topic in TOPICS
-    if topic["topic"] not in {"aunque indicative vs subjunctive recognition", "reported speech basics"}
-]
 
 # Keep LEVELS summaries in sync with TOPICS; TOPICS is the source of truth for generated cards.
 for level in LEVELS:
