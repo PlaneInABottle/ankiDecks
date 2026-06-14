@@ -16,6 +16,7 @@ import check_word
 import get_pexels_image
 import anki_tools
 import grammar_levels
+import spanish_grammar_levels
 import spanish_deck
 
 
@@ -281,6 +282,85 @@ class TestAnkiAutomation(unittest.TestCase):
             self.assertGreater(item["card_count"], 0)
             actual_count = len([card for card in grammar_levels.GRAMMAR_CARDS if card["level"] == item["id"]])
             self.assertEqual(item["card_count"], actual_count)
+
+    def test_spanish_grammar_a0_a2_structure(self):
+        """Test Spanish grammar deck is level-based and cumulative for A0-A2."""
+        level_ids = [level["id"] for level in spanish_grammar_levels.LEVELS]
+        self.assertEqual(
+            level_ids,
+            ["a0_survival", "a1_1_foundations", "a1_2_core_sentences", "a2_1_daily_past", "a2_2_natural_spanish"],
+        )
+
+        cards = spanish_grammar_levels.get_cards()
+        by_level = Counter(card["level"] for card in cards)
+        by_type = Counter(card["card_type"] for card in cards)
+
+        self.assertEqual(len(cards), 160)
+        for level in level_ids:
+            self.assertGreaterEqual(by_level[level], 30)
+        for card_type in ("rule", "choose", "correction", "production", "pattern"):
+            self.assertEqual(by_type[card_type], 32)
+
+    def test_spanish_grammar_requested_topics_exist(self):
+        """Test core A0-A2 Spanish grammar topics are represented."""
+        topics = {card["topic"] for card in spanish_grammar_levels.get_cards()}
+        expected_topics = {
+            "noun gender",
+            "adjective agreement",
+            "ser basics",
+            "ser vs estar",
+            "regular -ar present",
+            "hay",
+            "tener and tener que",
+            "ir a infinitive",
+            "gustar basics",
+            "reflexive verbs",
+            "regular preterite",
+            "preterite vs imperfect",
+            "por vs para",
+            "double object pronouns",
+            "present perfect",
+            "relative clauses and connectors",
+        }
+        self.assertTrue(expected_topics <= topics)
+
+    def test_spanish_grammar_tsv_renderer(self):
+        """Test Spanish grammar TSV renderer columns and row count."""
+        cards = spanish_grammar_levels.get_cards()
+        tsv = spanish_grammar_levels.render_tsv(cards)
+        self.assertIn(
+            "SourceID\tLevel\tTopic\tCardType\tCardTypeLabel\tFront\tAnswer\tExplanation\tExamples\tCommonMistake\tSelfGrade\tTags",
+            tsv,
+        )
+        self.assertNotIn("{{c1::", tsv)
+
+        rows = [
+            row
+            for row in csv.reader(io.StringIO(tsv), delimiter="\t")
+            if row and not row[0].startswith("#")
+        ]
+        self.assertEqual(len(rows), len(cards) + 1)
+        self.assertTrue(all(len(row) == 12 for row in rows))
+        source_ids = [card["source_id"] for card in cards]
+        self.assertEqual(len(source_ids), len(set(source_ids)))
+
+    def test_spanish_grammar_no_known_bad_patterns(self):
+        """Test Spanish grammar cards avoid impossible blanks and misleading forms."""
+        all_text = "\n".join(
+            str(card.get(field, ""))
+            for card in spanish_grammar_levels.get_cards()
+            for field in ("front", "answer", "explanation", "examples", "common_mistake")
+        )
+        bad_patterns = [
+            "{{c1::",
+            "____",
+            "Write in Spanish: Write in Spanish:",
+            "la problema\t",
+            "Yo es profesor.\t",
+            "Le lo doy.\t",
+        ]
+        for pattern in bad_patterns:
+            self.assertNotIn(pattern, all_text)
 
     def test_spanish_parser_extracts_rows(self):
         """Test TSV parser fields for the new Spanish duplicate workflow."""
