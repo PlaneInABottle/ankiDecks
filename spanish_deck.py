@@ -300,6 +300,7 @@ def build_spanish_rows(
             {
                 "english": english,
                 "spanish": spanish,
+                "image": source_row.get("image", "").strip(),
                 "english_meaning": source_row.get("english_meaning", "").strip(),
                 "english_example": source_row.get("english_example", "").strip(),
                 "spanish_meaning": glossary_row.get("spanish_meaning", "").strip() if glossary_row else "",
@@ -316,11 +317,18 @@ def build_spanish_rows(
 
 def _back_field_for_basic(record: Dict[str, str]) -> str:
     if record["status"] == STATUS_REVIEWED:
-        parts = [f"Spanish: {record['spanish']}"]
+        parts = [f"English: {record['english']}"]
         if record["spanish_meaning"]:
             parts.append(f"Meaning: {record['spanish_meaning']}")
         if record["spanish_example"]:
             parts.append(f"Example: {record['spanish_example']}")
+        source_parts = [
+            value
+            for value in (record.get("english_meaning", ""), record.get("english_example", ""))
+            if value
+        ]
+        if source_parts:
+            parts.append("English source:\n" + "\n".join(source_parts))
         if record["notes"]:
             parts.append(f"Notes: {record['notes']}")
         return "\n".join(parts)
@@ -370,7 +378,7 @@ def write_spanish_files(
         for row in merged
     ]
     basic_rows = [
-        [row["english"], _back_field_for_basic(row), row["tags"]]
+        ["\n".join(value for value in (row["image"], row["spanish"] or row["english"]) if value), _back_field_for_basic(row), row["tags"]]
         for row in merged
     ]
 
