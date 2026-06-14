@@ -295,11 +295,11 @@ class TestAnkiAutomation(unittest.TestCase):
         by_level = Counter(card["level"] for card in cards)
         by_type = Counter(card["card_type"] for card in cards)
 
-        self.assertEqual(len(cards), 160)
+        self.assertEqual(len(cards), 400)
         for level in level_ids:
-            self.assertGreaterEqual(by_level[level], 30)
+            self.assertGreaterEqual(by_level[level], 60)
         for card_type in ("rule", "choose", "correction", "production", "pattern"):
-            self.assertEqual(by_type[card_type], 32)
+            self.assertEqual(by_type[card_type], 80)
 
     def test_spanish_grammar_requested_topics_exist(self):
         """Test core A0-A2 Spanish grammar topics are represented."""
@@ -321,6 +321,25 @@ class TestAnkiAutomation(unittest.TestCase):
             "double object pronouns",
             "present perfect",
             "relative clauses and connectors",
+            "numbers 0 to 20",
+            "time basics",
+            "ir present",
+            "querer and poder present",
+            "stem changing e to ie",
+            "stem changing o to ue",
+            "saber vs conocer",
+            "personal a",
+            "object pronoun placement",
+            "negative words",
+            "demonstratives",
+            "regular imperfect forms",
+            "preterite spelling changes",
+            "negative commands",
+            "basic subjunctive triggers",
+            "impersonal se",
+            "passive se",
+            "conditional basics",
+            "si clauses present future",
         }
         self.assertTrue(expected_topics <= topics)
 
