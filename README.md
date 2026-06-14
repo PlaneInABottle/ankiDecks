@@ -56,6 +56,40 @@ Reliably checks if a word exists in the original 4000 txt file OR your active An
 python3 check_word.py [word]
 ```
 
+### Generate English Grammar Deck Seed
+Create starter grammar TSV files for import into Anki (no Anki connection required):
+```bash
+python3 grammar_levels.py
+python3 grammar_levels.py --level level_2
+python3 grammar_levels.py --output-dir generated_custom
+python3 grammar_levels.py --summary
+```
+- Output:
+  - `generated/english_grammar_basic.tsv` (rule + correction cards)
+  - `generated/english_grammar_cloze.tsv` (cloze cards)
+- You can import each file into matching Basic/Cloze note types in Anki.
+- `--summary` prints per-level card counts and does not create files.
+
+### Create Spanish Duplicate Decks
+Create a duplicate workflow for learning the same 4000 English words in Spanish.
+Reviewed entries stay safe; untranslated entries are clearly marked for later review.
+
+```bash
+python3 spanish_deck.py
+python3 spanish_deck.py --glossary reviewed_es.csv
+python3 spanish_deck.py --summary
+python3 spanish_deck.py --limit 20
+```
+
+Defaults:
+- Source: `4000 Essential English Words.txt`
+- Glossary: optional CSV/TSV with headers `english,spanish,spanish_meaning,spanish_example,notes`
+  - Backward-compatible: `english,spanish,spanish_example,notes` is still accepted
+- Output directory: `generated/spanish`
+- Files produced:
+  - `english_spanish_review.tsv` (English, English Meaning, English Example, Spanish, Spanish Meaning, Spanish Example, Notes, Status, Source Deck, Source Card, Tags)
+  - `english_spanish_basic.tsv` (Front, Back, Tags; back includes `Spanish`, `Meaning`, `Example`, optional `Notes` when reviewed, or `TODO: Spanish translation needed` when pending)
+
 ## 🧪 Testing
 Run the unit test suite to verify script logic (uses mocks, no internet/Anki required):
 ```bash
@@ -66,6 +100,8 @@ python3 test_scripts.py
 - `add_word_to_anki.py`: Standard automation logic.
 - `anki_tools.py`: Fully dynamic CLI version.
 - `check_word.py`: Synchronized duplicate checker.
+- `grammar_levels.py`: Level-based English grammar seed generator.
+- `spanish_deck.py`: Safe English-to-Spanish review/import generator.
 - `get_pexels_image.py`: Standalone image downloader.
 - `reorganize_decks.py`: Utility to move cards between decks.
 - `4000 Essential English Words.txt`: Base vocabulary reference.
