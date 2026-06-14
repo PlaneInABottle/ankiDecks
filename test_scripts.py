@@ -489,10 +489,17 @@ class TestAnkiAutomation(unittest.TestCase):
             self.assertEqual(len(review_data) - 1, 3)
             self.assertEqual(len(basic_data) - 1, 3)
 
-    def test_basic_import_tsv_includes_reviewed_spanish_fields(self):
-        """Test reviewed basic back field keeps the Spanish word, meaning, example and notes."""
+    def test_basic_import_tsv_uses_spanish_recognition_format(self):
+        """Test reviewed basic cards put Spanish on front and English/context on back."""
         source_rows = [
-            {"english_word": "apple", "deck": "4000 Essential English Words::Extra", "card_number": "2_1"}
+            {
+                "english_word": "apple",
+                "english_meaning": "An apple is a fruit.",
+                "english_example": "The apple is red.",
+                "image": '<img src="apple.jpg" />',
+                "deck": "4000 Essential English Words::Extra",
+                "card_number": "2_1",
+            }
         ]
         glossary = {
             "apple": {
@@ -508,10 +515,14 @@ class TestAnkiAutomation(unittest.TestCase):
                 basic_rows = list(csv.reader(handle, delimiter="\t"))
             basic_data = [row for row in basic_rows if row and not row[0].startswith("#")]
             self.assertEqual(len(basic_data), 2)
+            self.assertEqual(basic_data[1][0], '<img src="apple.jpg" />\nmanzana')
             back = basic_data[1][1]
-            self.assertIn("Spanish: manzana", back)
+            self.assertIn("English: apple", back)
             self.assertIn("Meaning: fruta", back)
             self.assertIn("Example: La manzana es roja.", back)
+            self.assertIn("English source:", back)
+            self.assertIn("An apple is a fruit.", back)
+            self.assertIn("The apple is red.", back)
             self.assertIn("Notes: fruit", back)
 
     def test_no_translation_invented_without_glossary(self):
