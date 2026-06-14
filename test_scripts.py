@@ -58,7 +58,7 @@ class TestAnkiAutomation(unittest.TestCase):
         self.assertTrue(all(card["card_type"] == "contrast" for card in contrast_cards))
 
         basic_cards = grammar_levels.get_cards(card_type="basic")
-        self.assertTrue(all(card["card_type"] in {"rule", "contrast", "correction", "production"} for card in basic_cards))
+        self.assertTrue(all(card["card_type"] in {"rule", "contrast", "correction", "production", "choose", "pattern"} for card in basic_cards))
 
     def test_grammar_level_minimum_counts(self):
         """Test the maintenance deck is compact, hard, and covers each level."""
@@ -78,8 +78,8 @@ class TestAnkiAutomation(unittest.TestCase):
             total_cards += len(cards)
 
         self.assertGreaterEqual(total_cards, 35)
-        self.assertLessEqual(total_cards, 120)
-        for card_type in ("rule", "contrast", "correction", "production"):
+        self.assertLessEqual(total_cards, 180)
+        for card_type in ("rule", "contrast", "correction", "production", "choose", "pattern"):
             self.assertGreater(all_types[card_type], 0)
 
     def test_grammar_tsv_renderers(self):
@@ -389,6 +389,22 @@ class TestAnkiAutomation(unittest.TestCase):
         for pattern in bad_patterns:
             self.assertNotIn(pattern, all_text)
 
+    def test_spanish_pronunciation_hint_examples(self):
+        """Test readable Latin American Spanish pronunciation hints."""
+        examples = {
+            "año": "A-nyo",
+            "mochila": "mo-Çİ-la",
+            "cinturón": "sin-tu-RON",
+            "queso": "KE-so",
+            "guitarra": "gi-TAR-ra",
+            "llave": "YA-be",
+            "jardín": "har-DİN",
+            "círculo": "SİR-ku-lo",
+            "el cinturón": "el sin-tu-RON",
+        }
+        for word, expected in examples.items():
+            self.assertEqual(spanish_deck.spanish_pronunciation_hint(word), expected)
+
     def test_spanish_parser_extracts_rows(self):
         """Test TSV parser fields for the new Spanish duplicate workflow."""
         with tempfile.TemporaryDirectory() as tmpdir:
@@ -576,6 +592,7 @@ class TestAnkiAutomation(unittest.TestCase):
                     "English Meaning",
                     "English Example",
                     "Spanish",
+                    "Pronunciation Hint",
                     "Spanish Meaning",
                     "Spanish Example",
                     "Notes",
@@ -614,9 +631,10 @@ class TestAnkiAutomation(unittest.TestCase):
                 basic_rows = list(csv.reader(handle, delimiter="\t"))
             basic_data = [row for row in basic_rows if row and not row[0].startswith("#")]
             self.assertEqual(len(basic_data), 2)
-            self.assertEqual(basic_data[1][0], '<img src="apple.jpg" />\nmanzana')
+            self.assertEqual(basic_data[1][0], '<img src="apple.jpg" />\nmanzana\nman-SA-na')
             back = basic_data[1][1]
             self.assertIn("English: apple", back)
+            self.assertIn("Pronunciation: man-SA-na", back)
             self.assertIn("Meaning: fruta", back)
             self.assertIn("Example: La manzana es roja.", back)
             self.assertIn("English source:", back)
@@ -650,6 +668,7 @@ class TestAnkiAutomation(unittest.TestCase):
             self.assertEqual(review_data[1][3], "")
             self.assertEqual(review_data[1][4], "")
             self.assertEqual(review_data[1][5], "")
+            self.assertEqual(review_data[1][6], "")
 
     @patch('urllib.request.urlopen')
     def test_get_word_data(self, mock_urlopen):
