@@ -124,6 +124,10 @@ def _self_grade(card_type):
         return "Good = fixed the sentence and named the rule. Hard = fixed it but could not explain. Again = missed the correction."
     if card_type == "production":
         return "Good = produced a natural sentence with the target pattern. Hard = understandable but awkward. Again = wrong pattern."
+    if card_type == "choose":
+        return "Good = chose correctly and explained why. Hard = chose correctly but weak explanation. Again = chose wrong."
+    if card_type == "pattern":
+        return "Good = could reuse the pattern in a new sentence. Hard = recognized it only. Again = did not remember it."
     return "Good = confident recall. Hard = partial recall. Again = missed it."
 
 
@@ -150,6 +154,81 @@ def _add_correction(cards, level, topic, wrong, right, reason):
 
 def _add_production(cards, level, topic, prompt, answer, note):
     _add(cards, level, topic, "production", f"Say naturally: {prompt}", f"{answer}<br><br><b>Why</b><br>{note}")
+
+
+def _add_practice(cards, level, topic, card_type, front, answer, reason):
+    _add(cards, level, topic, card_type, front, f"<b>Answer</b><br>{answer}<br><br><b>Reason</b><br>{reason}")
+
+
+def _add_expansion_cards(cards):
+    entries = [
+        ("b2_tense_system", "present perfect vs past simple", "choose", "Choose: I _____ three reports this week.<br>A) wrote<br>B) have written", "B) I have written three reports this week.", "this week is unfinished, so present perfect is natural."),
+        ("b2_tense_system", "present perfect vs past simple", "pattern", "Mini pattern: unfinished time result", "I have + V3 + this week / today / recently.", "Use this when the time window connects to now."),
+        ("b2_tense_system", "present perfect continuous", "choose", "Choose: You look tired. What _____?<br>A) have you done<br>B) have you been doing", "B) What have you been doing?", "The visible present result points to recent ongoing activity."),
+        ("b2_tense_system", "present perfect continuous", "correction", "Correct: I have been knowing her for years.", "I have known her for years.", "Stative verbs like know usually use present perfect simple."),
+        ("b2_tense_system", "past perfect", "correction", "Correct: By the time I arrived, they already left.", "By the time I arrived, they had already left.", "Use past perfect for the earlier past event."),
+        ("b2_tense_system", "future forms", "choose", "Choose: Look at those clouds. It _____.<br>A) will rain<br>B) is going to rain", "B) It is going to rain.", "going to fits prediction based on present evidence."),
+        ("b2_tense_system", "future forms", "production", "Express completion before a deadline: finish the draft / by Monday.", "I will have finished the draft by Monday.", "Future perfect marks completion before a future point."),
+        ("b2_tense_system", "narrative tenses", "correction", "Correct: I walked home when I was seeing the accident.", "I was walking home when I saw the accident.", "Background action uses past continuous; interrupting event uses past simple."),
+        ("b2_tense_system", "narrative tenses", "pattern", "Mini pattern: background + interruption", "I was V-ing when + past simple.", "Use this to tell a clear past sequence."),
+        ("b2_sentence_control", "conditionals", "choose", "Choose: If I _____ more time, I would take the course.<br>A) have<br>B) had", "B) If I had more time, I would take the course.", "Second conditional uses past form for unreal present/future."),
+        ("b2_sentence_control", "conditionals", "production", "Make third conditional: she did not check the file; she missed the error.", "If she had checked the file, she would have noticed the error.", "Third conditional imagines a different past."),
+        ("b2_sentence_control", "mixed conditionals", "production", "Past mistake, present result: I did not sleep; I am tired now.", "If I had slept, I would not be tired now.", "Past condition plus present result."),
+        ("b2_sentence_control", "passive voice", "choose", "Choose: The new policy _____ next month.<br>A) will introduce<br>B) will be introduced", "B) The new policy will be introduced next month.", "The policy receives the action, so passive is needed."),
+        ("b2_sentence_control", "passive voice", "correction", "Correct: The decision made yesterday.", "The decision was made yesterday.", "Passive voice needs be + V3."),
+        ("b2_sentence_control", "relative clauses", "choose", "Choose: The company _____ I work for is expanding.<br>A) where<br>B) that", "B) The company that I work for is expanding.", "that refers to the company as object of the relative clause."),
+        ("b2_sentence_control", "relative clauses", "pattern", "Mini pattern: reduced relative", "The people invited to the meeting... / The team working on the issue...", "Use V3 for passive meaning and V-ing for active meaning."),
+        ("b2_sentence_control", "reported speech", "choose", "Choose: She said she _____ busy the next day.<br>A) is<br>B) was", "B) She said she was busy the next day.", "Past reporting usually triggers backshift."),
+        ("b2_sentence_control", "noun clauses", "choose", "Choose: I wonder _____.<br>A) where is he<br>B) where he is", "B) I wonder where he is.", "Embedded questions use statement word order."),
+        ("b2_verb_patterns", "gerund vs infinitive", "choose", "Choose: I remember _____ him at the conference.<br>A) meeting<br>B) to meet", "A) I remember meeting him at the conference.", "remember + -ing refers to a past memory."),
+        ("b2_verb_patterns", "gerund vs infinitive", "correction", "Correct: She avoided to answer the question.", "She avoided answering the question.", "avoid is followed by -ing."),
+        ("b2_verb_patterns", "used to patterns", "choose", "Choose: I _____ waking up early now.<br>A) used to<br>B) am used to", "B) I am used to waking up early now.", "be used to means be familiar with and takes -ing/noun."),
+        ("b2_verb_patterns", "modal verbs", "choose", "Choose: You _____ submit the form today; it is optional.<br>A) don't have to<br>B) mustn't", "A) You don't have to submit the form today.", "don't have to means not necessary; mustn't means prohibited."),
+        ("b2_verb_patterns", "modal perfect", "correction", "Correct: You should told me earlier.", "You should have told me earlier.", "Past criticism uses should have + V3."),
+        ("b2_verb_patterns", "causatives", "choose", "Choose: I _____ my passport renewed last week.<br>A) renewed<br>B) had", "B) I had my passport renewed last week.", "Causative have shows someone else did the service."),
+        ("c1_precision", "articles", "choose", "Choose: _____ rich should pay more tax.<br>A) Rich<br>B) The rich", "B) The rich should pay more tax.", "the + adjective can refer to a group of people."),
+        ("c1_precision", "articles", "correction", "Correct: The life is unpredictable.", "Life is unpredictable.", "Use zero article for general abstract nouns."),
+        ("c1_precision", "articles", "pattern", "Mini pattern: abstract general vs specific", "Life is hard. / The life he described was hard.", "Zero article for general meaning; the for specified meaning."),
+        ("c1_precision", "prepositions", "choose", "Choose: Her decision had an impact _____ the whole team.<br>A) on<br>B) to", "A) an impact on the whole team.", "impact on is the usual noun-preposition pattern."),
+        ("c1_precision", "prepositions", "correction", "Correct: This is consistent to our policy.", "This is consistent with our policy.", "consistent with is the standard adjective-preposition pattern."),
+        ("c1_precision", "countable and uncountable nouns", "choose", "Choose: We need _____.<br>A) more evidence<br>B) more evidences", "A) more evidence.", "evidence is usually uncountable."),
+        ("c1_precision", "countable and uncountable nouns", "correction", "Correct: There were less complaints this month.", "There were fewer complaints this month.", "Use fewer with countable plural nouns."),
+        ("c1_precision", "comparatives", "choose", "Choose: The more carefully we test, _____.<br>A) the fewer errors we miss<br>B) fewer errors we miss", "A) the fewer errors we miss.", "Correlative comparative uses the + comparative, the + comparative."),
+        ("c1_precision", "comparatives", "pattern", "Mini pattern: proportional comparison", "The more + clause, the more/less + clause.", "Use this for linked increases/decreases."),
+        ("c1_precision", "emphasis and inversion", "choose", "Choose: Only after the audit _____ the issue.<br>A) we understood<br>B) did we understand", "B) Only after the audit did we understand the issue.", "Fronted only after triggers inversion."),
+        ("c1_precision", "emphasis and inversion", "production", "Emphasize that stable input was the thing needed.", "What we needed was stable input.", "What-cleft focuses the important information after was."),
+        ("c1_style", "sentence connectors", "choose", "Choose: The design is simple; _____, it scales well.<br>A) moreover<br>B) however", "A) moreover", "Moreover adds supporting information; however contrasts."),
+        ("c1_style", "sentence connectors", "correction", "Correct: The data was incomplete, therefore we delayed the launch.", "The data was incomplete; therefore, we delayed the launch.", "therefore connects independent clauses and needs strong punctuation."),
+        ("c1_style", "participle clauses", "choose", "Choose: _____ the risks, we postponed the release.<br>A) Knowing<br>B) Known", "A) Knowing the risks, we postponed the release.", "The subject we actively knew the risks."),
+        ("c1_style", "participle clauses", "production", "Compress: Because they had finished the analysis, they published the report.", "Having finished the analysis, they published the report.", "having + V3 shows earlier completed action."),
+        ("c1_style", "reduced relative clauses", "choose", "Choose: The documents _____ yesterday are missing.<br>A) sending<br>B) sent", "B) The documents sent yesterday are missing.", "sent has passive meaning: documents were sent."),
+        ("c1_style", "reduced relative clauses", "correction", "Correct: The people invited the meeting arrived early.", "The people invited to the meeting arrived early.", "invited to the meeting is a reduced passive relative phrase."),
+        ("c1_style", "hedging", "choose", "Choose the more cautious claim:<br>A) This proves the method works.<br>B) This suggests the method may work.", "B) This suggests the method may work.", "C1 writing often needs careful strength of claim."),
+        ("c1_style", "hedging", "correction", "Correct: The results definitely show that the policy caused the change.", "The results suggest that the policy may have contributed to the change.", "Use hedging when evidence is not conclusive."),
+        ("c1_style", "formal register", "choose", "Choose the more formal version:<br>A) We looked into the issue.<br>B) We investigated the issue.", "B) We investigated the issue.", "Single precise verbs often sound more formal than phrasal verbs."),
+        ("c1_style", "formal register", "production", "Make formal: Please check that all documents are current.", "Please ensure that all documents are up to date.", "ensure that is a formal/professional pattern."),
+        ("c2_mastery", "advanced inversion", "choose", "Choose: Rarely _____ such a clear result.<br>A) we see<br>B) do we see", "B) Rarely do we see such a clear result.", "Fronted negative/restrictive adverbials trigger inversion."),
+        ("c2_mastery", "advanced inversion", "correction", "Correct: Not only the proposal failed, but it damaged trust.", "Not only did the proposal fail, but it also damaged trust.", "Not only at the front requires auxiliary inversion."),
+        ("c2_mastery", "subjunctive and mandative structures", "choose", "Choose: The policy requires that every file ____ encrypted.<br>A) is<br>B) be", "B) be", "Mandative structures use the base verb in formal English."),
+        ("c2_mastery", "subjunctive and mandative structures", "production", "Make formal: They said he should receive compensation.", "They recommended that he receive compensation.", "recommend that + subject + base verb."),
+        ("c2_mastery", "clefting and fronting", "choose", "Choose the cleft:<br>A) The delay worried me most.<br>B) What worried me most was the delay.", "B) What worried me most was the delay.", "A what-cleft controls focus and rhythm."),
+        ("c2_mastery", "clefting and fronting", "correction", "Correct: What I need are a clear answer.", "What I need is a clear answer.", "The complement a clear answer is singular."),
+        ("c2_mastery", "ellipsis and substitution", "choose", "Choose: If the legal team approves the plan, we should ____ too.<br>A) do so<br>B) do it so", "A) do so", "do so substitutes for the repeated action."),
+        ("c2_mastery", "ellipsis and substitution", "production", "Avoid repetition: She accepted the first proposal but rejected the second proposal.", "She accepted the first proposal but rejected the second one.", "one replaces a repeated singular countable noun."),
+        ("c2_mastery", "advanced concession", "choose", "Choose the more formal concession:<br>A) Although it was costly, it worked.<br>B) Costly though it was, it worked.", "B) Costly though it was, it worked.", "Adjective + though + clause is compact and formal."),
+        ("c2_mastery", "advanced concession", "correction", "Correct: No matter carefully we tested it, one bug remained.", "No matter how carefully we tested it, one bug remained.", "no matter needs a wh-word such as how."),
+        ("c2_mastery", "nominalisation", "choose", "Choose the more formal version:<br>A) because the supplier failed to comply<br>B) due to the supplier's failure to comply", "B) due to the supplier's failure to comply", "Nominalisation creates denser formal style."),
+        ("c2_mastery", "nominalisation", "correction", "Correct: The investigate of the incident took weeks.", "The investigation of the incident took weeks.", "Use the correct noun form investigation."),
+        ("c2_mastery", "parallelism", "choose", "Choose the parallel version:<br>A) efficient, scalable, and it is secure<br>B) efficient, scalable, and secure", "B) efficient, scalable, and secure", "Parallel items should share the same grammatical shape."),
+        ("c2_mastery", "parallelism", "production", "Make parallel: The tool helps teams plan, testing, and to deploy.", "The tool helps teams plan, test, and deploy.", "Coordinated verbs should share the same form."),
+        ("c1_precision", "articles", "production", "Use articles naturally: general education vs specific program.", "Education is expensive, but the education she received was excellent.", "Zero article for general abstract noun; the for a specified instance."),
+        ("c1_style", "formal register", "correction", "Correct: We need to find out why the system broke.", "We need to determine why the system failed.", "determine/failed is more formal and precise than find out/broke."),
+        ("c2_mastery", "ellipsis and substitution", "correction", "Correct: I hope so that they approve it.", "I hope that they approve it. / I hope so.", "so substitutes for a whole clause; do not combine hope so that."),
+        ("b2_sentence_control", "reported speech", "pattern", "Mini pattern: reporting changes", "said (that) + subject + backshifted verb + adjusted time word.", "Use this for reported speech in a past reporting frame."),
+        ("b2_verb_patterns", "modal perfect", "production", "Speculate about a missed email in the past.", "She might have missed the email.", "might have + V3 expresses past possibility."),
+    ]
+    for entry in entries:
+        _add_practice(cards, *entry)
 
 
 def _build_grammar_cards():
@@ -825,6 +904,7 @@ def _build_grammar_cards():
         "The supplier's failure to comply delayed the launch.",
         "Nominalisation compresses a clause into a noun phrase for formal style.",
     )
+    _add_expansion_cards(cards)
     return cards
 
 
@@ -836,7 +916,7 @@ def get_cards(level=None, card_type=None):
     if card_type is not None:
         ct = card_type.strip().lower()
         if ct == "basic":
-            wanted_types = {"rule", "contrast", "correction", "production"}
+            wanted_types = {"rule", "contrast", "correction", "production", "choose", "pattern"}
         else:
             wanted_types = {ct}
 

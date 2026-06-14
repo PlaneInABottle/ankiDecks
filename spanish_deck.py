@@ -15,6 +15,11 @@ STATUS_REVIEWED = "reviewed"
 STATUS_NEEDS_TRANSLATION = "needs_translation"
 
 
+_SPANISH_ARTICLES = {"el", "la", "los", "las", "un", "una", "unos", "unas"}
+_VOWELS = "aeiouáéíóúü"
+_ACCENT_MAP = str.maketrans("áéíóúü", "aeiouu")
+
+
 def normalize_word(value: str) -> str:
     """Normalize a vocab word for stable glossary matching."""
     return " ".join((value or "").strip().lower().split())
@@ -73,6 +78,123 @@ def _slugify(value: str) -> str:
     """Build a stable lowercase slug for tags."""
     slug = re.sub(r"[^a-z0-9]+", "_", (value or "").strip().lower())
     return slug.strip("_")
+
+
+def _plain_spanish_word(value: str) -> str:
+    text = re.sub(r"<[^>]+>", "", value or "")
+    text = text.strip().lower()
+    text = text.strip("¿?¡!.,;:()[]{}\"'")
+    return text
+
+
+def _split_spanish_syllables(word: str) -> List[str]:
+    """Return a readable approximate syllable split for pronunciation hints."""
+    if not word:
+        return []
+    chunks = re.findall(r"[^aeiouáéíóúü]*[aeiouáéíóúü]+(?:[mnrsld](?=$|[^aeiouáéíóúü]))?|[^aeiouáéíóúü]+$", word)
+    syllables = [chunk for chunk in chunks if chunk]
+    if not syllables:
+        return [word]
+    return syllables
+
+
+def _stress_index(word: str, syllables: Sequence[str]) -> int:
+    for index, syllable in enumerate(syllables):
+        if any(char in syllable for char in "áéíóú"):
+            return index
+    plain = word.translate(_ACCENT_MAP)
+    if plain.endswith(("n", "s", "a", "e", "i", "o", "u")):
+        return max(0, len(syllables) - 2)
+    return len(syllables) - 1
+
+
+def _turkish_upper(value: str) -> str:
+    return value.replace("i", "İ").upper()
+
+
+def _sound_out_syllable(syllable: str) -> str:
+    text = syllable.lower()
+    text = text.translate(_ACCENT_MAP)
+    protected = {
+        "§CH§": "ç",
+        "§LL§": "y",
+        "§RR§": "rr",
+        "§NY§": "ny",
+        "§GWE§": "gwe",
+        "§GWEE§": "gwi",
+        "§GE§": "ge",
+        "§GEE§": "gi",
+        "§KE§": "ke",
+        "§KEE§": "ki",
+        "§SE§": "se",
+        "§SEE§": "si",
+        "§HE§": "he",
+        "§HEE§": "hi",
+        "§H§": "h",
+    }
+    result = text
+    for source, token in [
+        ("ch", "§CH§"),
+        ("ll", "§LL§"),
+        ("rr", "§RR§"),
+        ("ñ", "§NY§"),
+        ("güe", "§GWE§"),
+        ("güi", "§GWEE§"),
+        ("gue", "§GE§"),
+        ("gui", "§GEE§"),
+        ("que", "§KE§"),
+        ("qui", "§KEE§"),
+        ("ce", "§SE§"),
+        ("ci", "§SEE§"),
+        ("ge", "§HE§"),
+        ("gi", "§HEE§"),
+        ("j", "§H§"),
+    ]:
+        result = result.replace(source, token)
+    for source, target in [
+        ("z", "s"),
+        ("v", "b"),
+        ("h", ""),
+        ("c", "k"),
+        ("á", "a"),
+        ("é", "e"),
+        ("í", "i"),
+        ("ó", "o"),
+        ("ú", "u"),
+        ("a", "a"),
+        ("e", "e"),
+        ("i", "i"),
+        ("o", "o"),
+        ("u", "u"),
+    ]:
+        result = result.replace(source, target)
+    for token, target in protected.items():
+        result = result.replace(token, target)
+    return result
+
+
+def _pronounce_word(word: str) -> str:
+    plain = _plain_spanish_word(word)
+    if not plain:
+        return ""
+    if plain in _SPANISH_ARTICLES:
+        return plain
+    syllables = _split_spanish_syllables(plain)
+    stress = _stress_index(plain, syllables)
+    sounded = []
+    for index, syllable in enumerate(syllables):
+        rendered = _sound_out_syllable(syllable)
+        if index == stress:
+            rendered = _turkish_upper(rendered)
+        sounded.append(rendered)
+    return "-".join(part for part in sounded if part)
+
+
+def spanish_pronunciation_hint(value: str) -> str:
+    """Build a Latin American Spanish pronunciation hint using Turkish-readable text."""
+    words = [_pronounce_word(word) for word in re.split(r"\s+", re.sub(r"<[^>]+>", "", value or "").strip())]
+    return " ".join(word for word in words if word)
+
 
 
 def _parse_header_directive(line: str, mapping: Dict[str, int]) -> None:
@@ -300,6 +422,7 @@ def build_spanish_rows(
             {
                 "english": english,
                 "spanish": spanish,
+                "pronunciation_hint": spanish_pronunciation_hint(spanish) if spanish else "",
                 "image": source_row.get("image", "").strip(),
                 "english_meaning": source_row.get("english_meaning", "").strip(),
                 "english_example": source_row.get("english_example", "").strip(),
@@ -318,6 +441,8 @@ def build_spanish_rows(
 def _back_field_for_basic(record: Dict[str, str]) -> str:
     if record["status"] == STATUS_REVIEWED:
         parts = [f"English: {record['english']}"]
+        if record.get("pronunciation_hint"):
+            parts.append(f"Pronunciation: {record['pronunciation_hint']}")
         if record["spanish_meaning"]:
             parts.append(f"Meaning: {record['spanish_meaning']}")
         if record["spanish_example"]:
@@ -367,6 +492,7 @@ def write_spanish_files(
             row["english_meaning"],
             row["english_example"],
             row["spanish"],
+            row["pronunciation_hint"],
             row["spanish_meaning"],
             row["spanish_example"],
             row["notes"],
@@ -378,7 +504,19 @@ def write_spanish_files(
         for row in merged
     ]
     basic_rows = [
-        ["\n".join(value for value in (row["image"], row["spanish"] or row["english"]) if value), _back_field_for_basic(row), row["tags"]]
+        [
+            "\n".join(
+                value
+                for value in (
+                    row["image"],
+                    row["spanish"] or row["english"],
+                    row["pronunciation_hint"],
+                )
+                if value
+            ),
+            _back_field_for_basic(row),
+            row["tags"],
+        ]
         for row in merged
     ]
 
@@ -392,6 +530,7 @@ def write_spanish_files(
             "English Meaning",
             "English Example",
             "Spanish",
+            "Pronunciation Hint",
             "Spanish Meaning",
             "Spanish Example",
             "Notes",
