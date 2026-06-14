@@ -1,591 +1,68 @@
 #separator:tab
 #html:true
-Front	Back	Tags
-I _____ a student.	am	english_grammar level_1 be_verbs rule
-I _____ a teacher.	am	english_grammar level_1 be_verbs rule
-I _____ in the office.	am	english_grammar level_1 be_verbs rule
-I _____ ready.	am	english_grammar level_1 be_verbs rule
-I _____ on time.	am	english_grammar level_1 be_verbs rule
-I _____ at home.	am	english_grammar level_1 be_verbs rule
-I _____ very busy.	am	english_grammar level_1 be_verbs rule
-You _____ a student.	are	english_grammar level_1 be_verbs rule
-You _____ a teacher.	are	english_grammar level_1 be_verbs rule
-You _____ in the office.	are	english_grammar level_1 be_verbs rule
-You _____ ready.	are	english_grammar level_1 be_verbs rule
-You _____ on time.	are	english_grammar level_1 be_verbs rule
-You _____ at home.	are	english_grammar level_1 be_verbs rule
-You _____ very busy.	are	english_grammar level_1 be_verbs rule
-He _____ a student.	is	english_grammar level_1 be_verbs rule
-He _____ a teacher.	is	english_grammar level_1 be_verbs rule
-He _____ in the office.	is	english_grammar level_1 be_verbs rule
-He _____ ready.	is	english_grammar level_1 be_verbs rule
-He _____ on time.	is	english_grammar level_1 be_verbs rule
-He _____ at home.	is	english_grammar level_1 be_verbs rule
-He _____ very busy.	is	english_grammar level_1 be_verbs rule
-She _____ a student.	is	english_grammar level_1 be_verbs rule
-She _____ a teacher.	is	english_grammar level_1 be_verbs rule
-She _____ in the office.	is	english_grammar level_1 be_verbs rule
-She _____ ready.	is	english_grammar level_1 be_verbs rule
-She _____ on time.	is	english_grammar level_1 be_verbs rule
-She _____ at home.	is	english_grammar level_1 be_verbs rule
-She _____ very busy.	is	english_grammar level_1 be_verbs rule
-It _____ a student.	is	english_grammar level_1 be_verbs rule
-It _____ a teacher.	is	english_grammar level_1 be_verbs rule
-It _____ in the office.	is	english_grammar level_1 be_verbs rule
-It _____ ready.	is	english_grammar level_1 be_verbs rule
-It _____ on time.	is	english_grammar level_1 be_verbs rule
-It _____ at home.	is	english_grammar level_1 be_verbs rule
-It _____ very busy.	is	english_grammar level_1 be_verbs rule
-We _____ a student.	are	english_grammar level_1 be_verbs rule
-We _____ a teacher.	are	english_grammar level_1 be_verbs rule
-We _____ in the office.	are	english_grammar level_1 be_verbs rule
-We _____ ready.	are	english_grammar level_1 be_verbs rule
-We _____ on time.	are	english_grammar level_1 be_verbs rule
-We _____ at home.	are	english_grammar level_1 be_verbs rule
-We _____ very busy.	are	english_grammar level_1 be_verbs rule
-They _____ a student.	are	english_grammar level_1 be_verbs rule
-They _____ a teacher.	are	english_grammar level_1 be_verbs rule
-They _____ in the office.	are	english_grammar level_1 be_verbs rule
-They _____ ready.	are	english_grammar level_1 be_verbs rule
-They _____ on time.	are	english_grammar level_1 be_verbs rule
-They _____ at home.	are	english_grammar level_1 be_verbs rule
-They _____ very busy.	are	english_grammar level_1 be_verbs rule
-I _____ from home every day.	work	english_grammar level_1 simple_present rule
-I _____ at 9 AM every day.	start	english_grammar level_1 simple_present rule
-I _____ documentaries every day.	watch	english_grammar level_1 simple_present rule
-I _____ support every day.	need	english_grammar level_1 simple_present rule
-I _____ the museum every day.	visit	english_grammar level_1 simple_present rule
-I _____ slides every day.	prepare	english_grammar level_1 simple_present rule
-I _____ on time every day.	finish	english_grammar level_1 simple_present rule
-You _____ from home every day.	work	english_grammar level_1 simple_present rule
-You _____ at 9 AM every day.	start	english_grammar level_1 simple_present rule
-You _____ documentaries every day.	watch	english_grammar level_1 simple_present rule
-You _____ support every day.	need	english_grammar level_1 simple_present rule
-You _____ the museum every day.	visit	english_grammar level_1 simple_present rule
-You _____ slides every day.	prepare	english_grammar level_1 simple_present rule
-You _____ on time every day.	finish	english_grammar level_1 simple_present rule
-He _____ from home every day.	works	english_grammar level_1 simple_present rule
-He _____ at 9 AM every day.	starts	english_grammar level_1 simple_present rule
-He _____ documentaries every day.	watches	english_grammar level_1 simple_present rule
-He _____ support every day.	needs	english_grammar level_1 simple_present rule
-He _____ the museum every day.	visits	english_grammar level_1 simple_present rule
-He _____ slides every day.	prepares	english_grammar level_1 simple_present rule
-He _____ on time every day.	finishes	english_grammar level_1 simple_present rule
-She _____ from home every day.	works	english_grammar level_1 simple_present rule
-She _____ at 9 AM every day.	starts	english_grammar level_1 simple_present rule
-She _____ documentaries every day.	watches	english_grammar level_1 simple_present rule
-She _____ support every day.	needs	english_grammar level_1 simple_present rule
-She _____ the museum every day.	visits	english_grammar level_1 simple_present rule
-She _____ slides every day.	prepares	english_grammar level_1 simple_present rule
-She _____ on time every day.	finishes	english_grammar level_1 simple_present rule
-It _____ from home every day.	works	english_grammar level_1 simple_present rule
-It _____ at 9 AM every day.	starts	english_grammar level_1 simple_present rule
-It _____ documentaries every day.	watches	english_grammar level_1 simple_present rule
-It _____ support every day.	needs	english_grammar level_1 simple_present rule
-It _____ the museum every day.	visits	english_grammar level_1 simple_present rule
-It _____ slides every day.	prepares	english_grammar level_1 simple_present rule
-It _____ on time every day.	finishes	english_grammar level_1 simple_present rule
-We _____ from home every day.	work	english_grammar level_1 simple_present rule
-We _____ at 9 AM every day.	start	english_grammar level_1 simple_present rule
-We _____ documentaries every day.	watch	english_grammar level_1 simple_present rule
-We _____ support every day.	need	english_grammar level_1 simple_present rule
-We _____ the museum every day.	visit	english_grammar level_1 simple_present rule
-We _____ slides every day.	prepare	english_grammar level_1 simple_present rule
-We _____ on time every day.	finish	english_grammar level_1 simple_present rule
-They _____ from home every day.	work	english_grammar level_1 simple_present rule
-They _____ at 9 AM every day.	start	english_grammar level_1 simple_present rule
-They _____ documentaries every day.	watch	english_grammar level_1 simple_present rule
-They _____ support every day.	need	english_grammar level_1 simple_present rule
-They _____ the museum every day.	visit	english_grammar level_1 simple_present rule
-They _____ slides every day.	prepare	english_grammar level_1 simple_present rule
-They _____ on time every day.	finish	english_grammar level_1 simple_present rule
-I _____ to school yesterday.	went	english_grammar level_1 simple_past rule
-I _____ the train yesterday.	took	english_grammar level_1 simple_past rule
-I _____ the presentation yesterday.	saw	english_grammar level_1 simple_past rule
-I _____ breakfast yesterday.	ate	english_grammar level_1 simple_past rule
-I _____ a notebook yesterday.	bought	english_grammar level_1 simple_past rule
-I _____ a short note yesterday.	wrote	english_grammar level_1 simple_past rule
-I _____ a simple solution yesterday.	found	english_grammar level_1 simple_past rule
-You _____ to school yesterday.	went	english_grammar level_1 simple_past rule
-You _____ the train yesterday.	took	english_grammar level_1 simple_past rule
-You _____ the presentation yesterday.	saw	english_grammar level_1 simple_past rule
-You _____ breakfast yesterday.	ate	english_grammar level_1 simple_past rule
-You _____ a notebook yesterday.	bought	english_grammar level_1 simple_past rule
-You _____ a short note yesterday.	wrote	english_grammar level_1 simple_past rule
-You _____ a simple solution yesterday.	found	english_grammar level_1 simple_past rule
-He _____ to school yesterday.	went	english_grammar level_1 simple_past rule
-He _____ the train yesterday.	took	english_grammar level_1 simple_past rule
-He _____ the presentation yesterday.	saw	english_grammar level_1 simple_past rule
-He _____ breakfast yesterday.	ate	english_grammar level_1 simple_past rule
-He _____ a notebook yesterday.	bought	english_grammar level_1 simple_past rule
-He _____ a short note yesterday.	wrote	english_grammar level_1 simple_past rule
-He _____ a simple solution yesterday.	found	english_grammar level_1 simple_past rule
-She _____ to school yesterday.	went	english_grammar level_1 simple_past rule
-She _____ the train yesterday.	took	english_grammar level_1 simple_past rule
-She _____ the presentation yesterday.	saw	english_grammar level_1 simple_past rule
-She _____ breakfast yesterday.	ate	english_grammar level_1 simple_past rule
-She _____ a notebook yesterday.	bought	english_grammar level_1 simple_past rule
-She _____ a short note yesterday.	wrote	english_grammar level_1 simple_past rule
-She _____ a simple solution yesterday.	found	english_grammar level_1 simple_past rule
-It _____ to school yesterday.	went	english_grammar level_1 simple_past rule
-It _____ the train yesterday.	took	english_grammar level_1 simple_past rule
-It _____ the presentation yesterday.	saw	english_grammar level_1 simple_past rule
-It _____ breakfast yesterday.	ate	english_grammar level_1 simple_past rule
-It _____ a notebook yesterday.	bought	english_grammar level_1 simple_past rule
-It _____ a short note yesterday.	wrote	english_grammar level_1 simple_past rule
-It _____ a simple solution yesterday.	found	english_grammar level_1 simple_past rule
-We _____ to school yesterday.	went	english_grammar level_1 simple_past rule
-We _____ the train yesterday.	took	english_grammar level_1 simple_past rule
-We _____ the presentation yesterday.	saw	english_grammar level_1 simple_past rule
-We _____ breakfast yesterday.	ate	english_grammar level_1 simple_past rule
-We _____ a notebook yesterday.	bought	english_grammar level_1 simple_past rule
-We _____ a short note yesterday.	wrote	english_grammar level_1 simple_past rule
-We _____ a simple solution yesterday.	found	english_grammar level_1 simple_past rule
-They _____ to school yesterday.	went	english_grammar level_1 simple_past rule
-They _____ the train yesterday.	took	english_grammar level_1 simple_past rule
-They _____ the presentation yesterday.	saw	english_grammar level_1 simple_past rule
-They _____ breakfast yesterday.	ate	english_grammar level_1 simple_past rule
-They _____ a notebook yesterday.	bought	english_grammar level_1 simple_past rule
-They _____ a short note yesterday.	wrote	english_grammar level_1 simple_past rule
-They _____ a simple solution yesterday.	found	english_grammar level_1 simple_past rule
-Correct question order: She likes coffee	Does she like coffee?	english_grammar level_1 basic_questions rule
-Correct question order: You speak clearly	Do you speak clearly?	english_grammar level_1 basic_questions rule
-Correct question order: He visits the office	Does he visit the office?	english_grammar level_1 basic_questions rule
-Correct question order: They are ready	Are they ready?	english_grammar level_1 basic_questions rule
-Correct question order: It works today	Does it work today?	english_grammar level_1 basic_questions rule
-Correct question order: We need time	Do we need time?	english_grammar level_1 basic_questions rule
-Correct question order: Your friends like music	Do your friends like music?	english_grammar level_1 basic_questions rule
-Correct question order: My brother plays guitar	Does my brother play guitar?	english_grammar level_1 basic_questions rule
-Choose article: ___ apple	a	english_grammar level_1 basic_articles rule
-Choose article: ___ umbrella	an	english_grammar level_1 basic_articles rule
-Choose article: ___ hour	an	english_grammar level_1 basic_articles rule
-Choose article: ___ idea	an	english_grammar level_1 basic_articles rule
-Choose article: ___ euro	a	english_grammar level_1 basic_articles rule
-Choose article: ___ honest person	an	english_grammar level_1 basic_articles rule
-Choose article: ___ university	a	english_grammar level_1 basic_articles rule
-Choose article: ___ orange	an	english_grammar level_1 basic_articles rule
-Choose article: ___ cat	a	english_grammar level_1 basic_articles rule
-Choose article: ___ e-mail	an	english_grammar level_1 basic_articles rule
-Choose article: ___ engineer	an	english_grammar level_1 basic_articles rule
-Choose article: ___ house	a	english_grammar level_1 basic_articles rule
-Choose article: ___ elephant	an	english_grammar level_1 basic_articles rule
-Choose article: ___ one-way	a	english_grammar level_1 basic_articles rule
-Choose article: ___ honour	an	english_grammar level_1 basic_articles rule
-Choose article: ___ university	a	english_grammar level_1 basic_articles rule
-Choose preposition: The book is ___ the table.	on	english_grammar level_1 basic_prepositions rule
-Choose preposition: The cat is ___ the box.	in	english_grammar level_1 basic_prepositions rule
-Choose preposition: The notebook is ___ the desk.	under	english_grammar level_1 basic_prepositions rule
-Choose preposition: The chair is ___ the sofa and the table.	between	english_grammar level_1 basic_prepositions rule
-Choose preposition: I walked ___ my friend.	with	english_grammar level_1 basic_prepositions rule
-Choose preposition: We met ___ noon.	at	english_grammar level_1 basic_prepositions rule
-Choose preposition: The meeting starts ___ Monday.	on	english_grammar level_1 basic_prepositions rule
-Choose preposition: She lives ___ London.	in	english_grammar level_1 basic_prepositions rule
-Choose preposition: This guide is for students.	for	english_grammar level_1 basic_prepositions rule
-Choose preposition: We go ___ the office at 8.	to	english_grammar level_1 basic_prepositions rule
-I handed in ____ document.	my	english_grammar level_1 pronouns rule
-You handed in ____ document.	your	english_grammar level_1 pronouns rule
-He handed in ____ document.	his	english_grammar level_1 pronouns rule
-She handed in ____ document.	her	english_grammar level_1 pronouns rule
-We handed in ____ document.	our	english_grammar level_1 pronouns rule
-They handed in ____ document.	their	english_grammar level_1 pronouns rule
-It handed in ____ document.	its	english_grammar level_1 pronouns rule
-Correct the sentence: She don't like tea.	She doesn't like tea.	english_grammar level_1 basic_forms correction
-Correct the sentence: He don't live here.	He doesn't live here.	english_grammar level_1 basic_forms correction
-Correct the sentence: They is going now.	They are going now.	english_grammar level_1 basic_forms correction
-Correct the sentence: I doesn't have time.	I don't have time.	english_grammar level_1 basic_forms correction
-Correct the sentence: She are my friend.	She is my friend.	english_grammar level_1 basic_forms correction
-Correct the sentence: There is many dogs.	There are many dogs.	english_grammar level_1 basic_forms correction
-Correct the sentence: An apple is red.	An apple is red.	english_grammar level_1 basic_forms correction
-Correct the sentence: He don't know.	He doesn't know.	english_grammar level_1 basic_forms correction
-Correct the sentence: She is very usefuls.	She is very useful.	english_grammar level_1 basic_forms correction
-Correct the sentence: They has finished.	They have finished.	english_grammar level_1 basic_forms correction
-Correct the sentence: I am happy because she are here.	I am happy because she is here.	english_grammar level_1 basic_forms correction
-Correct the sentence: There are too much water.	There is too much water.	english_grammar level_1 basic_forms correction
-Correct the sentence: He need to wait.	He needs to wait.	english_grammar level_1 basic_forms correction
-Correct the sentence: She can to drive now.	She can drive now.	english_grammar level_1 basic_forms correction
-Correct the sentence: You was late.	You were late.	english_grammar level_1 basic_forms correction
-Correct the sentence: It rains yesterday.	It rained yesterday.	english_grammar level_1 basic_forms correction
-Correct the sentence: He don't likes games.	He doesn't like games.	english_grammar level_1 basic_forms correction
-Correct the sentence: They was coming.	They were coming.	english_grammar level_1 basic_forms correction
-Formula: present simple (affirmative)	subject + V1; he/she/it uses V-s	english_grammar level_2 simple_present rule
-Formula: present continuous	am / is / are + V-ing	english_grammar level_2 present_continuous rule
-Formula: past simple + past continuous in questions/negatives	affirmative: subject + V2; question/negative: Did + subject + V1	english_grammar level_2 simple_past rule
-Formula: past continuous	was / were + V-ing	english_grammar level_2 past_continuous rule
-Formula: present perfect	subject + have/has + V3	english_grammar level_2 present_perfect rule
-Formula: past perfect	subject + had + V3	english_grammar level_2 past_perfect rule
-Formula: future simple	subject + will + V1	english_grammar level_2 future_tense rule
-Formula: going to future	am / is / are + going to + V1	english_grammar level_2 future_forms rule
-Formula: future perfect	subject + will have + V3	english_grammar level_2 future_perfect rule
-Formula: passive	be + V3	english_grammar level_2 passive_voice rule
-Formula: modal (base form)	modal + V1	english_grammar level_2 common_modals rule
-Formula: modal perfect	modal + have + V3	english_grammar level_2 common_modals rule
-Formula: zero conditional	if + present simple, present simple	english_grammar level_2 conditionals rule
-Formula: first conditional	if + present simple, will + V1	english_grammar level_2 conditionals rule
-Formula: second conditional	if + V2, would + V1	english_grammar level_2 conditionals rule
-Formula: third conditional	if + had + V3, would have + V3	english_grammar level_2 conditionals rule
-I _____ reading a book right now.	am reading a book right now.	english_grammar level_2 present_continuous rule
-You _____ waiting for confirmation right now.	are waiting for confirmation right now.	english_grammar level_2 present_continuous rule
-She _____ working on the project right now.	is working on the project right now.	english_grammar level_2 present_continuous rule
-He _____ studying for the interview at the moment.	is studying for the interview at the moment.	english_grammar level_2 present_continuous rule
-We _____ preparing the release notes currently.	are preparing the release notes currently.	english_grammar level_2 present_continuous rule
-They _____ using the new tool now.	are using the new tool now.	english_grammar level_2 present_continuous rule
-I _____ already finished the proposal.	have already finished the proposal.	english_grammar level_2 present_perfect rule
-She _____ recently reviewed the pull request.	has recently reviewed the pull request.	english_grammar level_2 present_perfect rule
-We _____ just started the deployment.	have just started the deployment.	english_grammar level_2 present_perfect rule
-They _____ never missed a weekly status update.	have never missed a weekly status update.	english_grammar level_2 present_perfect rule
-He _____ so far completed all pre-release checks.	has so far completed all pre-release checks.	english_grammar level_2 present_perfect rule
-I _____ visited a production outage review before.	have visited a production outage review before.	english_grammar level_2 present_perfect rule
-Has _____ ever reported a critical issue?	has ever reported	english_grammar level_2 present_perfect rule
-Correct: The team has ate the final tests.	The team has eaten the final tests.	english_grammar level_2 present_perfect correction
-Correct: By the time the report arrived, we had review it.	By the time the report arrived, we had reviewed it.	english_grammar level_2 past_perfect correction
-Correct: The proposal was approved by the board.	The proposal was approved by the board.	english_grammar level_2 passive_voice correction
-Correct: She should called the supplier immediately.	She should have called the supplier immediately.	english_grammar level_2 common_modals correction
-I will start the session tomorrow.	I will start the session tomorrow.	english_grammar level_2 future_forms rule
-I will finish the draft tomorrow.	I will finish the draft tomorrow.	english_grammar level_2 future_forms rule
-I will arrive at 9 PM tomorrow.	I will arrive at 9 PM tomorrow.	english_grammar level_2 future_forms rule
-I will join the project tomorrow.	I will join the project tomorrow.	english_grammar level_2 future_forms rule
-I will review your notes tomorrow.	I will review your notes tomorrow.	english_grammar level_2 future_forms rule
-I will travel to the office tomorrow.	I will travel to the office tomorrow.	english_grammar level_2 future_forms rule
-You will start the session tomorrow.	You will start the session tomorrow.	english_grammar level_2 future_forms rule
-You will finish the draft tomorrow.	You will finish the draft tomorrow.	english_grammar level_2 future_forms rule
-You will arrive at 9 PM tomorrow.	You will arrive at 9 PM tomorrow.	english_grammar level_2 future_forms rule
-You will join the project tomorrow.	You will join the project tomorrow.	english_grammar level_2 future_forms rule
-You will review your notes tomorrow.	You will review your notes tomorrow.	english_grammar level_2 future_forms rule
-You will travel to the office tomorrow.	You will travel to the office tomorrow.	english_grammar level_2 future_forms rule
-He will start the session tomorrow.	He will start the session tomorrow.	english_grammar level_2 future_forms rule
-He will finish the draft tomorrow.	He will finish the draft tomorrow.	english_grammar level_2 future_forms rule
-He will arrive at 9 PM tomorrow.	He will arrive at 9 PM tomorrow.	english_grammar level_2 future_forms rule
-He will join the project tomorrow.	He will join the project tomorrow.	english_grammar level_2 future_forms rule
-He will review your notes tomorrow.	He will review your notes tomorrow.	english_grammar level_2 future_forms rule
-He will travel to the office tomorrow.	He will travel to the office tomorrow.	english_grammar level_2 future_forms rule
-She will start the session tomorrow.	She will start the session tomorrow.	english_grammar level_2 future_forms rule
-She will finish the draft tomorrow.	She will finish the draft tomorrow.	english_grammar level_2 future_forms rule
-She will arrive at 9 PM tomorrow.	She will arrive at 9 PM tomorrow.	english_grammar level_2 future_forms rule
-She will join the project tomorrow.	She will join the project tomorrow.	english_grammar level_2 future_forms rule
-She will review your notes tomorrow.	She will review your notes tomorrow.	english_grammar level_2 future_forms rule
-She will travel to the office tomorrow.	She will travel to the office tomorrow.	english_grammar level_2 future_forms rule
-We will start the session tomorrow.	We will start the session tomorrow.	english_grammar level_2 future_forms rule
-We will finish the draft tomorrow.	We will finish the draft tomorrow.	english_grammar level_2 future_forms rule
-We will arrive at 9 PM tomorrow.	We will arrive at 9 PM tomorrow.	english_grammar level_2 future_forms rule
-We will join the project tomorrow.	We will join the project tomorrow.	english_grammar level_2 future_forms rule
-We will review your notes tomorrow.	We will review your notes tomorrow.	english_grammar level_2 future_forms rule
-We will travel to the office tomorrow.	We will travel to the office tomorrow.	english_grammar level_2 future_forms rule
-They will start the session tomorrow.	They will start the session tomorrow.	english_grammar level_2 future_forms rule
-They will finish the draft tomorrow.	They will finish the draft tomorrow.	english_grammar level_2 future_forms rule
-They will arrive at 9 PM tomorrow.	They will arrive at 9 PM tomorrow.	english_grammar level_2 future_forms rule
-They will join the project tomorrow.	They will join the project tomorrow.	english_grammar level_2 future_forms rule
-They will review your notes tomorrow.	They will review your notes tomorrow.	english_grammar level_2 future_forms rule
-They will travel to the office tomorrow.	They will travel to the office tomorrow.	english_grammar level_2 future_forms rule
-It will start the session tomorrow.	It will start the session tomorrow.	english_grammar level_2 future_forms rule
-It will finish the draft tomorrow.	It will finish the draft tomorrow.	english_grammar level_2 future_forms rule
-It will arrive at 9 PM tomorrow.	It will arrive at 9 PM tomorrow.	english_grammar level_2 future_forms rule
-It will join the project tomorrow.	It will join the project tomorrow.	english_grammar level_2 future_forms rule
-It will review your notes tomorrow.	It will review your notes tomorrow.	english_grammar level_2 future_forms rule
-It will travel to the office tomorrow.	It will travel to the office tomorrow.	english_grammar level_2 future_forms rule
-This book is ___ than that one.	easier	english_grammar level_2 comparatives rule
-Correct: This route is more easiest than that one.	This route is easier than that one, close to the easiest option.	english_grammar level_2 comparatives correction
-This book is ___ than that one.	harder	english_grammar level_2 comparatives rule
-Correct: This route is more easiest than that one.	This route is harder than that one, close to the hardest option.	english_grammar level_2 comparatives correction
-This book is ___ than that one.	more useful	english_grammar level_2 comparatives rule
-Correct: This route is more easiest than that one.	This route is more useful than that one, close to the most useful option.	english_grammar level_2 comparatives correction
-This book is ___ than that one.	more careful	english_grammar level_2 comparatives rule
-Correct: This route is more easiest than that one.	This route is more careful than that one, close to the most careful option.	english_grammar level_2 comparatives correction
-This book is ___ than that one.	taller	english_grammar level_2 comparatives rule
-Correct: This route is more easiest than that one.	This route is taller than that one, close to the tallest option.	english_grammar level_2 comparatives correction
-This book is ___ than that one.	better	english_grammar level_2 comparatives rule
-Correct: This route is more easiest than that one.	This route is better than that one, close to the best option.	english_grammar level_2 comparatives correction
-This book is ___ than that one.	worse	english_grammar level_2 comparatives rule
-Correct: This route is more easiest than that one.	This route is worse than that one, close to the worst option.	english_grammar level_2 comparatives correction
-This book is ___ than that one.	clearer	english_grammar level_2 comparatives rule
-Correct: This route is more easiest than that one.	This route is clearer than that one, close to the clearest option.	english_grammar level_2 comparatives correction
-There is ___ useful information in the report.	much	english_grammar level_2 countable_and_uncountable_nouns rule
-The dashboard listed ___ issues from last week.	many	english_grammar level_2 countable_and_uncountable_nouns rule
-Can you share ___ practical advice with the analyst?	some	english_grammar level_2 countable_and_uncountable_nouns rule
-She added ___ examples to the minutes.	a few	english_grammar level_2 countable_and_uncountable_nouns rule
-We have ___ time left before the close.	a little	english_grammar level_2 countable_and_uncountable_nouns rule
-The release has ___ errors than the beta version.	fewer	english_grammar level_2 countable_and_uncountable_nouns rule
-The model used ___ power than the baseline.	less	english_grammar level_2 countable_and_uncountable_nouns rule
-You _____ complete the form today.	must	english_grammar level_2 common_modals rule
-You _____ access the archived files.	can	english_grammar level_2 common_modals rule
-You _____ review the test results.	should	english_grammar level_2 common_modals rule
-You _____ need an additional patch.	might	english_grammar level_2 common_modals rule
-You _____ ask security for approval.	need to	english_grammar level_2 common_modals rule
-Correct the sentence: She can to drive now.	She can drive now.	english_grammar level_2 common_modals correction
-Correct the sentence: You should to call her.	You should call her.	english_grammar level_2 common_modals correction
-Correct the sentence: He must to finish it.	He must finish it.	english_grammar level_2 common_modals correction
-Correct the sentence: They can goes now.	They can go now.	english_grammar level_2 common_modals correction
-Correct the sentence: She might of told me.	She might have told me.	english_grammar level_2 common_modals correction
-Complete: The train arrives ___ the station.	at	english_grammar level_2 common_preposition_patterns rule
-Complete: The team arrives ___ time for meetings.	on	english_grammar level_2 common_preposition_patterns rule
-Complete: She is interested ___ robotics.	in	english_grammar level_2 common_preposition_patterns rule
-Complete: The result depends ___ the data quality.	on	english_grammar level_2 common_preposition_patterns rule
-Complete: He is responsible ___ the final release.	for	english_grammar level_2 common_preposition_patterns rule
-Complete: He is good ___ coding.	at	english_grammar level_2 common_preposition_patterns rule
-Complete: They are afraid ___ public speaking.	of	english_grammar level_2 common_preposition_patterns rule
-Complete: This design is similar ___ the prototype.	to	english_grammar level_2 common_preposition_patterns rule
-If you study, we will pass the exam.	Present condition + future result	english_grammar level_3 conditionals rule
-If it rains, the event will be postponed.	Present condition + future result	english_grammar level_3 conditionals rule
-If she arrives, she will join the meeting.	Present condition + future result	english_grammar level_3 conditionals rule
-If we start, we will receive support.	Present condition + future result	english_grammar level_3 conditionals rule
-If he calls, he will be credited.	Present condition + future result	english_grammar level_3 conditionals rule
-If they continue, they will improve.	Present condition + future result	english_grammar level_3 conditionals rule
-If I were in charge, I would take ownership.	Second conditional pattern	english_grammar level_3 conditionals rule
-If she spoke clearly, we would trust her answer.	Second conditional pattern	english_grammar level_3 conditionals rule
-If they trained, they would solve it.	Second conditional pattern	english_grammar level_3 conditionals rule
-If we had more time, we would finish the draft.	Second conditional pattern	english_grammar level_3 conditionals rule
-If you had studied, we would have passed.	Third conditional pattern	english_grammar level_3 conditionals rule
-If they had checked, the team would have fixed the issue.	Third conditional pattern	english_grammar level_3 conditionals rule
-If she had started, she would have been ready.	Third conditional pattern	english_grammar level_3 conditionals rule
-The report _____ on Monday.	was approved	english_grammar level_3 passive_voice rule
-The report _____ yesterday.	was approved	english_grammar level_3 passive_voice rule
-The files _____ on Monday.	were approved	english_grammar level_3 passive_voice rule
-The files _____ yesterday.	were approved	english_grammar level_3 passive_voice rule
-The team _____ on Monday.	was prepared	english_grammar level_3 passive_voice rule
-The team _____ yesterday.	was prepared	english_grammar level_3 passive_voice rule
-The project _____ on Monday.	was launched	english_grammar level_3 passive_voice rule
-The project _____ yesterday.	was launched	english_grammar level_3 passive_voice rule
-The letters _____ on Monday.	were sent	english_grammar level_3 passive_voice rule
-The letters _____ yesterday.	were sent	english_grammar level_3 passive_voice rule
-The door _____ on Monday.	was closed	english_grammar level_3 passive_voice rule
-The door _____ yesterday.	was closed	english_grammar level_3 passive_voice rule
-The meetings _____ on Monday.	were postponed	english_grammar level_3 passive_voice rule
-The meetings _____ yesterday.	were postponed	english_grammar level_3 passive_voice rule
-The engineer _____ fixed the bug explained the cause.	who	english_grammar level_3 relative_clauses rule
-The file _____ you sent yesterday is corrupted.	that	english_grammar level_3 relative_clauses rule
-The office _____ we met is closed today.	where	english_grammar level_3 relative_clauses rule
-Monday was the day _____ the audit started.	when	english_grammar level_3 relative_clauses rule
-That is the reason _____ the server failed.	why	english_grammar level_3 relative_clauses rule
-The tool _____ we use for testing is reliable.	which	english_grammar level_3 relative_clauses rule
-The candidate _____ resume impressed us accepted the offer.	whose	english_grammar level_3 relative_clauses rule
-The client _____ I called this morning answered quickly.	whom	english_grammar level_3 relative_clauses rule
-I enjoy _____ quiet work in the morning.	doing	english_grammar level_3 gerund_vs_infinitive rule
-She avoids _____ late at night.	eating	english_grammar level_3 gerund_vs_infinitive rule
-They decided _____ the meeting early.	to leave	english_grammar level_3 gerund_vs_infinitive rule
-He managed _____ the report before noon.	to finish	english_grammar level_3 gerund_vs_infinitive rule
-We promised _____ the client tomorrow.	to call	english_grammar level_3 gerund_vs_infinitive rule
-She refused _____ the document without review.	to sign	english_grammar level_3 gerund_vs_infinitive rule
-He stopped _____ sugar in his coffee.	using	english_grammar level_3 gerund_vs_infinitive rule
-I remember _____ that email yesterday.	sending	english_grammar level_3 gerund_vs_infinitive rule
-They suggested _____ the plan again.	reviewing	english_grammar level_3 gerund_vs_infinitive rule
-We hope _____ the issue today.	to solve	english_grammar level_3 gerund_vs_infinitive rule
-She offered _____ with the migration.	to help	english_grammar level_3 gerund_vs_infinitive rule
-He admitted _____ the mistake.	making	english_grammar level_3 gerund_vs_infinitive rule
-I said that he would arrive late.	I was would arrive late.	english_grammar level_3 reported_speech rule
-Correct: She said that she is coming tomorrow.	She said that she was coming the next day.	english_grammar level_3 reported_speech correction
-She said that he would arrive late.	she was would arrive late.	english_grammar level_3 reported_speech rule
-Correct: She said that she is coming tomorrow.	She said that she was coming the next day.	english_grammar level_3 reported_speech correction
-They said that he would arrive late.	they were would arrive late.	english_grammar level_3 reported_speech rule
-Correct: She said that she is coming tomorrow.	She said that she was coming the next day.	english_grammar level_3 reported_speech correction
-He said that he would arrive late.	he was would arrive late.	english_grammar level_3 reported_speech rule
-Correct: She said that she is coming tomorrow.	She said that she was coming the next day.	english_grammar level_3 reported_speech correction
-The manager said that he would arrive late.	the manager said would arrive late.	english_grammar level_3 reported_speech rule
-Correct: She said that she is coming tomorrow.	She said that she was coming the next day.	english_grammar level_3 reported_speech correction
-Please carry _____ with the work.	on	english_grammar level_3 phrasal_verb_grammar rule
-She turned _____ the offer politely.	down	english_grammar level_3 phrasal_verb_grammar rule
-We are looking _____ the missing file.	for	english_grammar level_3 phrasal_verb_grammar rule
-They set _____ the new account yesterday.	up	english_grammar level_3 phrasal_verb_grammar rule
-I ran _____ an old colleague downtown.	into	english_grammar level_3 phrasal_verb_grammar rule
-He gave _____ smoking last year.	up	english_grammar level_3 phrasal_verb_grammar rule
-The policy brought _____ several changes.	about	english_grammar level_3 phrasal_verb_grammar rule
-We worked _____ the problem together.	through	english_grammar level_3 phrasal_verb_grammar rule
-Can you fill _____ this form?	out	english_grammar level_3 phrasal_verb_grammar rule
-The meeting was called _____ because of snow.	off	english_grammar level_3 phrasal_verb_grammar rule
-She ____ the plan.	reviews	english_grammar level_3 gerund_vs_infinitive rule
-Correct: They analyse the data yesterday.	They analysed the data yesterday.	english_grammar level_3 phrasal_verb_grammar correction
-I ____ the message.	update	english_grammar level_3 conditionals rule
-Correct: He explain the rule yesterday.	He explained the rule yesterday.	english_grammar level_3 relative_clauses correction
-She ____ the skill.	practices	english_grammar level_3 gerund_vs_infinitive rule
-Correct: They review the plan yesterday.	They reviewed the plan yesterday.	english_grammar level_3 phrasal_verb_grammar correction
-I ____ the form.	submit	english_grammar level_3 conditionals rule
-Correct: He update the message yesterday.	He updated the message yesterday.	english_grammar level_3 relative_clauses correction
-She ____ the prototype.	builds	english_grammar level_3 gerund_vs_infinitive rule
-Correct: They practice the skill yesterday.	They practised the skill yesterday.	english_grammar level_3 phrasal_verb_grammar correction
-I ____ the report.	prepare	english_grammar level_3 conditionals rule
-Correct: He submit the form yesterday.	He submitted the form yesterday.	english_grammar level_3 relative_clauses correction
-She ____ the data.	analyses	english_grammar level_3 gerund_vs_infinitive rule
-Correct: They build the prototype yesterday.	They built the prototype yesterday.	english_grammar level_3 phrasal_verb_grammar correction
-I ____ the rule.	explain	english_grammar level_3 conditionals rule
-Correct: He prepare the report yesterday.	He prepared the report yesterday.	english_grammar level_3 relative_clauses correction
-She ____ the plan.	reviews	english_grammar level_3 gerund_vs_infinitive rule
-Correct: They analyse the data yesterday.	They analysed the data yesterday.	english_grammar level_3 phrasal_verb_grammar correction
-I ____ the message.	update	english_grammar level_3 conditionals rule
-Correct: He explain the rule yesterday.	He explained the rule yesterday.	english_grammar level_3 relative_clauses correction
-She ____ the skill.	practices	english_grammar level_3 gerund_vs_infinitive rule
-Correct: They review the plan yesterday.	They reviewed the plan yesterday.	english_grammar level_3 phrasal_verb_grammar correction
-I ____ the form.	submit	english_grammar level_3 conditionals rule
-Correct: He update the message yesterday.	He updated the message yesterday.	english_grammar level_3 relative_clauses correction
-She ____ the prototype.	builds	english_grammar level_3 gerund_vs_infinitive rule
-Correct: They practice the skill yesterday.	They practised the skill yesterday.	english_grammar level_3 phrasal_verb_grammar correction
-I ____ the report.	prepare	english_grammar level_3 conditionals rule
-Correct: He submit the form yesterday.	He submitted the form yesterday.	english_grammar level_3 relative_clauses correction
-She ____ the data.	analyses	english_grammar level_3 gerund_vs_infinitive rule
-Correct: They build the prototype yesterday.	They built the prototype yesterday.	english_grammar level_3 phrasal_verb_grammar correction
-I ____ the rule.	explain	english_grammar level_3 conditionals rule
-Correct: He prepare the report yesterday.	He prepared the report yesterday.	english_grammar level_3 relative_clauses correction
-She ____ the plan.	reviews	english_grammar level_3 gerund_vs_infinitive rule
-Correct: They analyse the data yesterday.	They analysed the data yesterday.	english_grammar level_3 phrasal_verb_grammar correction
-I ____ the message.	update	english_grammar level_3 conditionals rule
-Correct: He explain the rule yesterday.	He explained the rule yesterday.	english_grammar level_3 relative_clauses correction
-She ____ the skill.	practices	english_grammar level_3 gerund_vs_infinitive rule
-Correct: They review the plan yesterday.	They reviewed the plan yesterday.	english_grammar level_3 phrasal_verb_grammar correction
-I ____ the form.	submit	english_grammar level_3 conditionals rule
-Correct: He update the message yesterday.	He updated the message yesterday.	english_grammar level_3 relative_clauses correction
-She ____ the prototype.	builds	english_grammar level_3 gerund_vs_infinitive rule
-Correct: They practice the skill yesterday.	They practised the skill yesterday.	english_grammar level_3 phrasal_verb_grammar correction
-I ____ the report.	prepare	english_grammar level_3 conditionals rule
-Correct: He submit the form yesterday.	He submitted the form yesterday.	english_grammar level_3 relative_clauses correction
-She ____ the data.	analyses	english_grammar level_3 gerund_vs_infinitive rule
-Correct: They build the prototype yesterday.	They built the prototype yesterday.	english_grammar level_3 phrasal_verb_grammar correction
-I ____ the rule.	explain	english_grammar level_3 conditionals rule
-If she had studied, she would now be accepted.	mixed conditional	english_grammar level_4 mixed_conditionals rule
-If he had worked, he would have arrived.	mixed conditional	english_grammar level_4 mixed_conditionals rule
-If we had left, we would be ahead.	mixed conditional	english_grammar level_4 mixed_conditionals rule
-If I had known, I would have told you.	mixed conditional	english_grammar level_4 mixed_conditionals rule
-If they had practiced, they would be confident.	mixed conditional	english_grammar level_4 mixed_conditionals rule
-Never have I seen this report before.	Use inversion with negative adjunct	english_grammar level_4 inversion rule
-Correct: Never I seen this report.	Never have I seen this report before.	english_grammar level_4 inversion correction
-Rarely do they understand this report before.	Use inversion with negative adjunct	english_grammar level_4 inversion rule
-Correct: Rarely they understand this report.	Rarely do they understand this report before.	english_grammar level_4 inversion correction
-Not until did we finish this report before.	Use inversion with negative adjunct	english_grammar level_4 inversion rule
-Correct: Not until we finish this report.	Not until did we finish this report before.	english_grammar level_4 inversion correction
-Only after had she realized this report before.	Use inversion with negative adjunct	english_grammar level_4 inversion rule
-Correct: Only after she realized this report.	Only after had she realized this report before.	english_grammar level_4 inversion correction
-Never have we forgotten this report before.	Use inversion with negative adjunct	english_grammar level_4 inversion rule
-Correct: Never we forgotten this report.	Never have we forgotten this report before.	english_grammar level_4 inversion correction
-Seldom did I misjudge this report before.	Use inversion with negative adjunct	english_grammar level_4 inversion rule
-Correct: Seldom I misjudge this report.	Seldom did I misjudge this report before.	english_grammar level_4 inversion correction
-She might have missed the deadline.	might have missed the deadline	english_grammar level_4 advanced_modals rule
-Correct: She might have of finished it.	She might have have finished it.	english_grammar level_4 advanced_modals correction
-They could have finished the deadline.	could have finished the deadline	english_grammar level_4 advanced_modals rule
-Correct: They could have of finished it.	They could have have finished it.	english_grammar level_4 advanced_modals correction
-He should have called the deadline.	should have called the deadline	english_grammar level_4 advanced_modals rule
-Correct: He should have of finished it.	He should have have finished it.	english_grammar level_4 advanced_modals correction
-We must have forgotten the deadline.	must have forgotten the deadline	english_grammar level_4 advanced_modals rule
-Correct: We must have of finished it.	We must have have finished it.	english_grammar level_4 advanced_modals correction
-You may have received the deadline.	may have received the deadline	english_grammar level_4 advanced_modals rule
-Correct: You may have of finished it.	You may have have finished it.	english_grammar level_4 advanced_modals correction
-It might have changed the deadline.	might have changed the deadline	english_grammar level_4 advanced_modals rule
-Correct: It might have of finished it.	It might have have finished it.	english_grammar level_4 advanced_modals correction
-Having prepared the draft, they submitted the report.	participle	english_grammar level_4 participle_clauses rule
-Having prepared the draft, we moved to the next task.	participle	english_grammar level_4 participle_clauses rule
-Having prepared the draft, she avoided mistakes.	participle	english_grammar level_4 participle_clauses rule
-Having prepared the draft, the team approved it.	participle	english_grammar level_4 participle_clauses rule
-Having prepared the draft, the manager spoke clearly.	participle	english_grammar level_4 participle_clauses rule
-Knowing the procedure, they submitted the report.	participle	english_grammar level_4 participle_clauses rule
-Knowing the procedure, we moved to the next task.	participle	english_grammar level_4 participle_clauses rule
-Knowing the procedure, she avoided mistakes.	participle	english_grammar level_4 participle_clauses rule
-Knowing the procedure, the team approved it.	participle	english_grammar level_4 participle_clauses rule
-Knowing the procedure, the manager spoke clearly.	participle	english_grammar level_4 participle_clauses rule
-Being prepared, they submitted the report.	participle	english_grammar level_4 participle_clauses rule
-Being prepared, we moved to the next task.	participle	english_grammar level_4 participle_clauses rule
-Being prepared, she avoided mistakes.	participle	english_grammar level_4 participle_clauses rule
-Being prepared, the team approved it.	participle	english_grammar level_4 participle_clauses rule
-Being prepared, the manager spoke clearly.	participle	english_grammar level_4 participle_clauses rule
-Having discussed the issue, they submitted the report.	participle	english_grammar level_4 participle_clauses rule
-Having discussed the issue, we moved to the next task.	participle	english_grammar level_4 participle_clauses rule
-Having discussed the issue, she avoided mistakes.	participle	english_grammar level_4 participle_clauses rule
-Having discussed the issue, the team approved it.	participle	english_grammar level_4 participle_clauses rule
-Having discussed the issue, the manager spoke clearly.	participle	english_grammar level_4 participle_clauses rule
-Working with precision, they submitted the report.	participle	english_grammar level_4 participle_clauses rule
-Working with precision, we moved to the next task.	participle	english_grammar level_4 participle_clauses rule
-Working with precision, she avoided mistakes.	participle	english_grammar level_4 participle_clauses rule
-Working with precision, the team approved it.	participle	english_grammar level_4 participle_clauses rule
-Working with precision, the manager spoke clearly.	participle	english_grammar level_4 participle_clauses rule
-Complete the sentence: I know what she said.	noun clause	english_grammar level_4 noun_clauses rule
-Complete the sentence: We discussed whether they agreed.	noun clause	english_grammar level_4 noun_clauses rule
-Complete the sentence: The report shows why the system failed.	noun clause	english_grammar level_4 noun_clauses rule
-Complete the sentence: I wonder if the team understands.	noun clause	english_grammar level_4 noun_clauses rule
-Complete the sentence: She explained how the script worked.	noun clause	english_grammar level_4 noun_clauses rule
-Complete the sentence: We asked where the test data came from.	noun clause	english_grammar level_4 noun_clauses rule
-Complete the sentence: They confirmed what the team needed.	noun clause	english_grammar level_4 noun_clauses rule
-It was the analyst who found the bug first.	emphasis structure	english_grammar level_4 emphasis_structures rule
-What the team needed most was stable input.	emphasis structure	english_grammar level_4 emphasis_structures rule
-It was during the planning meeting that we set the deadline.	emphasis structure	english_grammar level_4 emphasis_structures rule
-What they wanted most was a clear timeline.	emphasis structure	english_grammar level_4 emphasis_structures rule
-It was your report that convinced the committee.	emphasis structure	english_grammar level_4 emphasis_structures rule
-What the client asked for was a quick fix.	emphasis structure	english_grammar level_4 emphasis_structures rule
-Having completed the security review, the team signed off on production access.	reduced clause	english_grammar level_4 reduced_relative_clauses rule
-Correct: Having completed the security review, the team signed off on production access.	Having completed the security review, the team signed off on production access.	english_grammar level_4 reduced_relative_clauses correction
-Having fixed the regression bug, the release passed smoke testing.	reduced clause	english_grammar level_4 reduced_relative_clauses rule
-Correct: Having fixed the regression bug, the release passed smoke testing.	Having fixed the regression bug, the release passed smoke testing.	english_grammar level_4 reduced_relative_clauses correction
-Having secured stakeholder approval, the team started the rollout.	reduced clause	english_grammar level_4 reduced_relative_clauses rule
-Correct: Having secured stakeholder approval, the team started the rollout.	Having secured stakeholder approval, the team started the rollout.	english_grammar level_4 reduced_relative_clauses correction
-Having reviewed the client notes, we revised the final draft.	reduced clause	english_grammar level_4 reduced_relative_clauses rule
-Correct: Having reviewed the client notes, we revised the final draft.	Having reviewed the client notes, we revised the final draft.	english_grammar level_4 reduced_relative_clauses correction
-Having collected user feedback, the roadmap changed immediately.	reduced clause	english_grammar level_4 reduced_relative_clauses rule
-Correct: Having collected user feedback, the roadmap changed immediately.	Having collected user feedback, the roadmap changed immediately.	english_grammar level_4 reduced_relative_clauses correction
-Having updated the schedule, the launch date shifted by one week.	reduced clause	english_grammar level_4 reduced_relative_clauses rule
-Correct: Having updated the schedule, the launch date shifted by one week.	Having updated the schedule, the launch date shifted by one week.	english_grammar level_4 reduced_relative_clauses correction
-Having closed the budget gap, the vendor accepted the contract.	reduced clause	english_grammar level_4 reduced_relative_clauses rule
-Correct: Having closed the budget gap, the vendor accepted the contract.	Having closed the budget gap, the vendor accepted the contract.	english_grammar level_4 reduced_relative_clauses correction
-Having validated the migration, we moved traffic to the new cluster.	reduced clause	english_grammar level_4 reduced_relative_clauses rule
-Correct: Having validated the migration, we moved traffic to the new cluster.	Having validated the migration, we moved traffic to the new cluster.	english_grammar level_4 reduced_relative_clauses correction
-Use 'however' for contrast.	however	english_grammar level_5 sentence_connectors rule
-Use 'moreover' for addition.	moreover	english_grammar level_5 sentence_connectors rule
-Use 'nevertheless' for concession.	nevertheless	english_grammar level_5 sentence_connectors rule
-Use 'therefore' for result.	therefore	english_grammar level_5 sentence_connectors rule
-Use 'although' for contrast.	although	english_grammar level_5 sentence_connectors rule
-Use 'because' for reason.	because	english_grammar level_5 sentence_connectors rule
-Use 'furthermore' for addition.	furthermore	english_grammar level_5 sentence_connectors rule
-Rewrite formally: Could you please share the figures?	Could you please share the figures?	english_grammar level_5 formal_grammar rule
-Rewrite formally: It appears that the report is ready.	It appears that the report is ready.	english_grammar level_5 formal_grammar rule
-Rewrite formally: Please ensure the file is complete.	Please ensure the file is complete.	english_grammar level_5 formal_grammar rule
-Rewrite formally: The committee approved the proposal.	The committee approved the proposal.	english_grammar level_5 formal_grammar rule
-Rewrite formally: The meeting was rescheduled due to travel delays.	The meeting was rescheduled due to travel delays.	english_grammar level_5 formal_grammar rule
-Rewrite formally: Please verify that all citations are up to date.	Please verify that all citations are up to date.	english_grammar level_5 formal_grammar rule
-Rewrite formally: The board will review the final proposal tomorrow.	The board will review the final proposal tomorrow.	english_grammar level_5 formal_grammar rule
-Rewrite formally: Kindly submit your final comments by close of business.	Kindly submit your final comments by close of business.	english_grammar level_5 formal_grammar rule
-Rewrite formally: The committee formally confirmed the revised milestones.	The committee formally confirmed the revised milestones.	english_grammar level_5 formal_grammar rule
-Add hedging language: The timeline may shift unexpectedly.	may	english_grammar level_5 hedging rule
-Add hedging language: The results might improve next quarter.	might	english_grammar level_5 hedging rule
-Add hedging language: We may not be fully staffed this week.	may	english_grammar level_5 hedging rule
-Add hedging language: Perhaps we should review this again.	Perhaps	english_grammar level_5 hedging rule
-Add hedging language: This seems potentially useful.	seems	english_grammar level_5 hedging rule
-Add hedging language: This is likely to be delayed.	likely	english_grammar level_5 hedging rule
-Add hedging language: This may not be feasible without extra testing.	may	english_grammar level_5 hedging rule
-Add hedging language: This strategy could be the best option.	could	english_grammar level_5 hedging rule
-Add hedging language: The requirements may change during implementation.	may	english_grammar level_5 hedging rule
-Add hedging language: The change might not be permanent.	might	english_grammar level_5 hedging rule
-She seems to need more data.	seems	english_grammar level_5 modal_nuance rule
-Correct: She seems to need more data.	She seems to need more data.	english_grammar level_5 modal_nuance correction
-It appears to need follow-up.	appears	english_grammar level_5 modal_nuance rule
-Correct: It appears to need follow-up.	It appears to need follow-up.	english_grammar level_5 modal_nuance correction
-The draft may be revised in phase two.	may	english_grammar level_5 modal_nuance rule
-Correct: The draft may be revised in phase two.	The draft may be revised in phase two.	english_grammar level_5 modal_nuance correction
-We could use additional QA.	could	english_grammar level_5 modal_nuance rule
-Correct: We could use additional QA.	We could use additional QA.	english_grammar level_5 modal_nuance correction
-The team might need further validation.	might	english_grammar level_5 modal_nuance rule
-Correct: The team might need further validation.	The team might need further validation.	english_grammar level_5 modal_nuance correction
-This plan should be reviewed for scope.	should	english_grammar level_5 modal_nuance rule
-Correct: This plan should be reviewed for scope.	This plan should be reviewed for scope.	english_grammar level_5 modal_nuance correction
-The timeline should stay stable.	should	english_grammar level_5 modal_nuance rule
-Correct: The timeline should stay stable.	The timeline should stay stable.	english_grammar level_5 modal_nuance correction
-The dataset might need another split.	might	english_grammar level_5 modal_nuance rule
-Correct: The dataset might need another split.	The dataset might need another split.	english_grammar level_5 modal_nuance correction
-The client could approve this next month.	could	english_grammar level_5 modal_nuance rule
-Correct: The client could approve this next month.	The client could approve this next month.	english_grammar level_5 modal_nuance correction
-The interface seems to need simplification.	seems	english_grammar level_5 modal_nuance rule
-Correct: The interface seems to need simplification.	The interface seems to need simplification.	english_grammar level_5 modal_nuance correction
-The estimate may be adjusted soon.	may	english_grammar level_5 modal_nuance rule
-Correct: The estimate may be adjusted soon.	The estimate may be adjusted soon.	english_grammar level_5 modal_nuance correction
-Correct this: I am used to used to go.	I am used to going.	english_grammar level_5 common_learner_mistakes correction
-Correct this: Between you and I, this was hard.	Between you and me, this was hard.	english_grammar level_5 common_learner_mistakes correction
-Correct this: She explained me the details.	She explained the details to me.	english_grammar level_5 common_learner_mistakes correction
-Correct this: He suggested me to stay.	He suggested that I stay.	english_grammar level_5 common_learner_mistakes correction
-Correct this: The data is reliable	The data are reliable	english_grammar level_5 common_learner_mistakes correction
-Correct this: He gave me advise.	He gave me advice.	english_grammar level_5 common_learner_mistakes correction
-Correct this: She said me to leave.	She told me to leave.	english_grammar level_5 common_learner_mistakes correction
-Correct this: The less I see it, the less I likes it.	The less I see it, the less I like it.	english_grammar level_5 common_learner_mistakes correction
-Correct this: I explained him the decision.	I explained the decision to him.	english_grammar level_5 common_learner_mistakes correction
-Correct this: Between Bob and I, we discussed the plan.	Between Bob and me, we discussed the plan.	english_grammar level_5 common_learner_mistakes correction
-Correct this: She suggested me the report.	She suggested the report to me.	english_grammar level_5 common_learner_mistakes correction
-Rewrite for a formal register: The policy is likely to be revised.	The policy is likely to be revised.	english_grammar level_5 style_and_register rule
-Rewrite for a academic register: The result seems clear.	The result seems clear.	english_grammar level_5 style_and_register rule
-Rewrite for a cautious register: He might not be fully certain.	He might not be fully certain.	english_grammar level_5 style_and_register rule
-Rewrite for a technical register: The method was considered robust.	The method was considered robust.	english_grammar level_5 style_and_register rule
-Rewrite for a formal register: The team had substantial concerns.	The team had substantial concerns.	english_grammar level_5 style_and_register rule
-Rewrite for a academic register: The model performed below expectations.	The model performed below expectations.	english_grammar level_5 style_and_register rule
-Rewrite for a technical register: The report contained incomplete metadata.	The report contained incomplete metadata.	english_grammar level_5 style_and_register rule
-Rewrite for a formal register: The schedule was adjusted again.	The schedule was adjusted again.	english_grammar level_5 style_and_register rule
-Rewrite for a technical register: The dashboard showed stable error rates.	The dashboard showed stable error rates.	english_grammar level_5 style_and_register rule
-Rewrite for a formal register: The release was delayed by one week.	The release was delayed by one week.	english_grammar level_5 style_and_register rule
+Topic	Level	CardType	Front	Answer	Reason	Examples	SelfGrade	Tags
+present perfect vs past simple	b2_tense_system	rule	Rule: present perfect vs past simple	<b>Formula</b><br>present perfect: have/has + V3<br>past simple: V2<br><b>Use</b><br>Use present perfect for life experience, unfinished time, or present result. Use past simple for finished time.<br><b>Examples</b><br>- I have visited Spain. = life experience<br>- I visited Spain last year. = finished time<br>- She has finished the report. = result now<br><b>Watch out</b><br>- Do not use present perfect with a finished time expression like yesterday/last year.		- I have visited Spain. = life experience<br>- I visited Spain last year. = finished time<br>- She has finished the report. = result now<br>	Good = remembered formula and use case. Hard = remembered one but not both. Again = could not explain the pattern.	english_grammar grammar_maintenance b2_tense_system present_perfect_vs_past_simple rule
+present perfect vs past simple	b2_tense_system	contrast	Choose: I _____ this company since 2021.<br>A) worked for<br>B) have worked for	<b>Answer</b><br>B) I have worked for this company since 2021.<br><br><b>Reason</b><br>since + starting point + still true now -> present perfect.	since + starting point + still true now -> present perfect.		Good = chose the right option and explained why. Hard = chose right but explanation was weak. Again = chose wrong.	english_grammar grammar_maintenance b2_tense_system present_perfect_vs_past_simple contrast
+present perfect vs past simple	b2_tense_system	correction	Correct: I know her since five years.	I have known her for five years.<br><br><b>Reason</b><br>Use present perfect with for + duration when the situation continues now.	Use present perfect with for + duration when the situation continues now.		Good = fixed the sentence and named the rule. Hard = fixed it but could not explain. Again = missed the correction.	english_grammar grammar_maintenance b2_tense_system present_perfect_vs_past_simple correction
+present perfect continuous	b2_tense_system	production	Say naturally: I started learning Spanish two years ago and I still learn it.	I have been learning Spanish for two years.<br><br><b>Why</b><br>Present perfect continuous emphasizes an activity continuing until now.			Good = produced a natural sentence with the target pattern. Hard = understandable but awkward. Again = wrong pattern.	english_grammar grammar_maintenance b2_tense_system present_perfect_continuous production
+present perfect continuous	b2_tense_system	rule	Rule: present perfect continuous	<b>Formula</b><br>have/has been + V-ing<br><b>Use</b><br>Use for continuing activities, repeated recent actions, or visible present results.<br><b>Examples</b><br>- I have been working all morning.<br>- She has been studying Spanish for two years.<br>- It has been raining, so the ground is wet.<br><b>Watch out</b><br>- Stative verbs often prefer present perfect simple: I have known her, not I have been knowing her.		- I have been working all morning.<br>- She has been studying Spanish for two years.<br>- It has been raining, so the ground is wet.<br>	Good = remembered formula and use case. Hard = remembered one but not both. Again = could not explain the pattern.	english_grammar grammar_maintenance b2_tense_system present_perfect_continuous rule
+past perfect	b2_tense_system	rule	Rule: past perfect	<b>Formula</b><br>had + V3<br><b>Use</b><br>Use for an action before another past action.<br><b>Examples</b><br>- When I arrived, they had already left.<br>- By the time we noticed the bug, users had reported it.		- When I arrived, they had already left.<br>- By the time we noticed the bug, users had reported it.	Good = remembered formula and use case. Hard = remembered one but not both. Again = could not explain the pattern.	english_grammar grammar_maintenance b2_tense_system past_perfect rule
+past perfect	b2_tense_system	contrast	Choose the better sequence:<br>A) When I arrived, they left.<br>B) When I arrived, they had left.	<b>Answer</b><br>B) When I arrived, they had left.<br><br><b>Reason</b><br>had left makes it clear that their leaving happened before your arrival.	had left makes it clear that their leaving happened before your arrival.		Good = chose the right option and explained why. Hard = chose right but explanation was weak. Again = chose wrong.	english_grammar grammar_maintenance b2_tense_system past_perfect contrast
+future forms	b2_tense_system	rule	Rule: future forms	<b>Formula</b><br>will + V1; be going to + V1; present continuous; will have + V3<br><b>Use</b><br>Choose future form by meaning: prediction/decision, plan, arrangement, or completion before a future point.<br><b>Examples</b><br>- I will call you later. = decision/promise<br>- We are going to redesign the page. = plan<br>- I am meeting her tomorrow. = arrangement<br>- By Friday, we will have finished. = completed before Friday		- I will call you later. = decision/promise<br>- We are going to redesign the page. = plan<br>- I am meeting her tomorrow. = arrangement<br>- By Friday, we will have finished. = completed before Friday	Good = remembered formula and use case. Hard = remembered one but not both. Again = could not explain the pattern.	english_grammar grammar_maintenance b2_tense_system future_forms rule
+future forms	b2_tense_system	contrast	Choose: By the time you arrive, I _____ the slides.<br>A) will finish<br>B) will have finished	<b>Answer</b><br>B) By the time you arrive, I will have finished the slides.<br><br><b>Reason</b><br>will have + V3 marks completion before a future reference point.	will have + V3 marks completion before a future reference point.		Good = chose the right option and explained why. Hard = chose right but explanation was weak. Again = chose wrong.	english_grammar grammar_maintenance b2_tense_system future_forms contrast
+narrative tenses	b2_tense_system	rule	Rule: narrative tenses	<b>Formula</b><br>past simple + past continuous + past perfect<br><b>Use</b><br>Use narrative tenses to order background, events, and earlier events.<br><b>Examples</b><br>- I was walking home when I saw the accident.<br>- She had left before I arrived.<br>- The team was testing the app when the server crashed.		- I was walking home when I saw the accident.<br>- She had left before I arrived.<br>- The team was testing the app when the server crashed.	Good = remembered formula and use case. Hard = remembered one but not both. Again = could not explain the pattern.	english_grammar grammar_maintenance b2_tense_system narrative_tenses rule
+narrative tenses	b2_tense_system	production	Say naturally: One action was in progress; another interrupted it: test the app / server crash.	The team was testing the app when the server crashed.<br><br><b>Why</b><br>Past continuous gives the background activity; past simple gives the interrupting event.			Good = produced a natural sentence with the target pattern. Hard = understandable but awkward. Again = wrong pattern.	english_grammar grammar_maintenance b2_tense_system narrative_tenses production
+conditionals	b2_sentence_control	rule	Rule: conditionals	<b>Formula</b><br>zero: if + present, present<br>first: if + present, will + V1<br>second: if + V2, would + V1<br>third: if + had + V3, would have + V3<br><b>Use</b><br>Use conditionals for facts, likely results, unreal present/future, and unreal past.<br><b>Examples</b><br>- If water boils, it turns to steam.<br>- If it rains, we will postpone.<br>- If I were free, I would join.<br>- If she had studied, she would have passed.		- If water boils, it turns to steam.<br>- If it rains, we will postpone.<br>- If I were free, I would join.<br>- If she had studied, she would have passed.	Good = remembered formula and use case. Hard = remembered one but not both. Again = could not explain the pattern.	english_grammar grammar_maintenance b2_sentence_control conditionals rule
+mixed conditionals	b2_sentence_control	rule	Rule: mixed conditionals	<b>Formula</b><br>past condition -> present result: if + had + V3, would + V1<br>present condition -> past result: if + V2, would have + V3<br><b>Use</b><br>Use when the condition and result belong to different times.<br><b>Examples</b><br>- If I had slept earlier, I would feel better now.<br>- If I were more careful, I would not have made that mistake.		- If I had slept earlier, I would feel better now.<br>- If I were more careful, I would not have made that mistake.	Good = remembered formula and use case. Hard = remembered one but not both. Again = could not explain the pattern.	english_grammar grammar_maintenance b2_sentence_control mixed_conditionals rule
+mixed conditionals	b2_sentence_control	contrast	Choose the meaning: If I had saved the file, I would not be rewriting it now.<br>A) past cause, present result<br>B) present cause, past result	<b>Answer</b><br>A) past cause, present result.<br><br><b>Reason</b><br>had saved is an unreal past condition; would not be rewriting it now is the present result.	had saved is an unreal past condition; would not be rewriting it now is the present result.		Good = chose the right option and explained why. Hard = chose right but explanation was weak. Again = chose wrong.	english_grammar grammar_maintenance b2_sentence_control mixed_conditionals contrast
+conditionals	b2_sentence_control	correction	Correct: If I would have known, I would tell you.	If I had known, I would have told you.<br><br><b>Reason</b><br>Do not use would in the if-clause of a third conditional.	Do not use would in the if-clause of a third conditional.		Good = fixed the sentence and named the rule. Hard = fixed it but could not explain. Again = missed the correction.	english_grammar grammar_maintenance b2_sentence_control conditionals correction
+passive voice	b2_sentence_control	rule	Rule: passive voice	<b>Formula</b><br>be + V3<br><b>Use</b><br>Use passive when the action/result matters more than the actor.<br><b>Examples</b><br>- The report was approved.<br>- The files were sent.<br>- The issue has been fixed.		- The report was approved.<br>- The files were sent.<br>- The issue has been fixed.	Good = remembered formula and use case. Hard = remembered one but not both. Again = could not explain the pattern.	english_grammar grammar_maintenance b2_sentence_control passive_voice rule
+passive voice	b2_sentence_control	production	Say naturally: Make the result the focus: Someone rejected the proposal twice.	The proposal was rejected twice.<br><br><b>Why</b><br>Passive voice keeps attention on the affected thing, not the actor.			Good = produced a natural sentence with the target pattern. Hard = understandable but awkward. Again = wrong pattern.	english_grammar grammar_maintenance b2_sentence_control passive_voice production
+relative clauses	b2_sentence_control	rule	Rule: relative clauses	<b>Formula</b><br>who/which/that/where/when/whose + clause<br><b>Use</b><br>Use relative clauses to identify or add information about a noun.<br><b>Examples</b><br>- The engineer who fixed it explained the cause.<br>- The tool which we use is reliable.<br>- The office where we met is closed.<br>- The candidate whose resume impressed us accepted the offer.		- The engineer who fixed it explained the cause.<br>- The tool which we use is reliable.<br>- The office where we met is closed.<br>- The candidate whose resume impressed us accepted the offer.	Good = remembered formula and use case. Hard = remembered one but not both. Again = could not explain the pattern.	english_grammar grammar_maintenance b2_sentence_control relative_clauses rule
+relative clauses	b2_sentence_control	correction	Correct: The candidate which resume impressed us accepted the offer.	The candidate whose resume impressed us accepted the offer.<br><br><b>Reason</b><br>Use whose for possession in relative clauses, including people and organizations.	Use whose for possession in relative clauses, including people and organizations.		Good = fixed the sentence and named the rule. Hard = fixed it but could not explain. Again = missed the correction.	english_grammar grammar_maintenance b2_sentence_control relative_clauses correction
+reported speech	b2_sentence_control	rule	Rule: reported speech	<b>Formula</b><br>reporting verb + backshifted clause when reporting past speech<br><b>Use</b><br>Use reported speech to retell what someone said.<br><b>Examples</b><br>- She said she was tired.<br>- He told me he had finished.<br>- They said they would arrive late.<br><b>Watch out</b><br>- Backshift depends on context; if the statement is still generally true, backshift may be optional.		- She said she was tired.<br>- He told me he had finished.<br>- They said they would arrive late.<br>	Good = remembered formula and use case. Hard = remembered one but not both. Again = could not explain the pattern.	english_grammar grammar_maintenance b2_sentence_control reported_speech rule
+reported speech	b2_sentence_control	correction	Correct: She said that she is coming tomorrow.	She said that she was coming the next day.<br><br><b>Reason</b><br>Past reporting context usually triggers backshift and time-word adjustment.	Past reporting context usually triggers backshift and time-word adjustment.		Good = fixed the sentence and named the rule. Hard = fixed it but could not explain. Again = missed the correction.	english_grammar grammar_maintenance b2_sentence_control reported_speech correction
+noun clauses	b2_sentence_control	rule	Rule: noun clauses	<b>Formula</b><br>what/whether/why/how/where + subject + verb<br><b>Use</b><br>Use noun clauses as subject, object, or complement.<br><b>Examples</b><br>- I know what she said.<br>- We discussed whether they agreed.<br>- The report explains why the system failed.		- I know what she said.<br>- We discussed whether they agreed.<br>- The report explains why the system failed.	Good = remembered formula and use case. Hard = remembered one but not both. Again = could not explain the pattern.	english_grammar grammar_maintenance b2_sentence_control noun_clauses rule
+noun clauses	b2_sentence_control	correction	Correct: I do not know why did the system fail.	I do not know why the system failed.<br><br><b>Reason</b><br>A noun clause uses statement word order, not question inversion.	A noun clause uses statement word order, not question inversion.		Good = fixed the sentence and named the rule. Hard = fixed it but could not explain. Again = missed the correction.	english_grammar grammar_maintenance b2_sentence_control noun_clauses correction
+gerund vs infinitive	b2_verb_patterns	rule	Rule: gerund vs infinitive	<b>Formula</b><br>verb + -ing or verb + to + V1<br><b>Use</b><br>Memorize verb patterns because meaning often depends on the first verb.<br><b>Examples</b><br>- I enjoy working here.<br>- They decided to leave early.<br>- He admitted making the mistake.<br>- She offered to help.		- I enjoy working here.<br>- They decided to leave early.<br>- He admitted making the mistake.<br>- She offered to help.	Good = remembered formula and use case. Hard = remembered one but not both. Again = could not explain the pattern.	english_grammar grammar_maintenance b2_verb_patterns gerund_vs_infinitive rule
+gerund vs infinitive	b2_verb_patterns	contrast	Explain the difference:<br>A) I stopped to call her.<br>B) I stopped calling her.	<b>Answer</b><br>A = I paused another activity in order to call her.<br>B = I no longer called her.<br><br><b>Reason</b><br>Some verbs change meaning depending on whether they take to + V1 or -ing.	Some verbs change meaning depending on whether they take to + V1 or -ing.		Good = chose the right option and explained why. Hard = chose right but explanation was weak. Again = chose wrong.	english_grammar grammar_maintenance b2_verb_patterns gerund_vs_infinitive contrast
+used to patterns	b2_verb_patterns	rule	Rule: used to patterns	<b>Formula</b><br>used to + V1; be used to + noun/-ing; get used to + noun/-ing<br><b>Use</b><br>Use these to separate past habits from familiarity/adaptation.<br><b>Examples</b><br>- I used to work late. = past habit<br>- I am used to working late. = familiar with it<br>- I am getting used to the new schedule. = adapting now		- I used to work late. = past habit<br>- I am used to working late. = familiar with it<br>- I am getting used to the new schedule. = adapting now	Good = remembered formula and use case. Hard = remembered one but not both. Again = could not explain the pattern.	english_grammar grammar_maintenance b2_verb_patterns used_to_patterns rule
+used to patterns	b2_verb_patterns	correction	Correct: I am used to wake up early.	I am used to waking up early.<br><br><b>Reason</b><br>be used to is followed by a noun or -ing form.	be used to is followed by a noun or -ing form.		Good = fixed the sentence and named the rule. Hard = fixed it but could not explain. Again = missed the correction.	english_grammar grammar_maintenance b2_verb_patterns used_to_patterns correction
+modal verbs	b2_verb_patterns	rule	Rule: modal verbs	<b>Formula</b><br>modal + V1<br><b>Use</b><br>Use modals for ability, permission, obligation, advice, certainty, and possibility.<br><b>Examples</b><br>- She can drive.<br>- You should review it.<br>- They might be late.<br>- You must submit the form.		- She can drive.<br>- You should review it.<br>- They might be late.<br>- You must submit the form.	Good = remembered formula and use case. Hard = remembered one but not both. Again = could not explain the pattern.	english_grammar grammar_maintenance b2_verb_patterns modal_verbs rule
+modal perfect	b2_verb_patterns	rule	Rule: modal perfect	<b>Formula</b><br>modal + have + V3<br><b>Use</b><br>Use for past possibility, deduction, regret, criticism, or missed opportunity.<br><b>Examples</b><br>- You should have told me.<br>- She might have missed the email.<br>- He must have forgotten.<br>- We could have avoided this.		- You should have told me.<br>- She might have missed the email.<br>- He must have forgotten.<br>- We could have avoided this.	Good = remembered formula and use case. Hard = remembered one but not both. Again = could not explain the pattern.	english_grammar grammar_maintenance b2_verb_patterns modal_perfect rule
+modal perfect	b2_verb_patterns	contrast	What is the difference?<br>A) He must be tired.<br>B) He must have been tired.	<b>Answer</b><br>A = deduction about now.<br>B = deduction about the past.<br><br><b>Reason</b><br>The perfect form moves the modal meaning into the past.	The perfect form moves the modal meaning into the past.		Good = chose the right option and explained why. Hard = chose right but explanation was weak. Again = chose wrong.	english_grammar grammar_maintenance b2_verb_patterns modal_perfect contrast
+causatives	b2_verb_patterns	rule	Rule: causatives	<b>Formula</b><br>have/get + object + V3<br><b>Use</b><br>Use causatives when someone arranges for another person to do something.<br><b>Examples</b><br>- I had my car repaired.<br>- She got her hair cut.<br>- We had the report translated.		- I had my car repaired.<br>- She got her hair cut.<br>- We had the report translated.	Good = remembered formula and use case. Hard = remembered one but not both. Again = could not explain the pattern.	english_grammar grammar_maintenance b2_verb_patterns causatives rule
+causatives	b2_verb_patterns	production	Say naturally: Say that a professional repaired your laptop; you did not repair it yourself.	I had my laptop repaired.<br><br><b>Why</b><br>have/get + object + V3 shows that you arranged the service.			Good = produced a natural sentence with the target pattern. Hard = understandable but awkward. Again = wrong pattern.	english_grammar grammar_maintenance b2_verb_patterns causatives production
+articles	c1_precision	rule	Rule: articles	<b>Formula</b><br>a/an/the/zero article<br><b>Use</b><br>Use articles to mark specificity, countability, shared knowledge, and generalization.<br><b>Examples</b><br>- I need a laptop. = any laptop<br>- The laptop on the desk is mine. = specific<br>- Technology changes quickly. = general uncountable/abstract<br>- The technology we use is outdated. = specific technology		- I need a laptop. = any laptop<br>- The laptop on the desk is mine. = specific<br>- Technology changes quickly. = general uncountable/abstract<br>- The technology we use is outdated. = specific technology	Good = remembered formula and use case. Hard = remembered one but not both. Again = could not explain the pattern.	english_grammar grammar_maintenance c1_precision articles rule
+articles	c1_precision	contrast	Choose and explain:<br>A) I went to hospital.<br>B) I went to the hospital.	<b>Answer</b><br>B is standard American English for visiting/going to a specific hospital; British English often uses 'to hospital' for being admitted as a patient.<br><br><b>Reason</b><br>Articles are partly variety-sensitive, so the card tests meaning and register, not a single universal phrase.	Articles are partly variety-sensitive, so the card tests meaning and register, not a single universal phrase.		Good = chose the right option and explained why. Hard = chose right but explanation was weak. Again = chose wrong.	english_grammar grammar_maintenance c1_precision articles contrast
+articles	c1_precision	correction	Correct: She gave me an useful advice.	She gave me useful advice.<br><br><b>Reason</b><br>advice is uncountable, and useful begins with a consonant sound, but no article is needed here.	advice is uncountable, and useful begins with a consonant sound, but no article is needed here.		Good = fixed the sentence and named the rule. Hard = fixed it but could not explain. Again = missed the correction.	english_grammar grammar_maintenance c1_precision articles correction
+prepositions	c1_precision	rule	Rule: prepositions	<b>Formula</b><br>fixed verb/adjective/noun + preposition patterns<br><b>Use</b><br>Many prepositions are pattern-based and must be learned as chunks.<br><b>Examples</b><br>- depend on the data<br>- responsible for the release<br>- interested in robotics<br>- similar to the prototype		- depend on the data<br>- responsible for the release<br>- interested in robotics<br>- similar to the prototype	Good = remembered formula and use case. Hard = remembered one but not both. Again = could not explain the pattern.	english_grammar grammar_maintenance c1_precision prepositions rule
+prepositions	c1_precision	production	Say naturally: Use the right fixed preposition: This decision depends ___ the data.	This decision depends on the data.<br><br><b>Why</b><br>depend on is a fixed verb-preposition pattern.			Good = produced a natural sentence with the target pattern. Hard = understandable but awkward. Again = wrong pattern.	english_grammar grammar_maintenance c1_precision prepositions production
+countable and uncountable nouns	c1_precision	rule	Rule: countable and uncountable nouns	<b>Formula</b><br>many/few + countable; much/little + uncountable; fewer vs less<br><b>Use</b><br>Choose quantifiers based on noun type.<br><b>Examples</b><br>- many issues / fewer issues<br>- much information / less information<br>- a piece of advice, not an advice		- many issues / fewer issues<br>- much information / less information<br>- a piece of advice, not an advice	Good = remembered formula and use case. Hard = remembered one but not both. Again = could not explain the pattern.	english_grammar grammar_maintenance c1_precision countable_and_uncountable_nouns rule
+comparatives	c1_precision	rule	Rule: comparatives	<b>Formula</b><br>comparative + than; much/far/slightly + comparative; the + superlative<br><b>Use</b><br>Use modifiers to make comparisons precise.<br><b>Examples</b><br>- This version is slightly faster.<br>- The new workflow is far more reliable.<br>- This is the most useful option.		- This version is slightly faster.<br>- The new workflow is far more reliable.<br>- This is the most useful option.	Good = remembered formula and use case. Hard = remembered one but not both. Again = could not explain the pattern.	english_grammar grammar_maintenance c1_precision comparatives rule
+comparatives	c1_precision	correction	Correct: This approach is more clearer than the old one.	This approach is clearer than the old one.<br><br><b>Reason</b><br>Do not double-mark comparatives: use clearer or more clear, not more clearer.	Do not double-mark comparatives: use clearer or more clear, not more clearer.		Good = fixed the sentence and named the rule. Hard = fixed it but could not explain. Again = missed the correction.	english_grammar grammar_maintenance c1_precision comparatives correction
+emphasis and inversion	c1_precision	rule	Rule: emphasis and inversion	<b>Formula</b><br>It was...that/who; what...was; negative/fronted phrase + auxiliary + subject<br><b>Use</b><br>Use emphasis and inversion to shift focus or sound more formal.<br><b>Examples</b><br>- It was the analyst who found the bug.<br>- What we needed was stable input.<br>- Never have I seen this before.<br>- Only after testing did we deploy.		- It was the analyst who found the bug.<br>- What we needed was stable input.<br>- Never have I seen this before.<br>- Only after testing did we deploy.	Good = remembered formula and use case. Hard = remembered one but not both. Again = could not explain the pattern.	english_grammar grammar_maintenance c1_precision emphasis_and_inversion rule
+sentence connectors	c1_style	rule	Rule: sentence connectors	<b>Formula</b><br>connector + clause/punctuation pattern<br><b>Use</b><br>Use connectors to show contrast, addition, reason, result, concession, or sequence.<br><b>Examples</b><br>- The report was complete; however, two risks remained.<br>- Because the data was inconsistent, we delayed the release.<br>- The scan passed; therefore, we approved deployment.<br>- Although the budget was reduced, the team delivered.		- The report was complete; however, two risks remained.<br>- Because the data was inconsistent, we delayed the release.<br>- The scan passed; therefore, we approved deployment.<br>- Although the budget was reduced, the team delivered.	Good = remembered formula and use case. Hard = remembered one but not both. Again = could not explain the pattern.	english_grammar grammar_maintenance c1_style sentence_connectors rule
+sentence connectors	c1_style	contrast	Choose the punctuation pattern:<br>A) The scan passed, however, two risks remained.<br>B) The scan passed; however, two risks remained.	<b>Answer</b><br>B) The scan passed; however, two risks remained.<br><br><b>Reason</b><br>however connects independent clauses and usually needs stronger punctuation than a comma alone.	however connects independent clauses and usually needs stronger punctuation than a comma alone.		Good = chose the right option and explained why. Hard = chose right but explanation was weak. Again = chose wrong.	english_grammar grammar_maintenance c1_style sentence_connectors contrast
+sentence connectors	c1_style	production	Say naturally: Join naturally with contrast: The model is accurate. It is too slow for production.	The model is accurate; however, it is too slow for production.<br><br><b>Why</b><br>A semicolon + connector cleanly links two independent clauses.			Good = produced a natural sentence with the target pattern. Hard = understandable but awkward. Again = wrong pattern.	english_grammar grammar_maintenance c1_style sentence_connectors production
+participle clauses	c1_style	rule	Rule: participle clauses	<b>Formula</b><br>V-ing / V3 / having + V3 clause<br><b>Use</b><br>Use participle clauses to compress related information.<br><b>Examples</b><br>- Having prepared the draft, they submitted it.<br>- Knowing the risk, we delayed the release.<br>- Approved by the board, the plan moved forward.		- Having prepared the draft, they submitted it.<br>- Knowing the risk, we delayed the release.<br>- Approved by the board, the plan moved forward.	Good = remembered formula and use case. Hard = remembered one but not both. Again = could not explain the pattern.	english_grammar grammar_maintenance c1_style participle_clauses rule
+participle clauses	c1_style	correction	Correct: Walking into the meeting, the agenda was already on the screen.	Walking into the meeting, I saw that the agenda was already on the screen.<br><br><b>Reason</b><br>The implied subject of a participle clause must match the subject of the main clause.	The implied subject of a participle clause must match the subject of the main clause.		Good = fixed the sentence and named the rule. Hard = fixed it but could not explain. Again = missed the correction.	english_grammar grammar_maintenance c1_style participle_clauses correction
+reduced relative clauses	c1_style	rule	Rule: reduced relative clauses	<b>Formula</b><br>noun + V-ing/V3 phrase<br><b>Use</b><br>Use reduced relatives to make noun descriptions shorter.<br><b>Examples</b><br>- The person responsible for QA joined.<br>- The files sent yesterday arrived.<br>- The team working on the fix met today.		- The person responsible for QA joined.<br>- The files sent yesterday arrived.<br>- The team working on the fix met today.	Good = remembered formula and use case. Hard = remembered one but not both. Again = could not explain the pattern.	english_grammar grammar_maintenance c1_style reduced_relative_clauses rule
+hedging	c1_style	rule	Rule: hedging	<b>Formula</b><br>may/might/seems/appears/likely/could<br><b>Use</b><br>Use hedging to soften claims and avoid overstatement.<br><b>Examples</b><br>- The result seems clear.<br>- The timeline may shift.<br>- This could be the best option.<br>- It appears that the model overfit the data.		- The result seems clear.<br>- The timeline may shift.<br>- This could be the best option.<br>- It appears that the model overfit the data.	Good = remembered formula and use case. Hard = remembered one but not both. Again = could not explain the pattern.	english_grammar grammar_maintenance c1_style hedging rule
+hedging	c1_style	production	Say naturally: Make this less absolute: The new process is the cause of the delay.	The new process appears to be one cause of the delay.<br><br><b>Why</b><br>Hedging protects accuracy when evidence is incomplete.			Good = produced a natural sentence with the target pattern. Hard = understandable but awkward. Again = wrong pattern.	english_grammar grammar_maintenance c1_style hedging production
+formal register	c1_style	rule	Rule: formal register	<b>Formula</b><br>polite modal/passive/nominal structures<br><b>Use</b><br>Use formal grammar for professional or academic tone.<br><b>Examples</b><br>- Could you please share the figures?<br>- The proposal was approved by the committee.<br>- Please ensure that all citations are up to date.		- Could you please share the figures?<br>- The proposal was approved by the committee.<br>- Please ensure that all citations are up to date.	Good = remembered formula and use case. Hard = remembered one but not both. Again = could not explain the pattern.	english_grammar grammar_maintenance c1_style formal_register rule
+advanced inversion	c2_mastery	rule	Rule: advanced inversion	<b>Formula</b><br>fronted negative/restrictive phrase + auxiliary + subject + verb<br><b>Use</b><br>Use for emphatic or literary/formal ordering.<br><b>Examples</b><br>- Under no circumstances should the data be shared.<br>- Not only did the proposal fail, but it also damaged trust.<br>- Had I known earlier, I would have intervened.<br><b>Watch out</b><br>- This is powerful but marked; avoid overusing it in casual speech.		- Under no circumstances should the data be shared.<br>- Not only did the proposal fail, but it also damaged trust.<br>- Had I known earlier, I would have intervened.<br>	Good = remembered formula and use case. Hard = remembered one but not both. Again = could not explain the pattern.	english_grammar grammar_maintenance c2_mastery advanced_inversion rule
+advanced inversion	c2_mastery	production	Say naturally: Make more formal/emphatic: We should not share the data under any circumstances.	Under no circumstances should we share the data.<br><br><b>Why</b><br>A fronted negative/restrictive phrase triggers auxiliary-subject inversion.			Good = produced a natural sentence with the target pattern. Hard = understandable but awkward. Again = wrong pattern.	english_grammar grammar_maintenance c2_mastery advanced_inversion production
+subjunctive and mandative structures	c2_mastery	rule	Rule: subjunctive and mandative structures	<b>Formula</b><br>demand/recommend/insist + that + subject + base verb<br><b>Use</b><br>Use mandative subjunctive in formal recommendations, requirements, and demands.<br><b>Examples</b><br>- They recommended that he be removed from the project.<br>- The policy requires that each file be encrypted.<br>- I insist that she receive a formal apology.		- They recommended that he be removed from the project.<br>- The policy requires that each file be encrypted.<br>- I insist that she receive a formal apology.	Good = remembered formula and use case. Hard = remembered one but not both. Again = could not explain the pattern.	english_grammar grammar_maintenance c2_mastery subjunctive_and_mandative_structures rule
+clefting and fronting	c2_mastery	rule	Rule: clefting and fronting	<b>Formula</b><br>What/All/The thing + clause + be...; fronted object/adverbial<br><b>Use</b><br>Use to control information focus and rhythm.<br><b>Examples</b><br>- What surprised me was how quickly they adapted.<br>- All I need is a clear answer.<br>- This problem, we cannot ignore.		- What surprised me was how quickly they adapted.<br>- All I need is a clear answer.<br>- This problem, we cannot ignore.	Good = remembered formula and use case. Hard = remembered one but not both. Again = could not explain the pattern.	english_grammar grammar_maintenance c2_mastery clefting_and_fronting rule
+clefting and fronting	c2_mastery	production	Say naturally: Emphasize the surprising part: Their speed surprised me.	What surprised me was their speed.<br><br><b>Why</b><br>A what-cleft puts the focus after was.			Good = produced a natural sentence with the target pattern. Hard = understandable but awkward. Again = wrong pattern.	english_grammar grammar_maintenance c2_mastery clefting_and_fronting production
+ellipsis and substitution	c2_mastery	rule	Rule: ellipsis and substitution	<b>Formula</b><br>omit repeated words; use do so/one/ones/so/neither/nor<br><b>Use</b><br>Use to avoid repetition while keeping meaning clear.<br><b>Examples</b><br>- I expected the system to fail, and it did.<br>- She approved the first draft but rejected the second one.<br>- If the client objects, we should do so too.		- I expected the system to fail, and it did.<br>- She approved the first draft but rejected the second one.<br>- If the client objects, we should do so too.	Good = remembered formula and use case. Hard = remembered one but not both. Again = could not explain the pattern.	english_grammar grammar_maintenance c2_mastery ellipsis_and_substitution rule
+ellipsis and substitution	c2_mastery	correction	Correct: She approved the first version but rejected the second version one.	She approved the first version but rejected the second one.<br><br><b>Reason</b><br>one substitutes for a repeated singular countable noun; do not keep both the noun and substitute.	one substitutes for a repeated singular countable noun; do not keep both the noun and substitute.		Good = fixed the sentence and named the rule. Hard = fixed it but could not explain. Again = missed the correction.	english_grammar grammar_maintenance c2_mastery ellipsis_and_substitution correction
+advanced concession	c2_mastery	rule	Rule: advanced concession	<b>Formula</b><br>adjective/adverb/noun + though/as + subject + verb; no matter + wh-word<br><b>Use</b><br>Use for compact concession in formal or literary style.<br><b>Examples</b><br>- Difficult though it was, the migration succeeded.<br>- Try as he might, he could not reproduce the bug.<br>- No matter how carefully we tested it, one issue remained.		- Difficult though it was, the migration succeeded.<br>- Try as he might, he could not reproduce the bug.<br>- No matter how carefully we tested it, one issue remained.	Good = remembered formula and use case. Hard = remembered one but not both. Again = could not explain the pattern.	english_grammar grammar_maintenance c2_mastery advanced_concession rule
+advanced concession	c2_mastery	contrast	Which is more compressed/formal?<br>A) Although it was difficult, the migration succeeded.<br>B) Difficult though it was, the migration succeeded.	<b>Answer</b><br>B) Difficult though it was, the migration succeeded.<br><br><b>Reason</b><br>Adjective + though/as + clause is a compact concession pattern.	Adjective + though/as + clause is a compact concession pattern.		Good = chose the right option and explained why. Hard = chose right but explanation was weak. Again = chose wrong.	english_grammar grammar_maintenance c2_mastery advanced_concession contrast
+nominalisation	c2_mastery	rule	Rule: nominalisation	<b>Formula</b><br>turn clauses/verbs into noun phrases<br><b>Use</b><br>Use nominalisation for dense formal writing, but avoid making prose heavy.<br><b>Examples</b><br>- They failed to comply -> their failure to comply<br>- We investigated the incident -> our investigation of the incident<br>- The model improved -> the model's improvement		- They failed to comply -> their failure to comply<br>- We investigated the incident -> our investigation of the incident<br>- The model improved -> the model's improvement	Good = remembered formula and use case. Hard = remembered one but not both. Again = could not explain the pattern.	english_grammar grammar_maintenance c2_mastery nominalisation rule
+parallelism	c2_mastery	rule	Rule: parallelism	<b>Formula</b><br>match grammatical forms in coordinated structures<br><b>Use</b><br>Use parallel structure for clarity, rhythm, and formal polish.<br><b>Examples</b><br>- The plan is efficient, scalable, and secure.<br>- She likes analysing data, writing reports, and presenting findings.<br>- The goal is not to blame but to understand.		- The plan is efficient, scalable, and secure.<br>- She likes analysing data, writing reports, and presenting findings.<br>- The goal is not to blame but to understand.	Good = remembered formula and use case. Hard = remembered one but not both. Again = could not explain the pattern.	english_grammar grammar_maintenance c2_mastery parallelism rule
+parallelism	c2_mastery	correction	Correct: The plan is efficient, scales well, and security-focused.	The plan is efficient, scalable, and secure.<br><br><b>Reason</b><br>Parallel coordinated items should use the same grammatical shape.	Parallel coordinated items should use the same grammatical shape.		Good = fixed the sentence and named the rule. Hard = fixed it but could not explain. Again = missed the correction.	english_grammar grammar_maintenance c2_mastery parallelism correction
+advanced inversion	c2_mastery	contrast	Which is more formal/emphatic?<br>A) I had never seen such a result.<br>B) Never had I seen such a result.	<b>Answer</b><br>B) Never had I seen such a result.<br><br><b>Reason</b><br>Fronted negative adverbials trigger inversion and create emphasis.	Fronted negative adverbials trigger inversion and create emphasis.		Good = chose the right option and explained why. Hard = chose right but explanation was weak. Again = chose wrong.	english_grammar grammar_maintenance c2_mastery advanced_inversion contrast
+subjunctive and mandative structures	c2_mastery	correction	Correct: The committee recommended that he is removed.	The committee recommended that he be removed.<br><br><b>Reason</b><br>After recommend/insist/require in formal English, use base verb in a that-clause.	After recommend/insist/require in formal English, use base verb in a that-clause.		Good = fixed the sentence and named the rule. Hard = fixed it but could not explain. Again = missed the correction.	english_grammar grammar_maintenance c2_mastery subjunctive_and_mandative_structures correction
+nominalisation	c2_mastery	production	Say naturally: Make this more formal: The supplier did not comply, so the launch was delayed.	The supplier's failure to comply delayed the launch.<br><br><b>Why</b><br>Nominalisation compresses a clause into a noun phrase for formal style.			Good = produced a natural sentence with the target pattern. Hard = understandable but awkward. Again = wrong pattern.	english_grammar grammar_maintenance c2_mastery nominalisation production

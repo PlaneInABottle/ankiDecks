@@ -48,44 +48,38 @@ class TestAnkiAutomation(unittest.TestCase):
 
     def test_grammar_cards_filtering(self):
         """Test grammar card filtering by level and card type."""
-        cards = grammar_levels.get_cards(level="level_2")
+        cards = grammar_levels.get_cards(level="b2_tense_system")
         self.assertTrue(cards)
-        self.assertTrue(all(card["level"] == "level_2" for card in cards))
+        self.assertTrue(all(card["level"] == "b2_tense_system" for card in cards))
 
-        cloze_cards = grammar_levels.get_cards(level="level_2", card_type="cloze")
-        self.assertTrue(cloze_cards)
-        self.assertTrue(all(card["card_type"] == "cloze" for card in cloze_cards))
+        contrast_cards = grammar_levels.get_cards(level="b2_tense_system", card_type="contrast")
+        self.assertTrue(contrast_cards)
+        self.assertTrue(all(card["card_type"] == "contrast" for card in contrast_cards))
 
         basic_cards = grammar_levels.get_cards(card_type="basic")
-        self.assertTrue(all(card["card_type"] in {"rule", "correction"} for card in basic_cards))
+        self.assertTrue(all(card["card_type"] in {"rule", "contrast", "correction", "production"} for card in basic_cards))
 
     def test_grammar_level_minimum_counts(self):
-        """Test per-level card mix covers minimum rule, cloze, and correction counts."""
+        """Test the maintenance deck is compact, hard, and covers each level."""
         summary = {item["id"]: item["card_count"] for item in grammar_levels.get_level_summary()}
         total_cards = 0
-        min_per_level = {
-            "level_1": 130,
-            "level_2": 170,
-            "level_3": 170,
-            "level_4": 120,
-            "level_5": 120,
-        }
+        all_types = Counter()
         for level in grammar_levels.LEVELS:
             cards = grammar_levels.get_cards(level=level["id"])
             by_type = Counter(card["card_type"] for card in cards)
 
-            self.assertGreaterEqual(len(cards), min_per_level[level["id"]], f"Too few cards for {level['id']}.")
+            self.assertGreaterEqual(len(cards), 4, f"Too few cards for {level['id']}.")
             self.assertIn("rule", by_type)
-            self.assertIn("cloze", by_type)
-            self.assertIn("correction", by_type)
             self.assertGreaterEqual(by_type["rule"], 1)
-            self.assertGreaterEqual(by_type["cloze"], 1)
-            self.assertGreaterEqual(by_type["correction"], 1)
-            self.assertEqual(by_type["rule"] + by_type["cloze"] + by_type["correction"], len(cards))
+            self.assertEqual(sum(by_type.values()), len(cards))
             self.assertEqual(summary[level["id"]], len(cards))
+            all_types.update(by_type)
             total_cards += len(cards)
 
-        self.assertGreaterEqual(total_cards, 800)
+        self.assertGreaterEqual(total_cards, 35)
+        self.assertLessEqual(total_cards, 120)
+        for card_type in ("rule", "contrast", "correction", "production"):
+            self.assertGreater(all_types[card_type], 0)
 
     def test_grammar_tsv_renderers(self):
         """Test renderer boundaries for Basic and Cloze outputs."""
@@ -94,29 +88,26 @@ class TestAnkiAutomation(unittest.TestCase):
         basic_tsv = grammar_levels.render_basic_tsv(cards)
         cloze_tsv = grammar_levels.render_cloze_tsv(cards)
 
-        self.assertIn("Front\tBack\tTags", basic_tsv)
+        self.assertIn("Topic\tLevel\tCardType\tFront\tAnswer\tReason\tExamples\tSelfGrade\tTags", basic_tsv)
         self.assertIn("Text\tExtra\tTags", cloze_tsv)
         self.assertNotIn("{{c1::", basic_tsv)
-        self.assertIn("{{c1::", cloze_tsv)
+        self.assertNotIn("{{c1::", cloze_tsv)
 
         basic_reader = csv.reader(io.StringIO(basic_tsv), delimiter="\t")
         basic_rows = [row for row in basic_reader if row and not row[0].startswith("#")]
         cloze_reader = csv.reader(io.StringIO(cloze_tsv), delimiter="\t")
         cloze_rows = [row for row in cloze_reader if row and not row[0].startswith("#")]
 
-        self.assertEqual(len(basic_rows), by_type["rule"] + by_type["correction"] + 1)
-        self.assertEqual(len(cloze_rows), by_type["cloze"] + 1)
+        self.assertEqual(len(basic_rows), sum(by_type.values()) + 1)
+        self.assertEqual(len(cloze_rows), 1)
 
     def test_grammar_formula_cards_exist(self):
         """Test explicit grammar formula cards for requested tense/modal/conditional systems."""
         rule_cards = grammar_levels.get_cards(card_type="rule")
         all_back_text = " | ".join(card["back"].lower() for card in rule_cards)
         expected_markers = [
-            "subject + v1",
-            "am / is / are + v-ing",
-            "did + subject + v1",
-            "was / were + v-ing",
             "have/has + v3",
+            "have/has been + v-ing",
             "had + v3",
             "will + v1",
             "going to + v1",
@@ -124,10 +115,13 @@ class TestAnkiAutomation(unittest.TestCase):
             "be + v3",
             "modal + v1",
             "modal + have + v3",
-            "if + present simple, present simple",
-            "if + present simple, will + v1",
+            "if + present, will + v1",
             "if + v2, would + v1",
             "if + had + v3, would have + v3",
+            "a/an/the/zero article",
+            "who/which/that",
+            "demand/recommend/insist",
+            "nominalisation",
         ]
         for marker in expected_markers:
             self.assertIn(marker, all_back_text)
@@ -187,30 +181,17 @@ class TestAnkiAutomation(unittest.TestCase):
         for pattern in bad_patterns:
             self.assertNotIn(pattern, all_text, f"Found known bad grammar pattern: {pattern}")
 
-    def test_grammar_passive_cards_agreement(self):
-        """Test expected passive be + participle agreement in level 3 cloze cards."""
+    def test_grammar_passive_rule_examples(self):
+        """Test passive voice is taught as a reusable rule, not isolated blanks."""
         cards = [
             card
-            for card in grammar_levels.get_cards(level="level_3")
-            if card["card_type"] == "cloze" and card["topic"] == "passive voice"
+            for card in grammar_levels.get_cards(level="b2_sentence_control")
+            if card["card_type"] == "rule" and card["topic"] == "passive voice"
         ]
         self.assertTrue(cards)
-        requirements = {
-            "The files": "were",
-            "The letters": "were",
-            "The meetings": "were",
-            "The report": "was",
-            "The team": "was",
-            "The project": "was",
-            "The door": "was",
-        }
-        for subject, expected_aux in requirements.items():
-            prefix = f"{subject} {{{{c1::{expected_aux}"
-            matching = [card for card in cards if card["text"].startswith(prefix)]
-            self.assertTrue(
-                matching,
-                f"No passive cloze card found for subject '{subject}' with auxiliary '{expected_aux}'.",
-            )
+        text = "\n".join(card["back"].lower() for card in cards)
+        for marker in ("be + v3", "was approved", "were sent", "has been fixed"):
+            self.assertIn(marker, text)
 
     def test_grammar_sentence_template_stem_repetition(self):
         """Fail if any exact template stem appears more than four times."""
@@ -237,13 +218,24 @@ class TestAnkiAutomation(unittest.TestCase):
             f"Template stems repeated too often: {sorted(repeated.items(), key=lambda item: item[1], reverse=True)}",
         )
 
-    def test_all_cloze_cards_use_cloze_markup(self):
-        """Test every cloze card can generate an Anki cloze deletion."""
-        cloze_cards = grammar_levels.get_cards(card_type="cloze")
-        self.assertTrue(cloze_cards)
-        for card in cloze_cards:
-            self.assertIn("{{c", card["text"])
-            self.assertIn("::", card["text"])
+    def test_no_cloze_guessing_cards(self):
+        """Test this deck avoids low-value cloze guessing cards."""
+        self.assertEqual(grammar_levels.get_cards(card_type="cloze"), [])
+        all_text = "\n".join(
+            str(card.get(field, ""))
+            for card in grammar_levels.get_cards()
+            for field in ("front", "text", "back")
+        )
+        low_value_patterns = [
+            "I _____ a student",
+            "In our archive",
+            "The room contains",
+            "Correct: am",
+            "Correct: is",
+            "Correct: are",
+        ]
+        for pattern in low_value_patterns:
+            self.assertNotIn(pattern, all_text)
 
     def test_write_import_files(self):
         """Test grammar import file generation and headers."""
@@ -259,7 +251,7 @@ class TestAnkiAutomation(unittest.TestCase):
 
             basic = basic_path.read_text(encoding="utf-8")
             cloze = cloze_path.read_text(encoding="utf-8")
-            self.assertIn("Front\tBack\tTags", basic)
+            self.assertIn("Topic\tLevel\tCardType\tFront\tAnswer\tReason\tExamples\tSelfGrade\tTags", basic)
             self.assertIn("Text\tExtra\tTags", cloze)
 
             basic_rows = [
@@ -273,8 +265,8 @@ class TestAnkiAutomation(unittest.TestCase):
                 if row and not row[0].startswith("#")
             ]
 
-            self.assertEqual(len(basic_rows), by_type["rule"] + by_type["correction"] + 1)
-            self.assertEqual(len(cloze_rows), by_type["cloze"] + 1)
+            self.assertEqual(len(basic_rows), sum(by_type.values()) + 1)
+            self.assertEqual(len(cloze_rows), 1)
 
     def test_grammar_level_summary(self):
         """Test level summary structure and consistency with raw data."""
