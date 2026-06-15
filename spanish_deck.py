@@ -590,12 +590,12 @@ def _back_field_for_basic(record: Dict[str, str]) -> str:
             parts.append(f"Pronunciation: {record['pronunciation_hint']}")
         if record["spanish_meaning"]:
             parts.append(f"Spanish meaning: {record['spanish_meaning']}")
-        if record.get("spanish_meaning_en"):
-            parts.append(f"Meaning in English: {record['spanish_meaning_en']}")
         if record["spanish_example"]:
             parts.append(f"Spanish example: {record['spanish_example']}")
         if record.get("spanish_example_en"):
             parts.append(f"Example in English: {record['spanish_example_en']}")
+        if record.get("spanish_meaning_en"):
+            parts.append(f"Meaning in English: {record['spanish_meaning_en']}")
         grammar_parts = []
         for label, key in [
             ("Part of speech", "spanish_part_of_speech"),
