@@ -431,6 +431,33 @@ class TestAnkiAutomation(unittest.TestCase):
         self.assertIn("lower part", notes_by_pair[("bottom", "parte inferior")])
         self.assertIn("lowest point", notes_by_pair[("bottom", "fondo")])
 
+    def test_spanish_examples_track_source_examples_for_known_rows(self):
+        """Test source-backed rows do not use unrelated Spanish example sentences."""
+        glossary_path = Path("generated/spanish_reviewed_glossary_full.tsv")
+        with glossary_path.open(encoding="utf-8", newline="") as handle:
+            rows = {row["english"]: row for row in csv.DictReader(handle, delimiter="\t")}
+
+        expected_examples = {
+            "agree": "Los estudiantes están de acuerdo en que tienen demasiados deberes.",
+            "alcohol": "Una persona no debe conducir un coche después de haber bebido alcohol.",
+            "arrive": "Llegaron a la escuela a las 7 a.m.",
+            "catch": "¿Atrapaste la pelota durante el partido de béisbol?",
+            "apart": "Se separaron y luego volvieron a juntarse.",
+            "attribute": "Él no es muy inteligente, pero sí tiene otros atributos positivos.",
+            "bilingual": "Como ya sabes inglés, después de aprender francés serás bilingüe.",
+            "completely": "Estaba completamente equivocado.",
+            "dash": "Helen corrió por las escaleras para que no llegara tarde a su cita.",
+            "plate": "Puse mi plato sobre la mesa para poder ponerle comida.",
+            "arena": "El nuevo estadio estaba listo para albergar el partido por el campeonato.",
+            "depot": "Esperó a que su madre llegara a la estación.",
+        }
+        for english, expected in expected_examples.items():
+            self.assertEqual(rows[english]["spanish_example"], expected)
+        self.assertEqual(rows["plate"]["spanish"], "el plato")
+        self.assertEqual(rows["plate"]["spanish_meaning"], "Un plato es un objeto plano y redondo en el que pones comida.")
+        self.assertEqual(rows["arena"]["spanish"], "el estadio")
+        self.assertEqual(rows["depot"]["spanish"], "la estación")
+
     def test_english_phrase_deck_quality(self):
         """Test the natural phrase deck has concrete phrase-recognition cards."""
         cards = english_phrases.load_cards()
