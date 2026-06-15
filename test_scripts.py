@@ -18,6 +18,7 @@ import anki_tools
 import grammar_levels
 import spanish_grammar_levels
 import spanish_deck
+import english_phrases
 
 
 def _template_stem(text):
@@ -404,6 +405,54 @@ class TestAnkiAutomation(unittest.TestCase):
         }
         for word, expected in examples.items():
             self.assertEqual(spanish_deck.spanish_pronunciation_hint(word), expected)
+
+    def test_english_phrase_deck_quality(self):
+        """Test the natural phrase deck has concrete phrase-recognition cards."""
+        cards = english_phrases.load_cards()
+        by_level = Counter(card["level"] for card in cards)
+
+        self.assertGreaterEqual(len(cards), 250)
+        self.assertLessEqual(len(cards), 500)
+        for level in english_phrases.LEVELS:
+            self.assertGreaterEqual(by_level[level["id"]], 45)
+
+        errors = english_phrases.validate_cards(cards)
+        self.assertEqual(errors, [])
+
+    def test_english_phrase_tsv_renderer(self):
+        """Test phrase deck import TSV structure."""
+        cards = english_phrases.load_cards()
+        rendered = english_phrases.render_tsv(cards)
+        self.assertIn("SourceID\tLevel\tPhrase\tFront\tMeaning\tExamples\tTags", rendered)
+        rows = [
+            row
+            for row in csv.reader(io.StringIO(rendered), delimiter="\t")
+            if row and not row[0].startswith("#")
+        ]
+        self.assertEqual(len(rows), len(cards) + 1)
+        self.assertTrue(all(len(row) == 7 for row in rows))
+        self.assertEqual(len({card["source_id"] for card in cards}), len(cards))
+        self.assertIn("Good morning, everyone; let's start with the updates.", rendered)
+        self.assertNotIn("Good morning, everyone<br>- let's start", rendered)
+
+    def test_english_phrase_deck_no_known_bad_examples(self):
+        """Fail on known unnatural phrase examples."""
+        all_text = "\n".join(
+            " ".join(str(card.get(field, "")) for field in ("phrase", "front", "meaning", "examples"))
+            for card in english_phrases.load_cards()
+        ).lower()
+        bad_patterns = [
+            "asked me to call me",
+            "get on here",
+            "take in your bags",
+            "cannot in no way",
+            "filled in full",
+            "sold out in full",
+            "went in full swing",
+            "whenever your data is in your best interest",
+        ]
+        for pattern in bad_patterns:
+            self.assertNotIn(pattern, all_text)
 
     def test_spanish_parser_extracts_rows(self):
         """Test TSV parser fields for the new Spanish duplicate workflow."""
