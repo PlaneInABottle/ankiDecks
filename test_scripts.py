@@ -450,6 +450,9 @@ class TestAnkiAutomation(unittest.TestCase):
             "plate": "Puse mi plato sobre la mesa para poder ponerle comida.",
             "arena": "El nuevo estadio estaba listo para albergar el partido por el campeonato.",
             "depot": "Esperó a que su madre llegara a la estación.",
+            "acceptance": "Mostré mi aceptación de la solución propuesta.",
+            "launch": "El barco zarpó del muelle y flotó río abajo.",
+            "ice skating": "Me gusta patinar sobre hielo.",
         }
         for english, expected in expected_examples.items():
             self.assertEqual(rows[english]["spanish_example"], expected)
@@ -457,6 +460,11 @@ class TestAnkiAutomation(unittest.TestCase):
         self.assertEqual(rows["plate"]["spanish_meaning"], "Un plato es un objeto plano y redondo en el que pones comida.")
         self.assertEqual(rows["arena"]["spanish"], "el estadio")
         self.assertEqual(rows["depot"]["spanish"], "la estación")
+        self.assertEqual(rows["ice skating"]["english"], "ice skating")
+        self.assertEqual(rows["acceptance"]["english_example"], "I showed my acceptance of the proposed solution.")
+        self.assertEqual(rows["launch"]["english_example"], "The boat launched from the dock and floated down the river.")
+        self.assertNotIn("<", rows["agree"]["english_meaning"])
+        self.assertNotIn("<", rows["agree"]["english_example"])
 
     def test_english_phrase_deck_quality(self):
         """Test the natural phrase deck has concrete phrase-recognition cards."""
