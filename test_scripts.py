@@ -423,14 +423,15 @@ class TestAnkiAutomation(unittest.TestCase):
         """Test phrase deck import TSV structure."""
         cards = english_phrases.load_cards()
         rendered = english_phrases.render_tsv(cards)
-        self.assertIn("SourceID\tLevel\tPhrase\tFront\tMeaning\tExamples\tTags", rendered)
+        self.assertIn("SourceID\tLevel\tPhrase\tFront\tFrontHTML\tMeaning\tExamples\tTags", rendered)
         rows = [
             row
             for row in csv.reader(io.StringIO(rendered), delimiter="\t")
             if row and not row[0].startswith("#")
         ]
         self.assertEqual(len(rows), len(cards) + 1)
-        self.assertTrue(all(len(row) == 7 for row in rows))
+        self.assertTrue(all(len(row) == 8 for row in rows))
+        self.assertIn('<span class="target-phrase">good morning</span>', rows[1][4])
         self.assertEqual(len({card["source_id"] for card in cards}), len(cards))
         self.assertIn("Good morning, everyone; let's start with the updates.", rendered)
         self.assertNotIn("Good morning, everyone<br>- let's start", rendered)
