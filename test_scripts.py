@@ -393,17 +393,18 @@ class TestAnkiAutomation(unittest.TestCase):
         """Test readable Latin American Spanish pronunciation hints."""
         examples = {
             "año": "A-nyo",
-            "mochila": "mo-Çİ-la",
+            "mochila": "mo-ÇI-la",
             "cinturón": "sin-tu-RON",
             "queso": "KE-so",
             "guitarra": "gi-TAR-ra",
             "llave": "YA-be",
-            "jardín": "har-DİN",
-            "círculo": "SİR-ku-lo",
+            "jardín": "har-DIN",
+            "círculo": "SIR-ku-lo",
             "el cinturón": "el sin-tu-RON",
         }
         for word, expected in examples.items():
             self.assertEqual(spanish_deck.spanish_pronunciation_hint(word), expected)
+            self.assertNotIn("İ", spanish_deck.spanish_pronunciation_hint(word))
 
     def test_spanish_metadata_uses_conservative_forms(self):
         """Test inferred Spanish grammar does not invent risky forms."""
@@ -414,6 +415,21 @@ class TestAnkiAutomation(unittest.TestCase):
         self.assertIn("-ar pattern", verb["spanish_forms"])
         self.assertIn("check irregular or stem-changing forms separately", verb["spanish_forms"])
         self.assertNotIn("aprobo", verb["spanish_forms"])
+
+    def test_spanish_glossary_has_complete_mirror_fields_and_sense_notes(self):
+        """Test durable Spanish glossary keeps English mirrors and duplicate-sense notes."""
+        glossary_path = Path("generated/spanish_reviewed_glossary_full.tsv")
+        with glossary_path.open(encoding="utf-8", newline="") as handle:
+            rows = list(csv.DictReader(handle, delimiter="\t"))
+
+        self.assertEqual(sum(1 for row in rows if not row["spanish_meaning_en"]), 0)
+        self.assertEqual(sum(1 for row in rows if not row["spanish_example_en"]), 0)
+
+        notes_by_pair = {(row["english"], row["spanish"]): row["notes"] for row in rows}
+        self.assertIn("color", notes_by_pair[("navy", "azul marino")])
+        self.assertIn("military", notes_by_pair[("navy", "armada")])
+        self.assertIn("lower part", notes_by_pair[("bottom", "parte inferior")])
+        self.assertIn("lowest point", notes_by_pair[("bottom", "fondo")])
 
     def test_english_phrase_deck_quality(self):
         """Test the natural phrase deck has concrete phrase-recognition cards."""

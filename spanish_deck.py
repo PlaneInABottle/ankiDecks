@@ -109,7 +109,7 @@ def _stress_index(word: str, syllables: Sequence[str]) -> int:
 
 
 def _turkish_upper(value: str) -> str:
-    return value.replace("i", "İ").upper()
+    return value.upper()
 
 
 def _sound_out_syllable(syllable: str) -> str:
