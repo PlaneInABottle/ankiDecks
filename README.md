@@ -57,17 +57,16 @@ python3 check_word.py [word]
 ```
 
 ### Generate English Grammar Deck Seed
-Create starter grammar TSV files for import into Anki (no Anki connection required):
+Create B2/C1/C2 choose-the-correct-form grammar TSV files for import into Anki (no Anki connection required):
 ```bash
 python3 grammar_levels.py
-python3 grammar_levels.py --level level_2
 python3 grammar_levels.py --output-dir generated_custom
 python3 grammar_levels.py --summary
 ```
 - Output:
-  - `generated/english_grammar_basic.tsv` (rule + correction cards)
-  - `generated/english_grammar_cloze.tsv` (cloze cards)
-- You can import each file into matching Basic/Cloze note types in Anki.
+  - `generated/english_grammar_basic.tsv` (choose cards with answer, grammar name, formula, reason, examples, and self-grade guidance)
+  - `generated/english_grammar_cloze.tsv` (header-only placeholder; the deck intentionally avoids cloze guessing cards)
+- You can import the basic file into the `Grammar Maintenance` note type in Anki.
 - `--summary` prints per-level card counts and does not create files.
 
 ### Create Spanish Duplicate Decks
@@ -85,10 +84,11 @@ Defaults:
 - Source: `4000 Essential English Words.txt`
 - Glossary: optional CSV/TSV with headers `english,spanish,spanish_meaning,spanish_example,notes`
   - Backward-compatible: `english,spanish,spanish_example,notes` is still accepted
+  - Optional durable fields are also accepted: `spanish_meaning_en`, `spanish_example_en`, `spanish_article`, `spanish_gender`, `spanish_number`, `spanish_part_of_speech`, `spanish_forms`
 - Output directory: `generated/spanish`
 - Files produced:
-  - `english_spanish_review.tsv` (English, English Meaning, English Example, Spanish, Spanish Meaning, Spanish Example, Notes, Status, Source Deck, Source Card, Tags)
-  - `english_spanish_basic.tsv` (Front, Back, Tags; back includes `Spanish`, `Meaning`, `Example`, optional `Notes` when reviewed, or `TODO: Spanish translation needed` when pending)
+  - `english_spanish_review.tsv` (English/source context, Spanish, pronunciation, Spanish meaning/example, English mirrors of the Spanish fields, grammar metadata, notes, status, source identity, tags)
+  - `english_spanish_basic.tsv` (Front, Back, Tags; back includes English translation, Spanish meaning/example, English mirrors, grammar metadata, original English source when available, optional notes, or `TODO: Spanish translation needed` when pending)
 
 ## 🧪 Testing
 Run the unit test suite to verify script logic (uses mocks, no internet/Anki required):

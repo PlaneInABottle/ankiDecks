@@ -196,6 +196,82 @@ def spanish_pronunciation_hint(value: str) -> str:
     return " ".join(word for word in words if word)
 
 
+def _spanish_tokens(value: str) -> List[str]:
+    return re.findall(r"[a-záéíóúüñ]+", _plain_spanish_word(value))
+
+
+def infer_spanish_metadata(spanish: str, english: str = "") -> Dict[str, str]:
+    """Infer conservative grammar metadata from the reviewed Spanish headword."""
+    tokens = _spanish_tokens(spanish)
+    article = tokens[0] if tokens and tokens[0] in _SPANISH_ARTICLES else ""
+    head = tokens[1] if article and len(tokens) > 1 else (tokens[0] if tokens else "")
+    metadata = {
+        "spanish_article": article,
+        "spanish_gender": "",
+        "spanish_number": "",
+        "spanish_part_of_speech": "",
+        "spanish_forms": "",
+    }
+    if article:
+        metadata["spanish_part_of_speech"] = "noun"
+        metadata["spanish_gender"] = "feminine" if article in {"la", "las", "una", "unas"} else "masculine"
+        metadata["spanish_number"] = "plural" if article in {"los", "las", "unos", "unas"} else "singular"
+        singular_article = "la" if metadata["spanish_gender"] == "feminine" else "el"
+        plural_article = "las" if metadata["spanish_gender"] == "feminine" else "los"
+        if metadata["spanish_number"] == "plural":
+            singular_head = _singularize_spanish_noun(head)
+            plural_head = head
+        else:
+            singular_head = head
+            plural_head = _pluralize_spanish_noun(head)
+        metadata["spanish_forms"] = f"singular: {singular_article} {singular_head}; plural: {plural_article} {plural_head}"
+    elif head.endswith(("ar", "er", "ir")):
+        metadata["spanish_part_of_speech"] = "verb"
+        metadata["spanish_forms"] = _regular_verb_forms(head)
+    elif "/" in spanish:
+        metadata["spanish_part_of_speech"] = "adjective"
+        stem = head[:-1] if head.endswith(("o", "a")) else head
+        if stem:
+            metadata["spanish_forms"] = f"masc sg: {stem}o; fem sg: {stem}a; masc pl: {stem}os; fem pl: {stem}as"
+    return metadata
+
+
+def _pluralize_spanish_noun(noun: str) -> str:
+    if not noun:
+        return noun
+    if noun.endswith(("s", "x")):
+        return noun
+    if noun[-1] in _VOWELS:
+        return noun + "s"
+    if noun.endswith("z"):
+        return noun[:-1] + "ces"
+    stem = noun.translate(str.maketrans({"á": "a", "é": "e", "í": "i", "ó": "o", "ú": "u"}))
+    return stem + "es"
+
+
+def _singularize_spanish_noun(noun: str) -> str:
+    if noun.endswith("ces"):
+        return noun[:-3] + "z"
+    if noun.endswith("es") and len(noun) > 3:
+        return noun[:-2]
+    if noun.endswith("s") and len(noun) > 2:
+        return noun[:-1]
+    return noun
+
+
+def _regular_verb_forms(verb: str) -> str:
+    if len(verb) < 3:
+        return ""
+    ending = verb[-2:]
+    endings = {
+        "ar": "yo -o; tú -as; él/ella -a; nosotros -amos; ellos -an",
+        "er": "yo -o; tú -es; él/ella -e; nosotros -emos; ellos -en",
+        "ir": "yo -o; tú -es; él/ella -e; nosotros -imos; ellos -en",
+    }.get(ending)
+    if not endings:
+        return ""
+    return f"infinitive: {verb}; -{ending} pattern: {endings}; check irregular or stem-changing forms separately"
+
 
 def _parse_header_directive(line: str, mapping: Dict[str, int]) -> None:
     """Parse header directives such as '#deck column:3' into column indexes."""
@@ -347,6 +423,25 @@ def load_glossary(glossary_path: str | None) -> Dict[str, Dict[str, str]]:
         spanish_key = _pick_header_key(headers, "spanish")
         spanish_meaning_key = _pick_header_key(headers, "spanish_meaning")
         example_key = _pick_header_key(headers, "spanish_example", "example")
+        spanish_article_key = _pick_header_key(headers, "spanish_article", "article")
+        spanish_gender_key = _pick_header_key(headers, "spanish_gender", "gender")
+        spanish_number_key = _pick_header_key(headers, "spanish_number", "number")
+        spanish_pos_key = _pick_header_key(headers, "spanish_part_of_speech", "part_of_speech", "pos", "word_class")
+        spanish_forms_key = _pick_header_key(headers, "spanish_forms", "forms", "inflections")
+        spanish_meaning_en_key = _pick_header_key(
+            headers,
+            "spanish_meaning_en",
+            "spanish_meaning_english",
+            "english_spanish_meaning",
+            "spanish_meaning_translation",
+        )
+        spanish_example_en_key = _pick_header_key(
+            headers,
+            "spanish_example_en",
+            "spanish_example_english",
+            "english_spanish_example",
+            "spanish_example_translation",
+        )
         notes_key = _pick_header_key(headers, "notes")
 
         if not english_key or not spanish_key:
@@ -361,6 +456,13 @@ def load_glossary(glossary_path: str | None) -> Dict[str, Dict[str, str]]:
                 "spanish": (row.get(spanish_key) or "").strip(),
                 "spanish_meaning": (row.get(spanish_meaning_key) or "").strip() if spanish_meaning_key else "",
                 "spanish_example": (row.get(example_key) or "").strip() if example_key else "",
+                "spanish_article": (row.get(spanish_article_key) or "").strip() if spanish_article_key else "",
+                "spanish_gender": (row.get(spanish_gender_key) or "").strip() if spanish_gender_key else "",
+                "spanish_number": (row.get(spanish_number_key) or "").strip() if spanish_number_key else "",
+                "spanish_part_of_speech": (row.get(spanish_pos_key) or "").strip() if spanish_pos_key else "",
+                "spanish_forms": (row.get(spanish_forms_key) or "").strip() if spanish_forms_key else "",
+                "spanish_meaning_en": (row.get(spanish_meaning_en_key) or "").strip() if spanish_meaning_en_key else "",
+                "spanish_example_en": (row.get(spanish_example_en_key) or "").strip() if spanish_example_en_key else "",
                 "notes": (row.get(notes_key) or "").strip() if notes_key else "",
             }
             english_meaning = (row.get(english_meaning_key) or "").strip() if english_meaning_key else ""
@@ -413,6 +515,7 @@ def build_spanish_rows(
         is_reviewed = bool(glossary_row)
 
         spanish = glossary_row.get("spanish", "").strip() if glossary_row else ""
+        inferred = infer_spanish_metadata(spanish, english) if spanish else {}
         status = STATUS_REVIEWED if is_reviewed else STATUS_NEEDS_TRANSLATION
         source_deck = source_row.get("deck", "").strip()
         source_slug = _slugify(source_deck) or "source_unknown"
@@ -428,6 +531,48 @@ def build_spanish_rows(
                 "english_example": source_row.get("english_example", "").strip(),
                 "spanish_meaning": glossary_row.get("spanish_meaning", "").strip() if glossary_row else "",
                 "spanish_example": glossary_row.get("spanish_example", "").strip() if glossary_row else "",
+                "spanish_meaning_en": (
+                    glossary_row.get("spanish_meaning_en", "").strip()
+                    or source_row.get("english_meaning", "").strip()
+                    if glossary_row
+                    else ""
+                ),
+                "spanish_example_en": (
+                    glossary_row.get("spanish_example_en", "").strip()
+                    or source_row.get("english_example", "").strip()
+                    if glossary_row
+                    else ""
+                ),
+                "spanish_article": (
+                    glossary_row.get("spanish_article", "").strip()
+                    or inferred.get("spanish_article", "")
+                    if glossary_row
+                    else ""
+                ),
+                "spanish_gender": (
+                    glossary_row.get("spanish_gender", "").strip()
+                    or inferred.get("spanish_gender", "")
+                    if glossary_row
+                    else ""
+                ),
+                "spanish_number": (
+                    glossary_row.get("spanish_number", "").strip()
+                    or inferred.get("spanish_number", "")
+                    if glossary_row
+                    else ""
+                ),
+                "spanish_part_of_speech": (
+                    glossary_row.get("spanish_part_of_speech", "").strip()
+                    or inferred.get("spanish_part_of_speech", "")
+                    if glossary_row
+                    else ""
+                ),
+                "spanish_forms": (
+                    glossary_row.get("spanish_forms", "").strip()
+                    or inferred.get("spanish_forms", "")
+                    if glossary_row
+                    else ""
+                ),
                 "notes": glossary_row.get("notes", "").strip() if glossary_row else "",
                 "status": status,
                 "source_deck": source_deck,
@@ -444,9 +589,25 @@ def _back_field_for_basic(record: Dict[str, str]) -> str:
         if record.get("pronunciation_hint"):
             parts.append(f"Pronunciation: {record['pronunciation_hint']}")
         if record["spanish_meaning"]:
-            parts.append(f"Meaning: {record['spanish_meaning']}")
+            parts.append(f"Spanish meaning: {record['spanish_meaning']}")
+        if record.get("spanish_meaning_en"):
+            parts.append(f"Meaning in English: {record['spanish_meaning_en']}")
         if record["spanish_example"]:
-            parts.append(f"Example: {record['spanish_example']}")
+            parts.append(f"Spanish example: {record['spanish_example']}")
+        if record.get("spanish_example_en"):
+            parts.append(f"Example in English: {record['spanish_example_en']}")
+        grammar_parts = []
+        for label, key in [
+            ("Part of speech", "spanish_part_of_speech"),
+            ("Article", "spanish_article"),
+            ("Gender", "spanish_gender"),
+            ("Number", "spanish_number"),
+            ("Forms", "spanish_forms"),
+        ]:
+            if record.get(key):
+                grammar_parts.append(f"{label}: {record[key]}")
+        if grammar_parts:
+            parts.append("Grammar:\n" + "\n".join(grammar_parts))
         source_parts = [
             value
             for value in (record.get("english_meaning", ""), record.get("english_example", ""))
@@ -495,6 +656,13 @@ def write_spanish_files(
             row["pronunciation_hint"],
             row["spanish_meaning"],
             row["spanish_example"],
+            row["spanish_meaning_en"],
+            row["spanish_example_en"],
+            row["spanish_article"],
+            row["spanish_gender"],
+            row["spanish_number"],
+            row["spanish_part_of_speech"],
+            row["spanish_forms"],
             row["notes"],
             row["status"],
             row["source_deck"],
@@ -533,6 +701,13 @@ def write_spanish_files(
             "Pronunciation Hint",
             "Spanish Meaning",
             "Spanish Example",
+            "Spanish Meaning (English)",
+            "Spanish Example (English)",
+            "Spanish Article",
+            "Spanish Gender",
+            "Spanish Number",
+            "Spanish Part of Speech",
+            "Spanish Forms",
             "Notes",
             "Status",
             "Source Deck",
