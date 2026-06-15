@@ -1,5 +1,6 @@
 import argparse
 import csv
+import html
 import io
 import re
 from pathlib import Path
@@ -31,6 +32,24 @@ def _normalize_level(value):
 def _html_list(examples):
     parts = [part.strip() for part in re.split(r"\s+\|\s+", examples) if part.strip()]
     return "<br>".join(f"- {part}" for part in parts)
+
+
+def _front_html(front, phrase):
+    escaped_front = html.escape(front)
+    exact_phrase = phrase.strip()
+    if exact_phrase.lower().startswith("to "):
+        exact_phrase = exact_phrase[3:]
+    if not any(token in exact_phrase.lower() for token in ("something", "yourself", "your ")):
+        exact_pattern = re.compile(rf"\b({re.escape(html.escape(exact_phrase))})\b", re.IGNORECASE)
+        if exact_pattern.search(escaped_front):
+            return exact_pattern.sub(r'<span class="target-phrase">\1</span>', escaped_front, count=1)
+    words = [word for word in re.findall(r"[A-Za-z']+", phrase) if word.lower() not in {"to"}]
+    candidates = sorted({word for word in words if len(word) > 2}, key=len, reverse=True)
+    for word in candidates:
+        pattern = re.compile(rf"\b({re.escape(word)})\b", re.IGNORECASE)
+        if pattern.search(escaped_front):
+            return pattern.sub(r'<span class="target-phrase">\1</span>', escaped_front, count=1)
+    return escaped_front
 
 
 def _tags(level, phrase, raw_tags):
@@ -75,6 +94,7 @@ def load_cards(source_path=SOURCE_PATH):
                     "level": level,
                     "phrase": phrase,
                     "front": front,
+                    "front_html": _front_html(front, phrase),
                     "meaning": meaning,
                     "examples": examples,
                     "tags": _tags(level, phrase, row.get("Tags", "")),
@@ -184,7 +204,7 @@ def render_tsv(cards):
         for line in ("#separator:tab", "#html:true"):
             output.write(f"{line}\n")
         writer = csv.writer(output, delimiter="\t", lineterminator="\n")
-        writer.writerow(["SourceID", "Level", "Phrase", "Front", "Meaning", "Examples", "Tags"])
+        writer.writerow(["SourceID", "Level", "Phrase", "Front", "FrontHTML", "Meaning", "Examples", "Tags"])
         for card in cards:
             writer.writerow(
                 [
@@ -192,6 +212,7 @@ def render_tsv(cards):
                     card["level"],
                     card["phrase"],
                     card["front"],
+                    card["front_html"],
                     card["meaning"],
                     _html_list(card["examples"]),
                     card["tags"],
