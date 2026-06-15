@@ -54,12 +54,12 @@ class TestAnkiAutomation(unittest.TestCase):
         self.assertTrue(cards)
         self.assertTrue(all(card["level"] == "b2_tense_system" for card in cards))
 
-        contrast_cards = grammar_levels.get_cards(level="b2_tense_system", card_type="contrast")
-        self.assertTrue(contrast_cards)
-        self.assertTrue(all(card["card_type"] == "contrast" for card in contrast_cards))
+        choose_cards = grammar_levels.get_cards(level="b2_tense_system", card_type="choose")
+        self.assertTrue(choose_cards)
+        self.assertTrue(all(card["card_type"] == "choose" for card in choose_cards))
 
         basic_cards = grammar_levels.get_cards(card_type="basic")
-        self.assertTrue(all(card["card_type"] in {"rule", "contrast", "correction", "production", "choose", "pattern"} for card in basic_cards))
+        self.assertTrue(all(card["card_type"] == "choose" for card in basic_cards))
 
     def test_grammar_level_minimum_counts(self):
         """Test the maintenance deck is compact, hard, and covers each level."""
@@ -70,18 +70,18 @@ class TestAnkiAutomation(unittest.TestCase):
             cards = grammar_levels.get_cards(level=level["id"])
             by_type = Counter(card["card_type"] for card in cards)
 
-            self.assertGreaterEqual(len(cards), 4, f"Too few cards for {level['id']}.")
-            self.assertIn("rule", by_type)
-            self.assertGreaterEqual(by_type["rule"], 1)
+            self.assertGreaterEqual(len(cards), 12, f"Too few cards for {level['id']}.")
+            self.assertEqual(set(by_type.keys()), {"choose"})
+            self.assertGreaterEqual(by_type["choose"], 12)
             self.assertEqual(sum(by_type.values()), len(cards))
             self.assertEqual(summary[level["id"]], len(cards))
             all_types.update(by_type)
             total_cards += len(cards)
 
-        self.assertGreaterEqual(total_cards, 35)
-        self.assertLessEqual(total_cards, 180)
-        for card_type in ("rule", "contrast", "correction", "production", "choose", "pattern"):
-            self.assertGreater(all_types[card_type], 0)
+        self.assertGreaterEqual(total_cards, 90)
+        self.assertLessEqual(total_cards, 140)
+        self.assertEqual(set(all_types.keys()), {"choose"})
+        self.assertGreater(all_types["choose"], 0)
 
     def test_grammar_tsv_renderers(self):
         """Test renderer boundaries for Basic and Cloze outputs."""
@@ -105,24 +105,23 @@ class TestAnkiAutomation(unittest.TestCase):
 
     def test_grammar_formula_cards_exist(self):
         """Test explicit grammar formula cards for requested tense/modal/conditional systems."""
-        rule_cards = grammar_levels.get_cards(card_type="rule")
-        all_back_text = " | ".join(card["back"].lower() for card in rule_cards)
+        choose_cards = grammar_levels.get_cards(card_type="choose")
+        all_back_text = " | ".join(card["back"].lower() for card in choose_cards)
         expected_markers = [
-            "have/has + v3",
-            "have/has been + v-ing",
+            "have/has +",
             "had + v3",
-            "will + v1",
-            "going to + v1",
-            "will have + v3",
+            "will +",
+            "going to +",
+            "will have +",
             "be + v3",
-            "modal + v1",
+            "modal",
             "modal + have + v3",
             "if + present, will + v1",
             "if + v2, would + v1",
             "if + had + v3, would have + v3",
-            "a/an/the/zero article",
+            "a/an/the/zero",
             "who/which/that",
-            "demand/recommend/insist",
+            "recommend/require + that",
             "nominalisation",
         ]
         for marker in expected_markers:
@@ -184,15 +183,15 @@ class TestAnkiAutomation(unittest.TestCase):
             self.assertNotIn(pattern, all_text, f"Found known bad grammar pattern: {pattern}")
 
     def test_grammar_passive_rule_examples(self):
-        """Test passive voice is taught as a reusable rule, not isolated blanks."""
+        """Test passive voice is taught as a reusable choose card."""
         cards = [
             card
-            for card in grammar_levels.get_cards(level="b2_sentence_control")
-            if card["card_type"] == "rule" and card["topic"] == "passive voice"
+            for card in grammar_levels.get_cards(level="b2_sentence_control", card_type="choose")
+            if card["topic"] == "passive voice"
         ]
         self.assertTrue(cards)
         text = "\n".join(card["back"].lower() for card in cards)
-        for marker in ("be + v3", "was approved", "were sent", "has been fixed"):
+        for marker in ("be + v3", "was reviewed", "will be introduced", "had been"):
             self.assertIn(marker, text)
 
     def test_grammar_sentence_template_stem_repetition(self):
@@ -405,6 +404,16 @@ class TestAnkiAutomation(unittest.TestCase):
         }
         for word, expected in examples.items():
             self.assertEqual(spanish_deck.spanish_pronunciation_hint(word), expected)
+
+    def test_spanish_metadata_uses_conservative_forms(self):
+        """Test inferred Spanish grammar does not invent risky forms."""
+        noun = spanish_deck.infer_spanish_metadata("el cinturón")
+        self.assertEqual(noun["spanish_forms"], "singular: el cinturón; plural: los cinturones")
+
+        verb = spanish_deck.infer_spanish_metadata("aprobar")
+        self.assertIn("-ar pattern", verb["spanish_forms"])
+        self.assertIn("check irregular or stem-changing forms separately", verb["spanish_forms"])
+        self.assertNotIn("aprobo", verb["spanish_forms"])
 
     def test_english_phrase_deck_quality(self):
         """Test the natural phrase deck has concrete phrase-recognition cards."""
@@ -645,6 +654,13 @@ class TestAnkiAutomation(unittest.TestCase):
                     "Pronunciation Hint",
                     "Spanish Meaning",
                     "Spanish Example",
+                    "Spanish Meaning (English)",
+                    "Spanish Example (English)",
+                    "Spanish Article",
+                    "Spanish Gender",
+                    "Spanish Number",
+                    "Spanish Part of Speech",
+                    "Spanish Forms",
                     "Notes",
                     "Status",
                     "Source Deck",
@@ -685,8 +701,11 @@ class TestAnkiAutomation(unittest.TestCase):
             back = basic_data[1][1]
             self.assertIn("English: apple", back)
             self.assertIn("Pronunciation: man-SA-na", back)
-            self.assertIn("Meaning: fruta", back)
-            self.assertIn("Example: La manzana es roja.", back)
+            self.assertIn("Spanish meaning: fruta", back)
+            self.assertIn("Meaning in English: An apple is a fruit.", back)
+            self.assertIn("Spanish example: La manzana es roja.", back)
+            self.assertIn("Example in English: The apple is red.", back)
+            self.assertNotIn("Part of speech: adjective", back)
             self.assertIn("English source:", back)
             self.assertIn("An apple is a fruit.", back)
             self.assertIn("The apple is red.", back)
