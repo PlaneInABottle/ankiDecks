@@ -22,12 +22,14 @@ _ACCENT_MAP = str.maketrans("áéíóúü", "aeiouu")
 
 def normalize_word(value: str) -> str:
     """Normalize a vocab word for stable glossary matching."""
-    return " ".join((value or "").strip().lower().split())
+    text = re.sub(r"<[^>]+>", "", value or "")
+    return " ".join(text.strip().lower().split())
 
 
 def normalize_context(value: str) -> str:
     """Normalize source context for duplicate word disambiguation."""
-    return " ".join((value or "").strip().lower().split())
+    text = re.sub(r"<[^>]+>", "", value or "")
+    return " ".join(text.strip().lower().split())
 
 
 def context_key(english: str, english_meaning: str = "", english_example: str = "") -> str:
@@ -453,6 +455,9 @@ def load_glossary(glossary_path: str | None) -> Dict[str, Dict[str, str]]:
             if not english:
                 continue
             entry = {
+                "english": english,
+                "english_meaning": (row.get(english_meaning_key) or "").strip() if english_meaning_key else "",
+                "english_example": (row.get(english_example_key) or "").strip() if english_example_key else "",
                 "spanish": (row.get(spanish_key) or "").strip(),
                 "spanish_meaning": (row.get(spanish_meaning_key) or "").strip() if spanish_meaning_key else "",
                 "spanish_example": (row.get(example_key) or "").strip() if example_key else "",
@@ -523,12 +528,20 @@ def build_spanish_rows(
 
         output_rows.append(
             {
-                "english": english,
+                "english": glossary_row.get("english", "").strip() if glossary_row and glossary_row.get("english") else re.sub(r"<[^>]+>", "", english).strip(),
                 "spanish": spanish,
                 "pronunciation_hint": spanish_pronunciation_hint(spanish) if spanish else "",
                 "image": source_row.get("image", "").strip(),
-                "english_meaning": source_row.get("english_meaning", "").strip(),
-                "english_example": source_row.get("english_example", "").strip(),
+                "english_meaning": (
+                    glossary_row.get("english_meaning", "").strip()
+                    if glossary_row and glossary_row.get("english_meaning")
+                    else re.sub(r"<[^>]+>", "", source_row.get("english_meaning", "")).strip()
+                ),
+                "english_example": (
+                    glossary_row.get("english_example", "").strip()
+                    if glossary_row and glossary_row.get("english_example")
+                    else re.sub(r"<[^>]+>", "", source_row.get("english_example", "")).strip()
+                ),
                 "spanish_meaning": glossary_row.get("spanish_meaning", "").strip() if glossary_row else "",
                 "spanish_example": glossary_row.get("spanish_example", "").strip() if glossary_row else "",
                 "spanish_meaning_en": (
