@@ -66,13 +66,14 @@ Current implementation:
   - A2.2 Natural Spanish: 158
   - B1 Bridge: 50
 - Current card families:
-  - rule
-  - recognition
-  - typed correction
-  - typed production
-  - mini pattern
-  - typed cloze from sourced sentences
-  - audio cloze from sourced sentences
+  - rule: 89
+  - typed contrast: 89
+  - typed correction: 89
+  - typed production: 89
+  - mini pattern: 89
+  - typed cloze from sourced sentences: 438
+  - audio cloze from sourced sentences: 180
+- No A/B multiple-choice recognition cards remain in this active core deck.
 
 ## Target Size
 
@@ -99,12 +100,12 @@ Goal: learn sentence shape, articles, gender, basic verbs, and survival chunks.
 
 Recommended mix:
 
-- 45-55% recognition
-- 25-30% typed cloze
-- 10-15% typed production
-- 10-15% correction / mini patterns
+- 30-40% typed contrast and typed correction
+- 25-35% typed cloze
+- 10-20% typed production
+- 10-15% rule / mini pattern anchors
 
-Avoid long sentence production at A0.
+Avoid long sentence production at A0. Use passive recognition in `Spanish 4000 Words`, not in the active core deck.
 
 ### A1
 
@@ -112,10 +113,10 @@ Goal: build controlled present-tense output.
 
 Recommended mix:
 
-- 30-40% recognition
-- 30-35% typed cloze
-- 15-20% typed production
-- 10-15% correction / transformation
+- 20-30% typed contrast and typed correction
+- 35-45% typed cloze
+- 15-25% typed production
+- 10-15% rule / mini pattern anchors
 
 Typed answers should be short and constrained.
 
@@ -125,10 +126,10 @@ Goal: choose between similar forms and produce common structures.
 
 Recommended mix:
 
-- 15-25% recognition
-- 35-40% typed cloze
-- 20-25% typed production
-- 15-20% correction / transformation
+- 15-25% typed contrast and correction
+- 40-50% typed cloze
+- 20-30% typed production
+- 5-10% rule / mini pattern anchors
 
 Use more tense contrast, prepositions, pronouns, connectors, and short sentence transformations.
 
