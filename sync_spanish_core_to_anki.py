@@ -101,11 +101,6 @@ CSS = """
   color: #9c2f24;
   text-decoration: line-through;
 }
-.english-mirror {
-  color: #5e574d;
-  font-size: 18px;
-  font-weight: 500;
-}
 .type-note {
   color: #6d6252;
   font-size: 14px;
