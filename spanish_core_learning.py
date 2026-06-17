@@ -98,6 +98,17 @@ def _examples_html(examples):
     return "<br>".join(f"- {example}" for example in examples)
 
 
+def _strip_choice_prefix(text):
+    return re.sub(r"^[A-Z]\)\s*", "", text).strip()
+
+
+def _typed_contrast_front(choose_front):
+    prompt = re.sub(r"(?i)^choose:?\s*", "", choose_front).strip()
+    prompt = re.sub(r"<br>[A-Z]\)\s*[^<]+", "", prompt).strip()
+    prompt = prompt.replace("___", "_____")
+    return f"Type the correct Spanish form:<br>{prompt}"
+
+
 def _tags(level, topic, card_type):
     return " ".join(
         [
@@ -177,15 +188,17 @@ def _topic_cards(topic):
         )
     ]
     choose_front, choose_answer, choose_reason = topic["choose"]
+    typed_contrast_answer = _strip_choice_prefix(choose_answer)
+    typed_contrast_mode = "type_exact" if len(typed_contrast_answer.split()) <= 4 else "type_compare"
     cards.append(
         _card(
-            f"{level}::{slug}::recognition",
+            f"{level}::{slug}::typed_contrast",
             level,
             topic_name,
-            "recognition",
-            "recognition",
-            choose_front,
-            choose_answer,
+            "typed_contrast",
+            typed_contrast_mode,
+            _typed_contrast_front(choose_front),
+            typed_contrast_answer,
             choose_reason,
             topic["formula"],
             examples,

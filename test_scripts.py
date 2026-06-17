@@ -401,9 +401,12 @@ class TestAnkiAutomation(unittest.TestCase):
         self.assertLessEqual(len(cards), 1500)
         self.assertGreaterEqual(by_type["typed_correction"], 80)
         self.assertGreaterEqual(by_type["typed_production"], 80)
+        self.assertGreaterEqual(by_type["typed_contrast"], 80)
+        self.assertEqual(by_type["recognition"], 0)
         self.assertGreaterEqual(by_type["typed_cloze"], 350)
         self.assertGreaterEqual(by_type["audio_cloze"], 120)
-        self.assertGreaterEqual(by_prompt["type_exact"] + by_prompt["type_compare"], 700)
+        self.assertEqual(by_prompt["recognition"], 0)
+        self.assertGreaterEqual(by_prompt["type_exact"] + by_prompt["type_compare"], 780)
         self.assertGreaterEqual(by_level["b1_bridge"], 15)
         self.assertEqual(spanish_core_learning.validate_cards(cards), [])
 
