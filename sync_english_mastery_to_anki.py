@@ -7,40 +7,16 @@ import time
 import urllib.request
 from pathlib import Path
 
+import english_mastery
 
-MODEL_NAME = "Spanish Core Learning"
-IMPORT_PATH = Path("generated/spanish_core/spanish_core_learning.tsv")
+
+MODEL_NAME = "English Mastery"
+IMPORT_PATH = Path("generated/english_mastery/english_mastery.tsv")
 OLD_DECKS = [
-    "Spanish Grammar",
-    "Spanish Grammar::A0 Survival",
-    "Spanish Grammar::A1.1 Foundations",
-    "Spanish Grammar::A1.2 Core Sentences",
-    "Spanish Grammar::A2.1 Daily Past",
-    "Spanish Grammar::A2.2 Natural Spanish",
+    "English Grammar Maintenance",
+    "English Natural Phrases",
 ]
-
-FIELDS = [
-    "SourceID",
-    "DeckPath",
-    "Level",
-    "Topic",
-    "CardType",
-    "PromptMode",
-    "Front",
-    "Answer",
-    "TypeAnswer",
-    "Back",
-    "Formula",
-    "Examples",
-    "Audio",
-    "AudioURL",
-    "AudioContributor",
-    "AudioLicense",
-    "AudioID",
-    "Source",
-    "Attribution",
-    "Tags",
-]
+FIELDS = english_mastery.FIELDS
 
 CSS = """
 .card {
@@ -52,7 +28,7 @@ CSS = """
   text-align: center;
 }
 .wrap {
-  max-width: 720px;
+  max-width: 760px;
   margin: 0 auto;
   padding: 18px 14px;
 }
@@ -64,14 +40,9 @@ CSS = """
   margin-bottom: 12px;
 }
 .front {
-  font-size: 26px;
+  font-size: 25px;
   font-weight: 650;
   margin: 14px 0;
-}
-.topic-label {
-  color: #7a4f20;
-  font-size: 18px;
-  font-weight: 600;
 }
 .answer {
   color: #1d5f52;
@@ -97,10 +68,6 @@ CSS = """
   color: #373128;
   font-size: 18px;
 }
-.wrong-spanish {
-  color: #9c2f24;
-  text-decoration: line-through;
-}
 .type-note {
   color: #6d6252;
   font-size: 14px;
@@ -121,7 +88,7 @@ FRONT_TEMPLATE = """
   <div class="meta">{{Level}} · {{CardType}}</div>
   <div class="front">{{Front}}</div>
   {{#TypeAnswer}}
-    <div class="type-note">Type the Spanish answer, then compare carefully.</div>
+    <div class="type-note">Type your answer, then compare carefully.</div>
     {{type:TypeAnswer}}
   {{/TypeAnswer}}
   {{^TypeAnswer}}
@@ -138,17 +105,21 @@ BACK_TEMPLATE = """
     <div class="answer">{{Answer}}</div>
   </div>
   <div class="section">
-    <div class="label">Why</div>
+    <div class="label">Why / Meaning</div>
     <div class="detail">{{Back}}</div>
   </div>
+  {{#Formula}}
   <div class="section">
     <div class="label">Formula</div>
     <div class="detail">{{Formula}}</div>
   </div>
+  {{/Formula}}
+  {{#Examples}}
   <div class="section">
     <div class="label">Examples</div>
     <div class="examples">{{Examples}}</div>
   </div>
+  {{/Examples}}
   {{#Source}}
   <div class="source">{{Source}}<br>{{Attribution}}</div>
   {{/Source}}
@@ -178,13 +149,7 @@ def ensure_model():
             modelName=MODEL_NAME,
             inOrderFields=FIELDS,
             css=CSS,
-            cardTemplates=[
-                {
-                    "Name": "Spanish Core Card",
-                    "Front": FRONT_TEMPLATE,
-                    "Back": BACK_TEMPLATE,
-                }
-            ],
+            cardTemplates=[{"Name": "English Mastery Card", "Front": FRONT_TEMPLATE, "Back": BACK_TEMPLATE}],
         )
         return
     existing_fields = invoke("modelFieldNames", modelName=MODEL_NAME)
@@ -192,7 +157,7 @@ def ensure_model():
         if field not in existing_fields:
             invoke("modelFieldAdd", modelName=MODEL_NAME, fieldName=field)
             existing_fields.append(field)
-    invoke("updateModelTemplates", model={"name": MODEL_NAME, "templates": {"Spanish Core Card": {"Front": FRONT_TEMPLATE, "Back": BACK_TEMPLATE}}})
+    invoke("updateModelTemplates", model={"name": MODEL_NAME, "templates": {"English Mastery Card": {"Front": FRONT_TEMPLATE, "Back": BACK_TEMPLATE}}})
     invoke("updateModelStyling", model={"name": MODEL_NAME, "css": CSS})
 
 
@@ -203,29 +168,16 @@ def load_rows(path):
     return [dict(zip(header, row)) for row in rows[3:]]
 
 
-def find_existing_note(source_id):
-    note_ids = invoke("findNotes", query=f'"SourceID:{source_id}"')
-    return note_ids[0] if note_ids else None
-
-
 def load_existing_notes():
     note_ids = invoke("findNotes", query=f'note:"{MODEL_NAME}"')
     if not note_ids:
         return {}
     existing = {}
     for note in invoke("notesInfo", notes=note_ids):
-        fields = note.get("fields", {})
-        source_id = fields.get("SourceID", {}).get("value", "")
+        source_id = note.get("fields", {}).get("SourceID", {}).get("value", "")
         if source_id:
             existing[source_id] = note["noteId"]
     return existing
-
-
-def strip_audio(row):
-    audio = row.get("Audio", "")
-    if audio:
-        row["Front"] = row.get("Front", "").replace(f"{audio}<br><br>", "").replace(audio, "")
-        row["Audio"] = ""
 
 
 def store_audio(row):
@@ -234,23 +186,18 @@ def store_audio(row):
     if not audio_url or not audio.startswith("[sound:"):
         return
     filename = audio.removeprefix("[sound:").removesuffix("]")
-    try:
-        result = subprocess.run(
-            ["curl", "-fsSL", "--max-time", "15", "--retry", "1", "-A", "Mozilla/5.0", audio_url],
-            check=True,
-            capture_output=True,
-            timeout=20,
-        )
-        audio_data = result.stdout
-        invoke("storeMediaFile", filename=filename, data=base64.b64encode(audio_data).decode("ascii"))
-    except (OSError, RuntimeError, subprocess.CalledProcessError) as error:
-        print(f"Audio skipped for {row.get('SourceID')}: {error}")
-        strip_audio(row)
+    result = subprocess.run(
+        ["curl", "-fsSL", "--max-time", "15", "--retry", "1", "-A", "Mozilla/5.0", audio_url],
+        check=True,
+        capture_output=True,
+        timeout=20,
+    )
+    invoke("storeMediaFile", filename=filename, data=base64.b64encode(result.stdout).decode("ascii"))
 
 
 def sync_media(rows):
     audio_rows = [row for row in rows if row.get("AudioURL")]
-    existing_media = set(invoke("getMediaFilesNames", pattern="tatoeba_spa_*.mp3"))
+    existing_media = set(invoke("getMediaFilesNames", pattern="tatoeba_eng_*.mp3"))
     stored = 0
     skipped = 0
     for index, row in enumerate(audio_rows, start=1):
@@ -266,14 +213,13 @@ def sync_media(rows):
 
 
 def sync_rows(rows, store_media=True):
+    existing_notes = load_existing_notes()
     created = 0
     updated = 0
     moved = 0
-    existing_notes = load_existing_notes()
     for deck_name in sorted({row["DeckPath"] for row in rows}):
         invoke("createDeck", deck=deck_name)
     for index, row in enumerate(rows, start=1):
-        deck_name = row["DeckPath"]
         if store_media:
             store_audio(row)
         fields = {field: row.get(field, "") for field in FIELDS}
@@ -282,14 +228,14 @@ def sync_rows(rows, store_media=True):
             invoke("updateNoteFields", note={"id": note_id, "fields": fields})
             card_ids = invoke("findCards", query=f"nid:{note_id}")
             if card_ids:
-                invoke("changeDeck", cards=card_ids, deck=deck_name)
+                invoke("changeDeck", cards=card_ids, deck=row["DeckPath"])
                 moved += len(card_ids)
             updated += 1
         else:
             invoke(
                 "addNote",
                 note={
-                    "deckName": deck_name,
+                    "deckName": row["DeckPath"],
                     "modelName": MODEL_NAME,
                     "fields": fields,
                     "options": {"allowDuplicate": False, "duplicateScope": "deck"},
@@ -298,35 +244,17 @@ def sync_rows(rows, store_media=True):
             )
             created += 1
         if index % 100 == 0:
-            print(f"Synced {index}/{len(rows)} rows...")
+            print(f"Synced {index}/{len(rows)} rows...", flush=True)
     return {"created": created, "updated": updated, "moved_cards": moved}
 
 
 def prune_stale_notes(valid_source_ids):
     note_ids = invoke("findNotes", query=f'note:"{MODEL_NAME}"')
-    if not note_ids:
-        return 0
     stale_note_ids = []
     for note in invoke("notesInfo", notes=note_ids):
-        fields = note.get("fields", {})
-        source_id = fields.get("SourceID", {}).get("value", "")
+        source_id = note.get("fields", {}).get("SourceID", {}).get("value", "")
         if source_id and source_id not in valid_source_ids:
             stale_note_ids.append(note["noteId"])
-    if stale_note_ids:
-        invoke("deleteNotes", notes=stale_note_ids)
-    return len(stale_note_ids)
-
-
-def prune_foreign_core_notes():
-    card_ids = invoke("findCards", query=f'deck:"{MODEL_NAME}"')
-    if not card_ids:
-        return 0
-    note_ids = sorted({card["note"] for card in invoke("cardsInfo", cards=card_ids)})
-    stale_note_ids = [
-        note["noteId"]
-        for note in invoke("notesInfo", notes=note_ids)
-        if note.get("modelName") != MODEL_NAME
-    ]
     if stale_note_ids:
         invoke("deleteNotes", notes=stale_note_ids)
     return len(stale_note_ids)
@@ -341,12 +269,12 @@ def delete_old_decks():
 
 
 def parse_args(argv=None):
-    parser = argparse.ArgumentParser(description="Sync Spanish Core Learning deck to Anki.")
+    parser = argparse.ArgumentParser(description="Sync English Mastery deck to Anki.")
     parser.add_argument("--path", default=str(IMPORT_PATH))
-    parser.add_argument("--delete-old-spanish-grammar", action="store_true")
-    parser.add_argument("--prune-stale", action="store_true", help="Delete Spanish Core Learning notes missing from the TSV.")
-    parser.add_argument("--skip-media", action="store_true", help="Sync notes without storing audio media; sound tags stay on audio cards.")
-    parser.add_argument("--media-only", action="store_true", help="Only store audio media from the TSV.")
+    parser.add_argument("--prune-stale", action="store_true")
+    parser.add_argument("--delete-old-english-decks", action="store_true")
+    parser.add_argument("--skip-media", action="store_true")
+    parser.add_argument("--media-only", action="store_true")
     return parser.parse_args(argv)
 
 
@@ -360,21 +288,8 @@ def main(argv=None):
         return 0
     result = sync_rows(rows, store_media=not args.skip_media)
     pruned = prune_stale_notes({row["SourceID"] for row in rows}) if args.prune_stale else 0
-    pruned_foreign = prune_foreign_core_notes() if args.prune_stale else 0
-    deleted = delete_old_decks() if args.delete_old_spanish_grammar else []
-    print(
-        json.dumps(
-            {
-                "synced": result,
-                "pruned_stale_notes": pruned,
-                "pruned_foreign_core_notes": pruned_foreign,
-                "deleted_decks": deleted,
-                "rows": len(rows),
-            },
-            ensure_ascii=False,
-            indent=2,
-        )
-    )
+    deleted = delete_old_decks() if args.delete_old_english_decks else []
+    print(json.dumps({"synced": result, "pruned_stale_notes": pruned, "deleted_decks": deleted, "rows": len(rows)}, ensure_ascii=False, indent=2))
     return 0
 
 

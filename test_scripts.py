@@ -20,6 +20,7 @@ import spanish_grammar_levels
 import spanish_core_learning
 import spanish_deck
 import english_phrases
+import english_mastery
 
 
 def _template_stem(text):
@@ -409,6 +410,10 @@ class TestAnkiAutomation(unittest.TestCase):
         self.assertGreaterEqual(by_prompt["type_exact"] + by_prompt["type_compare"], 780)
         self.assertGreaterEqual(by_level["b1_bridge"], 15)
         self.assertEqual(spanish_core_learning.validate_cards(cards), [])
+        self.assertNotIn(
+            "Meaning cue:",
+            "\n".join(card["Front"] for card in cards),
+        )
 
         typed_cards = [card for card in cards if card["PromptMode"].startswith("type_")]
         self.assertTrue(all(card["TypeAnswer"] == card["Answer"] for card in typed_cards))
@@ -558,6 +563,45 @@ class TestAnkiAutomation(unittest.TestCase):
         ]
         for pattern in bad_patterns:
             self.assertNotIn(pattern, all_text)
+
+    def test_english_mastery_structure(self):
+        """Test English Mastery uses active recall instead of recognition decks."""
+        cards = english_mastery.get_cards()
+        by_type = Counter(card["CardType"] for card in cards)
+        by_prompt = Counter(card["PromptMode"] for card in cards)
+
+        self.assertGreaterEqual(len(cards), 950)
+        self.assertLessEqual(len(cards), 1100)
+        self.assertGreaterEqual(by_type["phrase_cloze"], 350)
+        self.assertGreaterEqual(by_type["phrase_production"], 250)
+        self.assertGreaterEqual(by_type["typed_contrast"], 90)
+        self.assertGreaterEqual(by_type["audio_cloze"], 100)
+        self.assertGreaterEqual(by_type["dictation"], 50)
+        self.assertEqual(by_type["recognition"], 0)
+        self.assertEqual(by_prompt["recognition"], 0)
+        self.assertGreaterEqual(by_prompt["type_exact"] + by_prompt["type_compare"], 850)
+        self.assertEqual(english_mastery.validate_cards(cards), [])
+
+    def test_english_mastery_phrase_context_quality(self):
+        """Test phrase cloze cards include context and do not leak the answer."""
+        for card in english_mastery.get_cards(card_type="phrase_cloze"):
+            self.assertIn("Situation", card["Front"])
+            self.assertIn("Complete naturally", card["Front"])
+            self.assertIn("_____", card["Front"])
+            self.assertNotIn("A)", card["Front"])
+            self.assertNotIn("B)", card["Front"])
+            front_without_blank = card["Front"].lower().replace("_____", "")
+            self.assertNotIn(card["Answer"].lower(), front_without_blank)
+
+    def test_english_mastery_audio_sources(self):
+        """Test listening cards keep source and media metadata."""
+        audio_cards = [card for card in english_mastery.get_cards() if card["AudioURL"]]
+        self.assertGreaterEqual(len(audio_cards), 160)
+        for card in audio_cards:
+            self.assertTrue(card["Audio"].startswith("[sound:tatoeba_eng_"))
+            self.assertTrue(card["AudioURL"].startswith("https://audio.tatoeba.org/sentences/eng/"))
+            self.assertIn("Tatoeba", card["Source"])
+            self.assertIn("Tatoeba.org English sentence ID", card["Attribution"])
 
     def test_spanish_parser_extracts_rows(self):
         """Test TSV parser fields for the new Spanish duplicate workflow."""

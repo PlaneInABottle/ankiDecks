@@ -88,7 +88,7 @@ Recommended targets:
 
 Practical phase targets:
 
-- Phase 1: 1,063 Spanish Core cards. Done.
+- Phase 1: 1,058 Spanish Core cards. Done.
 - Phase 2: expand short dictation / listen-then-produce if reviews are stable.
 - Phase 3: 1,200-1,500 total active cards after several weeks of review data.
 
@@ -387,7 +387,21 @@ If reviews become heavy, reduce new cards before deleting content.
 
 ## Implementation Roadmap
 
-### Next Step 1: Expand Spanish Core To 900-1,000 Cards
+### Current Spanish Core Coverage
+
+`Spanish Core Learning` now contains 1,058 active cards:
+
+- 433 typed sentence cloze cards from sourced Tatoeba Spanish-English sentence pairs.
+- 180 Spanish audio cloze cards with verified Tatoeba audio.
+- 89 rule anchors.
+- 89 typed contrast cards.
+- 89 typed correction cards.
+- 89 typed production cards.
+- 89 mini-pattern cards.
+
+English meaning cues were removed from fronts. Cards should rely on Spanish context, audio, and typed retrieval.
+
+### Next Step 1: Expand Spanish Core Beyond A2
 
 Use Tatoeba `spa-eng_links.tsv.bz2`, not the huge global links file.
 
@@ -407,7 +421,7 @@ Add more typed cloze cards for:
 
 Use structural filtering plus review, not a broad word blacklist.
 
-### Next Step 2: Add Listening Deck
+### Next Step 2: Expand Listening
 
 Target 150-250 cards.
 
@@ -429,6 +443,21 @@ Rules:
 - Prune stale notes only when replacing generated content intentionally.
 - Do not delete `Spanish 4000 Words`.
 - Keep `Spanish Grammar` deleted/replaced by `Spanish Core Learning`.
+
+## Current English Mastery Coverage
+
+`English Mastery` replaces the old separate `English Grammar Maintenance` and `English Natural Phrases` decks.
+
+It contains 972 active cards:
+
+- 360 natural phrase cloze cards.
+- 300 natural phrase production cards.
+- 33 rule anchors.
+- 99 typed grammar contrast cards.
+- 120 English audio cloze cards.
+- 60 English dictation cards.
+
+The deck is intended for B2-C2 maintenance and advancement, not beginner English. It should train phrase retrieval, grammar contrast, listening accuracy, and more natural production while the original `4000 Essential English Words` deck remains unchanged.
 
 ### Next Step 4: Review
 

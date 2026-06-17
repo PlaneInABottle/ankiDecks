@@ -16,6 +16,7 @@ TATOEBA_SELECTED_PATH = TATOEBA_DIR / "selected_spa_eng_pairs.tsv"
 TATOEBA_LICENSE = "Tatoeba sentence text, CC BY 2.0 FR unless marked otherwise by contributor export."
 TATOEBA_ATTRIBUTION = "Source: Tatoeba.org sentence IDs {spa_id}/{eng_id}."
 INACCESSIBLE_AUDIO_SENTENCE_IDS = {"12864", "9912", "10576", "13966", "330078"}
+REJECT_TATOEBA_SENTENCE_IDS = {"2538", "2738", "2809", "2861", "3041"}
 
 
 LEVEL_REMAP = {
@@ -542,7 +543,11 @@ def _tatoeba_pair_rows(limit_per_target):
 def _load_tatoeba_pairs(limit_per_target=6):
     if TATOEBA_SELECTED_PATH.exists():
         with TATOEBA_SELECTED_PATH.open(encoding="utf-8", newline="") as handle:
-            return list(csv.DictReader(handle, delimiter="\t"))
+            return [
+                row
+                for row in csv.DictReader(handle, delimiter="\t")
+                if row["spa_id"] not in REJECT_TATOEBA_SENTENCE_IDS
+            ]
 
     pairs = _tatoeba_pair_rows(limit_per_target)
     TATOEBA_SELECTED_PATH.parent.mkdir(parents=True, exist_ok=True)
@@ -569,7 +574,7 @@ def _load_tatoeba_pairs(limit_per_target=6):
                     "license": TATOEBA_LICENSE,
                 }
             )
-    return pairs
+    return [row for row in pairs if row["spa_id"] not in REJECT_TATOEBA_SENTENCE_IDS]
 
 
 def _audio_url(spa_id):
@@ -598,7 +603,7 @@ def _sentence_cards(audio_card_limit=180):
                 topic,
                 "typed_cloze",
                 "type_exact",
-                f"{cloze}<br><br><span class=\"english-mirror\">{eng_text}</span>",
+                f"Complete the Spanish from context:<br>{cloze}",
                 target,
                 "Type the missing Spanish word/chunk from the real sentence.",
                 "Real sentence cloze; retrieve the missing chunk from context.",
@@ -618,7 +623,7 @@ def _sentence_cards(audio_card_limit=180):
                     "listening sentence mining",
                     "audio_cloze",
                     "type_exact",
-                    f"{sound}<br><br>{cloze}<br><br><span class=\"english-mirror\">{eng_text}</span>",
+                    f"{sound}<br><br>Listen and type the target chunk you hear.",
                     target,
                     "Listen first, type the missing chunk, then replay and shadow the full sentence once.",
                     "Audio cloze; retrieve from sound and context.",
@@ -679,6 +684,10 @@ def validate_cards(cards):
             errors.append(f"{card['SourceID']}: long answer marked type_exact")
         if card["CardType"] == "typed_cloze" and "_____" not in card["Front"]:
             errors.append(f"{card['SourceID']}: typed_cloze missing blank")
+        if card["CardType"] == "typed_cloze":
+            front_text = re.sub(r"<[^>]+>", " ", card["Front"]).replace("_____", " ")
+            if re.search(rf"\b{re.escape(card['Answer'])}\b", front_text, flags=re.IGNORECASE):
+                errors.append(f"{card['SourceID']}: typed_cloze answer leaks on front")
         if "{{c1::" in " ".join(card.values()):
             errors.append(f"{card['SourceID']}: legacy cloze marker")
     return errors
