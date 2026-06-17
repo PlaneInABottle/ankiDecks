@@ -17,6 +17,7 @@ import get_pexels_image
 import anki_tools
 import grammar_levels
 import spanish_grammar_levels
+import spanish_core_learning
 import spanish_deck
 import english_phrases
 
@@ -388,6 +389,46 @@ class TestAnkiAutomation(unittest.TestCase):
         ]
         for pattern in bad_patterns:
             self.assertNotIn(pattern, all_text)
+
+    def test_spanish_core_learning_structure(self):
+        """Test active Spanish core deck uses typed retrieval and sourced examples."""
+        cards = spanish_core_learning.get_cards()
+        by_level = Counter(card["Level"] for card in cards)
+        by_type = Counter(card["CardType"] for card in cards)
+        by_prompt = Counter(card["PromptMode"] for card in cards)
+
+        self.assertGreaterEqual(len(cards), 900)
+        self.assertLessEqual(len(cards), 1500)
+        self.assertGreaterEqual(by_type["typed_correction"], 80)
+        self.assertGreaterEqual(by_type["typed_production"], 80)
+        self.assertGreaterEqual(by_type["typed_cloze"], 350)
+        self.assertGreaterEqual(by_type["audio_cloze"], 120)
+        self.assertGreaterEqual(by_prompt["type_exact"] + by_prompt["type_compare"], 700)
+        self.assertGreaterEqual(by_level["b1_bridge"], 15)
+        self.assertEqual(spanish_core_learning.validate_cards(cards), [])
+
+        typed_cards = [card for card in cards if card["PromptMode"].startswith("type_")]
+        self.assertTrue(all(card["TypeAnswer"] == card["Answer"] for card in typed_cards))
+        passive_cards = [card for card in cards if not card["PromptMode"].startswith("type_")]
+        self.assertTrue(all(card["TypeAnswer"] == "" for card in passive_cards))
+
+    def test_spanish_core_learning_tatoeba_attribution(self):
+        """Test real sentence-mining cards keep stable Tatoeba source IDs."""
+        cloze_cards = spanish_core_learning.get_cards(card_type="typed_cloze")
+        self.assertGreaterEqual(len(cloze_cards), 350)
+        for card in cloze_cards:
+            self.assertIn("_____", card["Front"])
+            self.assertIn("Tatoeba", card["Source"])
+            self.assertIn("Source: Tatoeba.org sentence IDs", card["Attribution"])
+
+        audio_cards = spanish_core_learning.get_cards(card_type="audio_cloze")
+        self.assertGreaterEqual(len(audio_cards), 120)
+        for card in audio_cards:
+            self.assertIn("[sound:tatoeba_spa_", card["Front"])
+            self.assertTrue(card["AudioURL"].startswith("https://audio.tatoeba.org/sentences/spa/"))
+            self.assertTrue(card["Audio"].startswith("[sound:tatoeba_spa_"))
+            self.assertTrue(card["AudioContributor"])
+            self.assertTrue(card["AudioLicense"])
 
     def test_spanish_pronunciation_hint_examples(self):
         """Test readable Latin American Spanish pronunciation hints."""
