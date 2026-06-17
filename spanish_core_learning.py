@@ -4,6 +4,7 @@ import csv
 import io
 import re
 import tarfile
+from collections import Counter
 from pathlib import Path
 
 import spanish_grammar_levels
@@ -15,8 +16,26 @@ TATOEBA_SELECTED_PATH = TATOEBA_DIR / "selected_spa_eng_pairs.tsv"
 
 TATOEBA_LICENSE = "Tatoeba sentence text, CC BY 2.0 FR unless marked otherwise by contributor export."
 TATOEBA_ATTRIBUTION = "Source: Tatoeba.org sentence IDs {spa_id}/{eng_id}."
-INACCESSIBLE_AUDIO_SENTENCE_IDS = {"12864", "9912", "10576", "13966", "330078"}
+INACCESSIBLE_AUDIO_SENTENCE_IDS = {"9912", "9921", "10576", "11720", "12864", "13966", "330078", "338575", "342298"}
 REJECT_TATOEBA_SENTENCE_IDS = {"2538", "2738", "2809", "2861", "3041"}
+
+EXTRA_PRODUCTION_EXAMPLES_BY_LEVEL = {
+    "a1_1_foundations": 3,
+    "a1_2_core_sentences": 2,
+    "a2_1_daily_past": 3,
+    "a2_2_natural_spanish": 2,
+}
+
+PATTERN_CARD_LEVELS = {"a0_survival", "a1_1_foundations", "a1_2_core_sentences"}
+
+AUDIO_CARD_QUOTAS_BY_LEVEL = {
+    "a0_survival": 20,
+    "a1_1_foundations": 70,
+    "a1_2_core_sentences": 40,
+    "a2_1_daily_past": 55,
+    "a2_2_natural_spanish": 45,
+    "b1_bridge": 10,
+}
 
 
 LEVEL_REMAP = {
@@ -237,20 +256,41 @@ def _topic_cards(topic):
         )
     )
     pattern_name, pattern_formula, pattern_examples = topic["pattern"]
-    cards.append(
-        _card(
-            f"{level}::{slug}::pattern",
-            level,
-            topic_name,
-            "pattern",
-            "type_compare",
-            f"Use this mini pattern with a new word:<br><span class=\"topic-label\">{topic_name}</span><br><b>{pattern_name}</b>",
-            pattern_examples[0],
-            "Produce one sentence using the pattern, then compare with the examples.",
-            pattern_formula,
-            _examples_html(pattern_examples),
+    if level in PATTERN_CARD_LEVELS:
+        cards.append(
+            _card(
+                f"{level}::{slug}::pattern",
+                level,
+                topic_name,
+                "pattern",
+                "type_compare",
+                f"Use this mini pattern with a new word:<br><span class=\"topic-label\">{topic_name}</span><br><b>{pattern_name}</b>",
+                pattern_examples[0],
+                "Produce one sentence using the pattern, then compare with the examples.",
+                pattern_formula,
+                _examples_html(pattern_examples),
+            )
         )
-    )
+    for index, example in enumerate(topic["examples"][: EXTRA_PRODUCTION_EXAMPLES_BY_LEVEL.get(level, 0)], start=1):
+        cards.append(
+            _card(
+                f"{level}::{slug}::typed_production_extra_{index}",
+                level,
+                topic_name,
+                "typed_production",
+                "type_compare",
+                (
+                    "Produce a Spanish sentence or chunk using this grammar pattern:<br>"
+                    f"<span class=\"topic-label\">{topic_name}</span><br>"
+                    f"{topic['formula']}<br><br>"
+                    f"Model target {index}: type your own answer, then compare."
+                ),
+                example,
+                "Self-grade for the target pattern, not exact wording.",
+                topic["formula"],
+                examples,
+            )
+        )
     return cards
 
 
@@ -581,9 +621,10 @@ def _audio_url(spa_id):
     return f"https://audio.tatoeba.org/sentences/spa/{spa_id}.mp3"
 
 
-def _sentence_cards(audio_card_limit=180):
+def _sentence_cards(audio_card_quotas=None):
     cards = []
-    audio_count = 0
+    audio_card_quotas = audio_card_quotas or AUDIO_CARD_QUOTAS_BY_LEVEL
+    audio_counts = Counter()
     for index, row in enumerate(_load_tatoeba_pairs(), start=1):
         level = row["level"]
         topic = row["topic"]
@@ -612,8 +653,12 @@ def _sentence_cards(audio_card_limit=180):
                 attribution=attribution,
             )
         )
-        if row.get("audio_id") and spa_id not in INACCESSIBLE_AUDIO_SENTENCE_IDS and audio_count < audio_card_limit:
-            audio_count += 1
+        if (
+            row.get("audio_id")
+            and spa_id not in INACCESSIBLE_AUDIO_SENTENCE_IDS
+            and audio_counts[level] < audio_card_quotas.get(level, 0)
+        ):
+            audio_counts[level] += 1
             url = _audio_url(spa_id)
             sound = f"[sound:tatoeba_spa_{spa_id}.mp3]"
             cards.append(

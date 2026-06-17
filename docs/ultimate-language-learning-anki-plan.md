@@ -50,29 +50,28 @@ Subdecks:
 - `Spanish Core Learning::A2.1 Daily Past`
 - `Spanish Core Learning::A2.2 Natural Spanish`
 - `Spanish Core Learning::B1 Bridge`
-- Future: `Spanish Core Learning::Listening`
 
 Current implementation:
 
 - Replaces the old `Spanish Grammar` deck.
 - Uses a custom note type: `Spanish Core Learning`.
 - Uses stable `SourceID` values, so notes can be updated in place.
-- Contains 1,063 notes/cards in Anki after cleanup.
+- Contains 1,255 notes/cards after production/listening rebalance.
 - Live Anki subdeck counts:
-  - A0 Survival: 124
-  - A1.1 Foundations: 359
-  - A1.2 Core Sentences: 192
-  - A2.1 Daily Past: 180
-  - A2.2 Natural Spanish: 158
-  - B1 Bridge: 50
+  - A0 Survival: 120
+  - A1.1 Foundations: 358
+  - A1.2 Core Sentences: 239
+  - A2.1 Daily Past: 268
+  - A2.2 Natural Spanish: 214
+  - B1 Bridge: 56
 - Current card families:
   - rule: 89
   - typed contrast: 89
   - typed correction: 89
-  - typed production: 89
-  - mini pattern: 89
-  - typed cloze from sourced sentences: 438
-  - audio cloze from sourced sentences: 180
+  - typed production: 267
+  - mini pattern: 51
+  - typed cloze from sourced sentences: 433
+  - audio cloze from sourced sentences: 237
 - No A/B multiple-choice recognition cards remain in this active core deck.
 
 ## Target Size
@@ -389,15 +388,15 @@ If reviews become heavy, reduce new cards before deleting content.
 
 ### Current Spanish Core Coverage
 
-`Spanish Core Learning` now contains 1,058 active cards:
+`Spanish Core Learning` now contains 1,255 active cards:
 
 - 433 typed sentence cloze cards from sourced Tatoeba Spanish-English sentence pairs.
-- 180 Spanish audio cloze cards with verified Tatoeba audio.
+- 237 Spanish audio cloze cards with verified Tatoeba audio.
 - 89 rule anchors.
 - 89 typed contrast cards.
 - 89 typed correction cards.
-- 89 typed production cards.
-- 89 mini-pattern cards.
+- 267 typed production cards.
+- 51 mini-pattern cards.
 
 English meaning cues were removed from fronts. Cards should rely on Spanish context, audio, and typed retrieval.
 
