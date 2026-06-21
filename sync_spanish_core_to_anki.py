@@ -161,14 +161,18 @@ BACK_TEMPLATE = """
     <div class="label">Why</div>
     <div class="detail">{{Back}}</div>
   </div>
+  {{#Formula}}
   <div class="section">
     <div class="label">Formula</div>
     <div class="detail">{{Formula}}</div>
   </div>
+  {{/Formula}}
+  {{#Examples}}
   <div class="section">
     <div class="label">Examples</div>
     <div class="examples">{{Examples}}</div>
   </div>
+  {{/Examples}}
   {{#Source}}
   <div class="source">{{Source}}<br>{{Attribution}}</div>
   {{/Source}}
