@@ -324,7 +324,7 @@ def _topic_cards(topic):
                     f"{_front_instruction(f'Model target {index}: type your own answer, then compare')}"
                 ),
                 example,
-                "Self-grade for the target pattern, not exact wording.",
+                topic["use"],
                 topic["formula"],
                 examples,
             )
