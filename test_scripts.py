@@ -1267,6 +1267,38 @@ class TestAnkiAutomation(unittest.TestCase):
 
         self.assertEqual([], bad_rows[:10])
 
+    def test_spanish_cues_do_not_define_word_with_itself(self):
+        """Test Spanish definitions avoid tautologies like 'acercarse significa acercarse'."""
+        path = Path("generated/spanish_reviewed_glossary_full.tsv")
+        if not path.exists():
+            self.skipTest("Spanish reviewed glossary TSV is not generated")
+
+        weak_tautologies = {
+            "acercarse significa acercarse",
+            "la fuerza es la fuerza",
+            "es el problema",
+            "una fila es una fila",
+            "una cantidad es una cierta cantidad",
+            "cenar significa cenar",
+            "donar es donar",
+            "doble significa el doble o el doble",
+            "una meta es una meta",
+            "la altura es la altura",
+            "una etiqueta es una etiqueta",
+            "una empresa es una empresa",
+            "un tipo es un tipo",
+            "significar significa",
+            "inclinar algo significa inclinarlo",
+        }
+        bad_rows = []
+        with path.open(encoding="utf-8", newline="") as handle:
+            for row in csv.DictReader(handle, delimiter="\t"):
+                meaning = row.get("spanish_meaning", "").strip().lower()
+                if any(phrase in meaning for phrase in weak_tautologies):
+                    bad_rows.append((row.get("english"), row.get("spanish"), row.get("spanish_meaning")))
+
+        self.assertEqual([], bad_rows[:10])
+
     def test_rule_cards_do_not_duplicate_answer_as_formula(self):
         """Test rule cards do not render the same formula twice on the back."""
         paths = [
