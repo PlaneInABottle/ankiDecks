@@ -18,6 +18,65 @@ STATUS_NEEDS_TRANSLATION = "needs_translation"
 _SPANISH_ARTICLES = {"el", "la", "los", "las", "un", "una", "unos", "unas"}
 _VOWELS = "aeiouáéíóúü"
 _ACCENT_MAP = str.maketrans("áéíóúü", "aeiouu")
+_ARTICLE_OVERRIDES = {
+    "alcohol": "el",
+    "análisis": "el",
+    "arte": "el",
+    "azúcar": "el",
+    "capital": "la",
+    "clima": "el",
+    "día": "el",
+    "idioma": "el",
+    "informe": "el",
+    "mano": "la",
+    "mapa": "el",
+    "mes": "el",
+    "planeta": "el",
+    "poema": "el",
+    "problema": "el",
+    "programa": "el",
+    "sistema": "el",
+    "tema": "el",
+}
+_ENGLISH_ARTICLE_SKIP = {
+    "april",
+    "august",
+    "black",
+    "blue",
+    "brown",
+    "december",
+    "eight",
+    "february",
+    "five",
+    "friday",
+    "gray",
+    "green",
+    "january",
+    "july",
+    "june",
+    "march",
+    "may",
+    "monday",
+    "nine",
+    "november",
+    "october",
+    "one",
+    "orange",
+    "purple",
+    "red",
+    "saturday",
+    "september",
+    "seven",
+    "six",
+    "sunday",
+    "ten",
+    "thursday",
+    "tuesday",
+    "two",
+    "wednesday",
+    "white",
+    "yellow",
+}
 
 
 def normalize_word(value: str) -> str:
@@ -236,6 +295,58 @@ def infer_spanish_metadata(spanish: str, english: str = "") -> Dict[str, str]:
         if stem:
             metadata["spanish_forms"] = f"masc sg: {stem}o; fem sg: {stem}a; masc pl: {stem}os; fem pl: {stem}as"
     return metadata
+
+
+def _starts_with_article(value: str) -> bool:
+    tokens = _spanish_tokens(value)
+    return bool(tokens and tokens[0] in _SPANISH_ARTICLES)
+
+
+def _english_definition_marks_noun(english: str, english_meaning: str) -> bool:
+    word = normalize_context(english)
+    meaning = normalize_context(english_meaning)
+    if not word or not meaning or word in _ENGLISH_ARTICLE_SKIP:
+        return False
+    if re.match(rf"^(a|an|the)\s+{re.escape(word)}\s+is\b", meaning):
+        return True
+    if meaning.startswith(f"{word} is "):
+        return True
+    return False
+
+
+def _infer_definite_article(spanish: str) -> str:
+    tokens = _spanish_tokens(spanish)
+    if not tokens:
+        return ""
+    head = tokens[0]
+    if head in _ARTICLE_OVERRIDES:
+        return _ARTICLE_OVERRIDES[head]
+    if head.endswith(("ción", "sión", "dad", "tad", "tud", "umbre")):
+        return "la"
+    if head.endswith(("aje", "or", "ma", "o")):
+        return "el"
+    if head.endswith("a"):
+        return "la"
+    if head.endswith(("e", "í", "ú")):
+        return ""
+    if head.endswith(("l", "n", "r", "s")):
+        return "el"
+    return ""
+
+
+def add_article_to_clear_noun(spanish: str, english: str, english_meaning: str) -> str:
+    """Add a definite article for clear noun-definition rows when gender is inferable."""
+    if not spanish or _starts_with_article(spanish):
+        return spanish
+    metadata = infer_spanish_metadata(spanish, english)
+    if metadata.get("spanish_part_of_speech") == "verb":
+        return spanish
+    if not _english_definition_marks_noun(english, english_meaning):
+        return spanish
+    article = _infer_definite_article(spanish)
+    if not article:
+        return spanish
+    return f"{article} {spanish}"
 
 
 def _pluralize_spanish_noun(noun: str) -> str:
@@ -519,7 +630,19 @@ def build_spanish_rows(
         glossary_row = find_glossary_entry(glossary, source_row)
         is_reviewed = bool(glossary_row)
 
+        english_meaning = (
+            glossary_row.get("english_meaning", "").strip()
+            if glossary_row and glossary_row.get("english_meaning")
+            else re.sub(r"<[^>]+>", "", source_row.get("english_meaning", "")).strip()
+        )
+        english_example = (
+            glossary_row.get("english_example", "").strip()
+            if glossary_row and glossary_row.get("english_example")
+            else re.sub(r"<[^>]+>", "", source_row.get("english_example", "")).strip()
+        )
         spanish = glossary_row.get("spanish", "").strip() if glossary_row else ""
+        if glossary_row:
+            spanish = add_article_to_clear_noun(spanish, english, english_meaning)
         inferred = infer_spanish_metadata(spanish, english) if spanish else {}
         status = STATUS_REVIEWED if is_reviewed else STATUS_NEEDS_TRANSLATION
         source_deck = source_row.get("deck", "").strip()
@@ -532,16 +655,8 @@ def build_spanish_rows(
                 "spanish": spanish,
                 "pronunciation_hint": spanish_pronunciation_hint(spanish) if spanish else "",
                 "image": source_row.get("image", "").strip(),
-                "english_meaning": (
-                    glossary_row.get("english_meaning", "").strip()
-                    if glossary_row and glossary_row.get("english_meaning")
-                    else re.sub(r"<[^>]+>", "", source_row.get("english_meaning", "")).strip()
-                ),
-                "english_example": (
-                    glossary_row.get("english_example", "").strip()
-                    if glossary_row and glossary_row.get("english_example")
-                    else re.sub(r"<[^>]+>", "", source_row.get("english_example", "")).strip()
-                ),
+                "english_meaning": english_meaning,
+                "english_example": english_example,
                 "spanish_meaning": glossary_row.get("spanish_meaning", "").strip() if glossary_row else "",
                 "spanish_example": glossary_row.get("spanish_example", "").strip() if glossary_row else "",
                 "spanish_meaning_en": (
@@ -621,13 +736,6 @@ def _back_field_for_basic(record: Dict[str, str]) -> str:
                 grammar_parts.append(f"{label}: {record[key]}")
         if grammar_parts:
             parts.append("Grammar:\n" + "\n".join(grammar_parts))
-        source_parts = [
-            value
-            for value in (record.get("english_meaning", ""), record.get("english_example", ""))
-            if value
-        ]
-        if source_parts:
-            parts.append("English source:\n" + "\n".join(source_parts))
         if record["notes"]:
             parts.append(f"Notes: {record['notes']}")
         return "\n".join(parts)

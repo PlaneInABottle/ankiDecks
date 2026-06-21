@@ -1,0 +1,139 @@
+eng_id	text	target	level	audio_id	has_audio
+1346	This is what I would have said.	would have	b2_tense_system		False
+1369	I am not an artist. I never had the knack for it.	had	b2_tense_system		False
+1592	"It is said that ""Hamlet"" is the most interesting play ever written."	it is	c2_mastery		False
+1731	Those selected will have to face extensive medical and psychological tests.	will have	b2_tense_system		False
+1749	Despite the importance of sleep, its purpose is a mystery.	despite	c1_precision		False
+1855	Don't stay in bed, unless you can make money in bed.	unless	c1_precision		False
+1928	Ms. Eichler had a notorious reputation for being austere to her students.	had	b2_tense_system		False
+1929	If you don't listen to us, we will have to resort to coercion.	will have	b2_tense_system		False
+1933	To him, hunger was an abstract concept; he always had enough to eat.	had	b2_tense_system		False
+1988	People are often quite skeptical about things unless given believable proof.	unless	c1_precision		False
+2016	He was still mad about the accident despite his wife's conciliatory words.	despite	c1_precision		False
+2062	It's just five in the morning, but nevertheless it is light out.	nevertheless	c1_style		False
+2197	Perhaps you are right, I have been selfish.	have been	b2_tense_system		False
+2206	I have been told that I am pragmatic, and I am.	have been	b2_tense_system	1218	False
+2228	We men are used to waiting for the women.	used to	b2_tense_system	1224	False
+2469	Ah! If I were rich, I'd buy myself a house in Spain.	if I were	b2_sentence_control		False
+8720	You had better go to the infirmary.	had better	b2_verb_patterns		False
+9595	Since you look tired, you had better take a rest.	had better	b2_verb_patterns		False
+15790	I think you had better call on him.	had better	b2_verb_patterns		False
+15809	You should have accepted his advice.	should have	b2_tense_system	1203507	True
+15815	You should have helped him with his work.	should have	b2_tense_system	1197639	True
+15827	You should have told him the truth.	should have	b2_tense_system		False
+15856	Don't you know that he has been dead for these two years?	has been	b2_tense_system		False
+15943	You will have heard this story before.	will have	b2_tense_system		False
+16149	It is necessary that you start at once.	it is	c2_mastery		False
+16337	You worked hard, or you would have failed.	would have	b2_tense_system		False
+16361	It is regrettable that you did not start earlier.	it is	c2_mastery	1204346	True
+16375	You should have been more careful.	have been	b2_tense_system		False
+16666	You'd better stay at home rather than go out on such a day.	rather than	c1_precision		False
+16730	Not only you but also I was involved.	not only	c2_mastery		False
+16827	I would rather you had a day off.	would rather	b2_verb_patterns		False
+16864	If I were in your situation, I would do the same thing.	if I were	b2_sentence_control	3041	True
+16990	Without your advice, I would have been robbed of my bag.	would have	b2_tense_system		False
+16991	If it had not been for your advice, I would have failed.	I would have	b2_sentence_control		False
+17304	Without your assistance I would have failed.	I would have	b2_sentence_control		False
+17577	If I were you, I'd be able to succeed.	if I were	b2_sentence_control		False
+17678	Not only you but I also was to blame.	not only	c2_mastery		False
+17679	Not only you but also he is ignorant of the truth.	not only	c2_mastery		False
+17705	As long as you are here, we might as well begin.	as long as	c1_precision		False
+17714	We thought we would write out the directions, in case you got lost.	in case	c1_precision		False
+17863	You don't need to go unless you want to.	unless	c1_precision	340592	True
+17878	By the time you get out of jail, she'll probably have gotten married.	by the time	c1_precision		False
+18012	By the time you got there, the sun had set.	by the time	c1_precision		False
+18121	I would rather die than live in dishonor.	would rather	b2_verb_patterns	904977	True
+18365	Take this medicine in case you get sick.	in case	c1_precision		False
+18492	Apart from earning money, I have no interest in real estate.	apart from	c2_mastery	1204728	True
+18549	Regardless of the amount, Brian wants the correct, entire amount by next week.	regardless of	c2_mastery		False
+18678	There has been another case of cholera in the neighborhood.	has been	b2_tense_system	1204733	True
+18728	Recently juvenile delinquency has been on the rise.	has been	b2_tense_system		False
+18796	Don't look to me for any help except in case of emergency.	in case	c1_precision		False
+18808	Apart from the plot, the book interested me.	apart from	c2_mastery		False
+19216	As long as there are sovereign nations possessing great power, war is inevitable.	as long as	c1_precision		False
+19751	Miyazaki is not what it used to be.	used to	b2_tense_system		False
+19888	Despite adversity, the ingenious man achieved worldwide fame.	despite	c1_precision		False
+19945	Don't forget the fact that smoking is bad for your health.	the fact that	c2_mastery	792373	True
+19962	There is no denying the fact that smoking is harmful.	the fact that	c2_mastery	1204762	True
+20106	I'll always love you, no matter what happens.	no matter	c1_precision	3602	True
+20428	Returnees have trouble getting used to life in Japan.	used to	b2_tense_system		False
+20610	As long as you have hope, a chance remains.	as long as	c1_precision		False
+20779	If it becomes stubborn indeed it stands alone.	indeed	c1_style		False
+20780	You should be friendly rather than stubborn.	rather than	c1_precision		False
+20958	People could have avoided many mistakes by simple experiments.	could have	b2_tense_system		False
+21349	I used to go fishing in my school days.	used to	b2_verb_patterns		False
+21402	I was used to studying when I was a student.	used to	b2_verb_patterns	940721	True
+21404	I used to play tennis when I was a student.	used to	b2_verb_patterns	374930	True
+21511	Schools are expected to meet the needs of every child, regardless of ability.	regardless of	c2_mastery	1137177	True
+21688	Indeed she is young and beautiful, but she is in delicate health.	indeed	c1_style		False
+21694	Indeed he may be a little dull, but he is diligent.	indeed	c1_style		False
+21852	It is difficult for foreigners to get used to Japanese food.	get used to	b2_verb_patterns		False
+21862	I would rather stay at home than go out.	would rather	b2_verb_patterns	3902	True
+21868	People traveling abroad always have to get used to new food.	get used to	b2_verb_patterns	1206497	True
+21891	It is difficult for foreigners to get used to Japanese meals.	get used to	b2_verb_patterns	947303	True
+22155	Mr Kaifu is used to making speeches in public.	is used to	b2_verb_patterns		False
+22262	The sea got rough, so that we had to give up fishing.	so that	c1_precision		False
+22483	The meeting will be held regardless of the weather.	regardless of	c2_mastery		False
+22951	We left early so that we can catch the first train.	so that	c1_precision		False
+23883	No one can deny the fact that there is no smoke without fire.	the fact that	c2_mastery	910109	True
+24040	Home life was being screened from foreign eyes.	was being	b2_sentence_control		False
+24151	The house looked good; moreover, the price was right.	moreover	c1_style		False
+24258	I may as well go out rather than stay at home.	rather than	c1_precision		False
+24713	No matter what he plays on the screen, Tom looks great.	no matter	c1_precision		False
+24715	No matter what you do, do your best.	no matter	c1_precision	909704	True
+24775	What is most important is your strong will to master English.	what is	c2_mastery		False
+25750	Salt is used to season food.	is used to	b2_verb_patterns	520015	True
+26748	Owing to the rain, the athletic meeting was put off.	owing to	c2_mastery		False
+26774	He went out in spite of the rain.	in spite of	c1_precision		False
+26775	He started in spite of the rain.	in spite of	c1_precision		False
+26777	In spite of the rain, the game was not cancelled.	in spite of	c1_precision		False
+26881	We thought it would rain; nevertheless, we started on our trip.	nevertheless	c1_style		False
+27284	What is most troublesome is the corruption of the best.	what is	c2_mastery		False
+28548	Owing to bad weather, I didn't go.	owing to	c2_mastery		False
+28611	Bad as it was, it could have been worse.	could have	b2_tense_system		False
+28761	In light of his lack of abilities we cannot expect him to succeed.	in light of	c2_mastery		False
+28825	We climbed higher so that we might get a better view.	so that	c1_precision	340812	True
+29672	Meanwhile, the foolish uncle was sitting in the living room.	meanwhile	c1_style		False
+30103	What is learned in the cradle is carried to the tomb.	what is	c2_mastery		False
+30409	Had I arrived earlier, I could have seen Kelly.	could have	b2_tense_system		False
+30443	If I had had more time, I would have written to you.	if I had	b2_sentence_control		False
+30445	I would have written a longer letter if I'd had more time.	I would have	b2_sentence_control		False
+30514	If I had more money, I could move to a bigger house.	if I had	b2_sentence_control		False
+30640	If I had noticed her, I would have got her autograph.	if I had	b2_sentence_control		False
+31087	Even if you know the truth, you had better pretend otherwise at present.	even if	c1_precision		False
+32182	Finish your homework by the time they return.	by the time	c1_precision		False
+32280	Apart from a few mistakes, your composition was excellent.	apart from	c2_mastery	792374	True
+34716	Owing to a bad cold, he could not take part in the game.	owing to	c2_mastery		False
+35858	Garlic is used to improve the taste of food.	is used to	b2_verb_patterns	1068275	True
+38096	Even if you go away, I'll still passionately love you.	even if	c1_precision		False
+39314	While the demonstration was being made, the president was taking notes.	was being	b2_sentence_control		False
+40170	The telephone was being used at the moment.	was being	b2_sentence_control	1065194	True
+40688	I want to study abroad, even if my parents are against it.	even if	c1_precision		False
+42993	Nevertheless, many are choosing early retirement.	nevertheless	c1_style		False
+44591	It was cold that day, and moreover it began to rain.	moreover	c1_style		False
+45534	The bag was big, and moreover, it was heavy.	moreover	c1_style		False
+47425	Those children were being cared for by an aunt.	were being	b2_sentence_control	1083075	True
+49683	The bad news is unfortunately true.	unfortunately	c1_style		False
+53189	Potatoes were being cooked in the kitchen by the girls.	were being	b2_sentence_control		False
+54157	Fortunately, the fire was put out before it became too serious.	fortunately	c1_style		False
+62837	Brian is mad because Chris obviously does not intend to return the money.	obviously	c1_style		False
+71934	Unfortunately he refused to come.	unfortunately	c1_style		False
+71938	Unfortunately, there was no one around.	unfortunately	c1_style	11877	True
+239701	Obviously, the server load will increase as a result.	obviously	c1_style		False
+240759	Fortunately, my son quickly adjusted to life in his new school.	fortunately	c1_style		False
+240769	Fortunately, the weather was good.	fortunately	c1_style	795916	True
+245742	The children were being very quiet.	were being	b2_sentence_control		False
+246200	It is provided that the applicants must be woman.	provided that	c1_precision		False
+263925	I will call you up, provided that I have time.	provided that	c1_precision		False
+264574	She obviously thought she was a good woman, but...	obviously	c1_style		False
+274639	I will go provided that the others go.	provided that	c1_precision		False
+286607	In light of his youth the police have decided not to charge him.	in light of	c2_mastery		False
+306495	They rob, and furthermore cheat each other.	furthermore	c1_style		False
+329407	Furthermore, even after the company information session, we sometimes hold company tours.	furthermore	c1_style		False
+888464	Furthermore, I still don't think this a huge cultural difference.	furthermore	c1_style		False
+2164985	Meanwhile I can make myself understood.	meanwhile	c1_style		False
+2759262	She said she was tired and consequently would go home so early.	consequently	c1_style		False
+2922443	The truth is opaque and consequently imperceptible.	consequently	c1_style		False
+3464550	Meanwhile, we depict aliens doing really weird stuff.	meanwhile	c1_style		False
+3668756	His family was very poor; consequently, they couldn't afford to spend money carelessly.	consequently	c1_style		False
+12771047	In light of recent events, it makes sense.	in light of	c2_mastery		False

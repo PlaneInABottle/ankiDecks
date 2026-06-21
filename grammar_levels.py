@@ -186,7 +186,7 @@ def _add_expansion_cards(cards):
         ("b2_verb_patterns", "modal verbs", "choose", "Choose: You _____ submit the form today; it is optional.<br>A) don't have to<br>B) mustn't", "A) You don't have to submit the form today.", "don't have to means not necessary; mustn't means prohibited."),
         ("b2_verb_patterns", "modal perfect", "correction", "Correct: You should told me earlier.", "You should have told me earlier.", "Past criticism uses should have + V3."),
         ("b2_verb_patterns", "causatives", "choose", "Choose: I _____ my passport renewed last week.<br>A) renewed<br>B) had", "B) I had my passport renewed last week.", "Causative have shows someone else did the service."),
-        ("c1_precision", "articles", "choose", "Choose: _____ rich should pay more tax.<br>A) Rich<br>B) The rich", "B) The rich should pay more tax.", "the + adjective can refer to a group of people."),
+        ("c1_precision", "articles", "choose", "Choose: The _____ should pay more tax.<br>A) rich<br>B) rich people", "B) The rich should pay more tax.", "the + adjective can refer to a group of people."),
         ("c1_precision", "articles", "correction", "Correct: The life is unpredictable.", "Life is unpredictable.", "Use zero article for general abstract nouns."),
         ("c1_precision", "articles", "pattern", "Mini pattern: abstract general vs specific", "Life is hard. / The life he described was hard.", "Zero article for general meaning; the for specified meaning."),
         ("c1_precision", "prepositions", "choose", "Choose: Her decision had an impact _____ the whole team.<br>A) on<br>B) to", "A) an impact on the whole team.", "impact on is the usual noun-preposition pattern."),
@@ -209,11 +209,11 @@ def _add_expansion_cards(cards):
         ("c1_style", "formal register", "production", "Make formal: Please check that all documents are current.", "Please ensure that all documents are up to date.", "ensure that is a formal/professional pattern."),
         ("c2_mastery", "advanced inversion", "choose", "Choose: Rarely _____ such a clear result.<br>A) we see<br>B) do we see", "B) Rarely do we see such a clear result.", "Fronted negative/restrictive adverbials trigger inversion."),
         ("c2_mastery", "advanced inversion", "correction", "Correct: Not only the proposal failed, but it damaged trust.", "Not only did the proposal fail, but it also damaged trust.", "Not only at the front requires auxiliary inversion."),
-        ("c2_mastery", "subjunctive and mandative structures", "choose", "Choose: The policy requires that every file ____ encrypted.<br>A) is<br>B) be", "B) be", "Mandative structures use the base verb in formal English."),
+        ("c2_mastery", "subjunctive and mandative structures", "choose", "Choose: The policy requires that every file _____ encrypted.<br>A) is<br>B) be", "B) be", "Mandative structures use the base verb in formal English."),
         ("c2_mastery", "subjunctive and mandative structures", "production", "Make formal: They said he should receive compensation.", "They recommended that he receive compensation.", "recommend that + subject + base verb."),
         ("c2_mastery", "clefting and fronting", "choose", "Choose the cleft:<br>A) The delay worried me most.<br>B) What worried me most was the delay.", "B) What worried me most was the delay.", "A what-cleft controls focus and rhythm."),
         ("c2_mastery", "clefting and fronting", "correction", "Correct: What I need are a clear answer.", "What I need is a clear answer.", "The complement a clear answer is singular."),
-        ("c2_mastery", "ellipsis and substitution", "choose", "Choose: If the legal team approves the plan, we should ____ too.<br>A) do so<br>B) do it so", "A) do so", "do so substitutes for the repeated action."),
+        ("c2_mastery", "ellipsis and substitution", "choose", "Choose: If the legal team approves the plan, we should _____ too.<br>A) do so<br>B) do it so", "A) do so", "do so substitutes for the repeated action."),
         ("c2_mastery", "ellipsis and substitution", "production", "Avoid repetition: She accepted the first proposal but rejected the second proposal.", "She accepted the first proposal but rejected the second one.", "one replaces a repeated singular countable noun."),
         ("c2_mastery", "advanced concession", "choose", "Choose the more formal concession:<br>A) Although it was costly, it worked.<br>B) Costly though it was, it worked.", "B) Costly though it was, it worked.", "Adjective + though + clause is compact and formal."),
         ("c2_mastery", "advanced concession", "correction", "Correct: No matter carefully we tested it, one bug remained.", "No matter how carefully we tested it, one bug remained.", "no matter needs a wh-word such as how."),
@@ -610,7 +610,7 @@ def _build_grammar_cards():
         cards,
         "c1_precision",
         "prepositions",
-        "Use the right fixed preposition: This decision depends ___ the data.",
+        "Use the right fixed preposition: This decision depends _____ the data.",
         "This decision depends on the data.",
         "depend on is a fixed verb-preposition pattern.",
     )
@@ -973,7 +973,7 @@ def _build_choose_only_grammar_cards():
             ],
             "present perfect continuous": [
                 (
-                    "Choose: I _____ for this meeting for two hours.<br>A) have been preparing<br>B) prepared",
+                    "Choose: I _____ preparing for this meeting for two hours.<br>A) have been<br>B) was",
                     "A) I have been preparing for this meeting for two hours.",
                     "Present perfect continuous",
                     "have/has been + V-ing",
@@ -984,10 +984,10 @@ def _build_choose_only_grammar_cards():
                     ],
                 ),
                 (
-                    "Choose: Why _____ so tired tonight?<br>A) are you looking<br>B) have you been looking",
-                    "B) Why have you been looking so tired tonight?",
+                    "Choose: Why _____ so tired tonight?<br>Cue: look<br>A) have you been looking<br>B) are you looking",
+                    "A) Why have you been looking so tired tonight?",
                     "Present perfect continuous",
-                    "have/has + V-ing",
+                    "have/has been + V-ing",
                     "A visible present result follows from recent repeated activity.",
                     [
                         "Why have you been working so late?",
@@ -995,11 +995,11 @@ def _build_choose_only_grammar_cards():
                     ],
                 ),
                 (
-                    "Choose: The server has been down for an hour, and users are still waiting; the team _____ there.<br>A) have been checking<br>B) has been checking",
-                    "B) The team has been checking the server for an hour, and users are still waiting.",
+                    "Choose: The team _____ the server for an hour, and users are still waiting.<br>Cue: check<br>A) has been checking<br>B) has checked",
+                    "A) The team has been checking the server for an hour, and users are still waiting.",
                     "Present perfect continuous",
                     "have/has been + V-ing",
-                    "with a singular team subject, use has.",
+                    "With a singular team subject, use has been.",
                     [
                         "The team has been monitoring logs.",
                         "The app has been running slowly.",
@@ -1008,7 +1008,7 @@ def _build_choose_only_grammar_cards():
             ],
             "past perfect": [
                 (
-                    "Choose: By the time we arrived, they _____ already ___.<br>A) had left<br>B) left",
+                    "Choose: By the time we arrived, they _____ already left.<br>A) had<br>B) have",
                     "A) By the time we arrived, they had already left.",
                     "Past perfect",
                     "had + V3",
@@ -1030,7 +1030,7 @@ def _build_choose_only_grammar_cards():
                     ],
                 ),
                 (
-                    "Choose: When we got there, the engineer _____ already ______ the patch.<br>A) had applied<br>B) applied",
+                    "Choose: When we got there, the engineer had already _____ the patch.<br>A) applied<br>B) applies",
                     "A) When we got there, the engineer had already applied the patch.",
                     "Past perfect",
                     "had + V3",
@@ -1150,7 +1150,7 @@ def _build_choose_only_grammar_cards():
             ],
             "mixed conditionals": [
                 (
-                    "Choose: If he _____ earlier, he would be relaxed now.<br>A) had gone<br>B) goes",
+                    "Choose: If he had _____ to bed earlier, he would be relaxed now.<br>A) gone<br>B) go",
                     "A) If he had gone to bed earlier, he would be relaxed now.",
                     "Mixed conditionals",
                     "past condition + present result",
@@ -1161,11 +1161,11 @@ def _build_choose_only_grammar_cards():
                     ],
                 ),
                 (
-                    "Choose: If I _____ disciplined, I would not have failed the audit.<br>A) had been<br>B) am",
-                    "A) If I had been more disciplined, I would not have failed the audit.",
+                    "Choose: If I _____ more disciplined, I would not have failed the audit.<br>Cue: be<br>A) were<br>B) had been",
+                    "A) If I were more disciplined, I would not have failed the audit.",
                     "Mixed conditionals",
                     "present condition + past result",
-                    "Current habit/state causes alternate past result is uncommon and risky.",
+                    "A present unreal state can be linked to an alternate past result.",
                     [
                         "If she were calmer, she might not have interrupted.",
                         "If he were clearer, he might have avoided confusion.",
@@ -1207,7 +1207,7 @@ def _build_choose_only_grammar_cards():
                     ],
                 ),
                 (
-                    "Choose: The issue _____ before the fix was deployed.<br>A) had been closed<br>B) closed",
+                    "Choose: The issue _____ before the fix was deployed.<br>Cue: close<br>A) had been closed<br>B) had closed",
                     "A) The issue had been closed before the fix was deployed.",
                     "Passive voice",
                     "had been + V3",
@@ -1290,7 +1290,7 @@ def _build_choose_only_grammar_cards():
             ],
             "noun clauses": [
                 (
-                    "Choose: I know _____ the meeting starts tomorrow.<br>A) why<br>B) why it is",
+                    "Choose: I know why it is _____ that the meeting starts tomorrow.<br>A) important<br>B) importantly",
                     "B) I know why it is important that the meeting starts tomorrow.",
                     "Noun clauses",
                     "noun clauses as object/subject",
@@ -1384,7 +1384,7 @@ def _build_choose_only_grammar_cards():
                     ],
                 ),
                 (
-                    "Choose: They are _____ writing their own documentation.<br>A) getting used to<br>B) used to get",
+                    "Choose: They are _____ used to writing their own documentation.<br>A) getting<br>B) get",
                     "A) They are getting used to writing their own documentation.",
                     "Used to patterns",
                     "get used to + gerund",
@@ -1432,7 +1432,7 @@ def _build_choose_only_grammar_cards():
             ],
             "modal perfect": [
                 (
-                    "Choose: You _____ have locked the database after the breach.<br>A) should<br>B) shouldn't",
+                    "Choose: You _____ the database after the breach.<br>Cue: lock<br>A) should have locked<br>B) shouldn't have locked",
                     "A) You should have locked the database after the breach.",
                     "Modal perfect",
                     "modal + have + V3",
@@ -1443,7 +1443,7 @@ def _build_choose_only_grammar_cards():
                     ],
                 ),
                 (
-                    "Choose: He _____ have missed your email.<br>A) might<br>B) must",
+                    "Choose: He _____ your email.<br>Cue: miss<br>A) might have missed<br>B) must have missed",
                     "A) He might have missed your email.",
                     "Modal perfect",
                     "modal + have + V3",
@@ -1454,7 +1454,7 @@ def _build_choose_only_grammar_cards():
                     ],
                 ),
                 (
-                    "Choose: They _____ have avoided this downtime with one extra check.<br>A) could<br>B) should",
+                    "Choose: They _____ this downtime with one extra check.<br>Cue: avoid<br>A) could have avoided<br>B) should have avoided",
                     "A) They could have avoided this downtime with one extra check.",
                     "Modal perfect",
                     "could/might have + V3",
@@ -1489,7 +1489,7 @@ def _build_choose_only_grammar_cards():
                     ],
                 ),
                 (
-                    "Choose: We _____ a translator translated the document.<br>A) had<br>B) got",
+                    "Choose: We got the document _____ by a translator.<br>A) translated<br>B) translating",
                     "B) We got the document translated by a translator.",
                     "Causatives",
                     "have/get + object + past participle",
@@ -1504,8 +1504,8 @@ def _build_choose_only_grammar_cards():
         "c1_precision": {
             "articles": [
                 (
-                    "Choose: _____ rich should pay more tax.<br>A) The<br>B) A",
-                    "A) Rich people should pay more tax.",
+                    "Choose: The _____ should pay more tax.<br>A) rich<br>B) rich people",
+                    "A) The rich should pay more tax.",
                     "Articles",
                     "a/an/the/zero",
                     "Use zero for generic category, the when specific group is context-defined.",
@@ -1539,7 +1539,7 @@ def _build_choose_only_grammar_cards():
             ],
             "prepositions": [
                 (
-                    "Choose: The app depends ____ user behavior.<br>A) at<br>B) on",
+                    "Choose: The app depends _____ user behavior.<br>A) at<br>B) on",
                     "B) The app depends on user behavior.",
                     "Prepositions",
                     "fixed verbal collocations",
@@ -1550,7 +1550,7 @@ def _build_choose_only_grammar_cards():
                     ],
                 ),
                 (
-                    "Choose: She is responsible ____ quality control.<br>A) for<br>B) about",
+                    "Choose: She is responsible _____ quality control.<br>A) for<br>B) about",
                     "A) She is responsible for quality control.",
                     "Prepositions",
                     "adjective/noun + preposition fixed",
@@ -1561,7 +1561,7 @@ def _build_choose_only_grammar_cards():
                     ],
                 ),
                 (
-                    "Choose: The two systems are comparable ____ this prototype.<br>A) to<br>B) with",
+                    "Choose: The two systems are comparable _____ this prototype.<br>A) to<br>B) with",
                     "A) The two systems are comparable to this prototype.",
                     "Prepositions",
                     "comparable to",
@@ -1574,7 +1574,7 @@ def _build_choose_only_grammar_cards():
             ],
             "countable and uncountable nouns": [
                 (
-                    "Choose: She gave us useful ____.<br>A) advice<br>B) advices",
+                    "Choose: She gave us useful _____.<br>A) advice<br>B) advices",
                     "A) She gave us useful advice.",
                     "Countable and uncountable nouns",
                     "uncountable nouns usually no plural",
@@ -1596,7 +1596,7 @@ def _build_choose_only_grammar_cards():
                     ],
                 ),
                 (
-                    "Choose: We need much more ____ from vendors.<br>A) informations<br>B) information",
+                    "Choose: We need much more _____ from vendors.<br>A) informations<br>B) information",
                     "B) We need much more information from vendors.",
                     "Countable and uncountable nouns",
                     "much/little with uncountables",
@@ -1609,7 +1609,7 @@ def _build_choose_only_grammar_cards():
             ],
             "comparatives": [
                 (
-                    "Choose: This model is ____ expensive than that one.<br>A) more<br>B) most",
+                    "Choose: This model is _____ expensive than that one.<br>A) more<br>B) most",
                     "A) This model is more expensive than that one.",
                     "Comparatives",
                     "comparative + than",
@@ -1631,7 +1631,7 @@ def _build_choose_only_grammar_cards():
                     ],
                 ),
                 (
-                    "Choose: It is ____ complicated form of this construction.<br>A) the least<br>B) least",
+                    "Choose: It is _____ complicated form of this construction.<br>A) the least<br>B) least",
                     "A) It is the least complicated form of this construction.",
                     "Comparatives",
                     "superlative with the",
@@ -1644,7 +1644,7 @@ def _build_choose_only_grammar_cards():
             ],
             "emphasis and inversion": [
                 (
-                    "Choose: Only then _____ the problem solved.<br>A) did they fully understand<br>B) they fully understood",
+                    "Choose: Only then _____ they fully understand the problem.<br>A) did<br>B) do",
                     "A) Only then did they fully understand the problem.",
                     "Emphasis and inversion",
                     "fronted adverbial + inversion",
@@ -1727,7 +1727,7 @@ def _build_choose_only_grammar_cards():
                     ],
                 ),
                 (
-                    "Choose: ______ the project, deadlines became manageable.<br>A) Completed<br>B) Completing",
+                    "Choose: _____ the project quickly made deadlines manageable.<br>A) Completed<br>B) Completing",
                     "B) Completing the project quickly made deadlines manageable.",
                     "Participle clauses",
                     "reducing relative-like structures",
@@ -1738,7 +1738,7 @@ def _build_choose_only_grammar_cards():
                     ],
                 ),
                 (
-                    "Choose: ___ the data validated, the model moved to production.<br>A) Once the data validates<br>B) Being the data validated",
+                    "Choose: Once the data _____ validated, the model moved to production.<br>A) was<br>B) is",
                     "A) Once the data was validated, the model moved to production.",
                     "Participle clauses",
                     "once + subordinate structure",
@@ -1751,7 +1751,7 @@ def _build_choose_only_grammar_cards():
             ],
             "reduced relative clauses": [
                 (
-                    "Choose: The files ____ yesterday were approved.<br>A) submitted<br>B) submitting",
+                    "Choose: The files _____ yesterday were approved.<br>A) submitted<br>B) submitting",
                     "A) The files submitted yesterday were approved.",
                     "Reduced relative clauses",
                     "noun + V3 phrase",
@@ -1762,7 +1762,7 @@ def _build_choose_only_grammar_cards():
                     ],
                 ),
                 (
-                    "Choose: The manager ____ for years now led the review.<br>A) working<br>B) who has worked",
+                    "Choose: The manager _____ for years now led the review.<br>A) working<br>B) who has worked",
                     "A) The manager working for years now led the review.",
                     "Reduced relative clauses",
                     "active reduced relative",
@@ -1773,7 +1773,7 @@ def _build_choose_only_grammar_cards():
                     ],
                 ),
                 (
-                    "Choose: The candidate ____ this change was accepted was promoted.<br>A) who proposed<br>B) proposing",
+                    "Choose: The candidate _____ this change was promoted.<br>A) who proposed<br>B) proposing",
                     "A) The candidate who proposed this change was promoted.",
                     "Reduced relative clauses",
                     "full relative can be safer",
@@ -1808,7 +1808,7 @@ def _build_choose_only_grammar_cards():
                     ],
                 ),
                 (
-                    "Choose: The new protocol is ____ effective, pending broader testing.<br>A) possibly<br>B) definitive",
+                    "Choose: The new protocol is _____ effective, pending broader testing.<br>A) possibly<br>B) definitive",
                     "A) The new protocol is possibly effective, pending broader testing.",
                     "Hedging",
                     "adverbs and qualifiers",
@@ -1821,7 +1821,7 @@ def _build_choose_only_grammar_cards():
             ],
             "formal register": [
                 (
-                    "Choose: They ___ an internal review after the outage.<br>A) carried out<br>B) carried on",
+                    "Choose: They _____ out an internal review after the outage.<br>A) carried<br>B) carry",
                     "A) They carried out an internal review after the outage.",
                     "Formal register",
                     "formal lexical choices",
@@ -1832,7 +1832,7 @@ def _build_choose_only_grammar_cards():
                     ],
                 ),
                 (
-                    "Choose: Should the audit fail, we ____ a mitigation path immediately.<br>A) implement<br>B) carry",
+                    "Choose: Should the audit fail, we _____ a mitigation path immediately.<br>A) implement<br>B) carry",
                     "B) Should the audit fail, we should implement a mitigation path immediately.",
                     "Formal register",
                     "inverted modal conditionals",
@@ -1843,7 +1843,7 @@ def _build_choose_only_grammar_cards():
                     ],
                 ),
                 (
-                    "Choose: Please ___ the revised timeline by tomorrow.<br>A) assure<br>B) ensure",
+                    "Choose: Please _____ the revised timeline by tomorrow.<br>A) assure<br>B) ensure",
                     "B) Please ensure the revised timeline by tomorrow.",
                     "Formal register",
                     "ensure that + action",
@@ -1869,7 +1869,7 @@ def _build_choose_only_grammar_cards():
                     ],
                 ),
                 (
-                    "Choose: Not only _____ the report, but the launch also improved speed.<br>A) the team approved<br>B) did the team approve",
+                    "Choose: Not only _____ the team approve the report, but the launch also improved speed.<br>A) did<br>B) do",
                     "B) Not only did the team approve the report, but the launch also improved speed.",
                     "Advanced inversion",
                     "not only ... not a clause",
@@ -1950,7 +1950,7 @@ def _build_choose_only_grammar_cards():
                     ],
                 ),
                 (
-                    "Choose: ________ was the source of this risk was overlooked.<br>A) The fact the script had changed<br>B) It",
+                    "Choose: The fact _____ the script had changed was the source of this risk.<br>A) that<br>B) which",
                     "A) The fact that the script had changed was the source of this risk.",
                     "Clefting and fronting",
                     "fronted noun phrase for emphasis",
@@ -1963,7 +1963,7 @@ def _build_choose_only_grammar_cards():
             ],
             "ellipsis and substitution": [
                 (
-                    "Choose: She said it was urgent, and we should ____ too.<br>A) do so<br>B) do this",
+                    "Choose: She said it was urgent, and we should _____ too.<br>A) do so<br>B) do this",
                     "A) She said it was urgent, and we should do so too.",
                     "Ellipsis and substitution",
                     "do so replacing verb phrase",
@@ -1974,7 +1974,7 @@ def _build_choose_only_grammar_cards():
                     ],
                 ),
                 (
-                    "Choose: I bought two cables; this one is blue and that ____ is red.<br>A) one<br>B) ones",
+                    "Choose: I bought two cables; this one is blue and that _____ is red.<br>A) one<br>B) ones",
                     "A) I bought two cables; this one is blue and that one is red.",
                     "Ellipsis and substitution",
                     "one/ones for noun substitution",
@@ -1985,7 +1985,7 @@ def _build_choose_only_grammar_cards():
                     ],
                 ),
                 (
-                    "Choose: We reviewed the test, and she ____ too.<br>A) did<br>B) did so",
+                    "Choose: We reviewed the test, and she _____ too.<br>A) did<br>B) did so",
                     "B) We reviewed the test, and she did so too.",
                     "Ellipsis and substitution",
                     "did so / did for repetition",
@@ -1998,7 +1998,7 @@ def _build_choose_only_grammar_cards():
             ],
             "advanced concession": [
                 (
-                    "Choose: Although the evidence was limited, we still moved forward.<br>A) The more evidence was limited, we still moved forward.<br>B) Although the evidence was limited, we still moved forward.",
+                    "Choose: _____ the evidence was limited, we still moved forward.<br>A) Despite<br>B) Although",
                     "B) Although the evidence was limited, we still moved forward.",
                     "Advanced concession",
                     "although + clause",
@@ -2020,7 +2020,7 @@ def _build_choose_only_grammar_cards():
                     ],
                 ),
                 (
-                    "Choose: No matter ____ they tried, the result stayed the same.<br>A) how hard<br>B) where",
+                    "Choose: No matter _____ they tried, the result stayed the same.<br>A) how hard<br>B) where",
                     "A) No matter how hard they tried, the result stayed the same.",
                     "Advanced concession",
                     "no matter + wh-word",
@@ -2055,7 +2055,7 @@ def _build_choose_only_grammar_cards():
                     ],
                 ),
                 (
-                    "Choose: Due ____ limited training, rollout was slower.<br>A) to the lack of training<br>B) to lack training",
+                    "Choose: Due _____ training, rollout was slower.<br>A) to the lack of<br>B) to lack",
                     "A) Due to the lack of training, rollout was slower.",
                     "Nominalisation",
                     "nominalised cause expressions",
@@ -2079,7 +2079,7 @@ def _build_choose_only_grammar_cards():
                     ],
                 ),
                 (
-                    "Choose: Our goal is to _____, _____, and _____ quality.<br>A) measure, improve, and maintain<br>B) measuring, improving, and maintaining",
+                    "Choose: Our goal is to measure, improve, and _____ quality.<br>A) maintain<br>B) maintaining",
                     "A) Our goal is to measure, improve, and maintain quality.",
                     "Parallelism",
                     'verb form matching in "to + list"',
@@ -2090,7 +2090,7 @@ def _build_choose_only_grammar_cards():
                     ],
                 ),
                 (
-                    "Choose: It is not about speed, ____ about reliability.<br>A) only, not<br>B) only but",
+                    "Choose: It is not about speed, _____ about reliability.<br>A) only, not<br>B) only but",
                     "A) It is not about speed, only about reliability.",
                     "Parallelism",
                     "balanced phrase structure",

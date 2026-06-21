@@ -7,7 +7,7 @@ import json
 import re
 import tempfile
 from pathlib import Path
-from collections import Counter
+from collections import Counter, defaultdict
 
 # Import functions from scripts if possible, or we can test the CLI behavior
 # Since the scripts are mostly monolithic main blocks, we will test the key logic functions
@@ -19,6 +19,7 @@ import grammar_levels
 import spanish_grammar_levels
 import spanish_core_learning
 import spanish_deck
+import sync_4000_production_to_anki
 import english_phrases
 import english_mastery
 
@@ -403,11 +404,13 @@ class TestAnkiAutomation(unittest.TestCase):
         self.assertGreaterEqual(by_type["typed_correction"], 80)
         self.assertGreaterEqual(by_type["typed_production"], 80)
         self.assertGreaterEqual(by_type["typed_contrast"], 80)
+        self.assertEqual(by_type["pattern"], 0)
         self.assertEqual(by_type["recognition"], 0)
         self.assertGreaterEqual(by_type["typed_cloze"], 350)
         self.assertGreaterEqual(by_type["audio_cloze"], 120)
         self.assertEqual(by_prompt["recognition"], 0)
-        self.assertGreaterEqual(by_prompt["type_exact"] + by_prompt["type_compare"], 780)
+        self.assertGreaterEqual(by_prompt["type_exact"] + by_prompt["type_compare"], 650)
+        self.assertGreaterEqual(by_prompt["self_grade"], 250)
         self.assertGreaterEqual(by_level["b1_bridge"], 15)
         self.assertEqual(spanish_core_learning.validate_cards(cards), [])
         self.assertNotIn(
@@ -419,6 +422,22 @@ class TestAnkiAutomation(unittest.TestCase):
         self.assertTrue(all(card["TypeAnswer"] == card["Answer"] for card in typed_cards))
         passive_cards = [card for card in cards if not card["PromptMode"].startswith("type_")]
         self.assertTrue(all(card["TypeAnswer"] == "" for card in passive_cards))
+
+    def test_spanish_open_ended_production_is_self_graded(self):
+        """Test open-ended own-sentence production is not falsely exact-scored."""
+        for card in spanish_core_learning.get_cards(card_type="typed_production"):
+            if "type your own answer" in card["Front"].lower():
+                self.assertEqual(card["PromptMode"], "self_grade")
+                self.assertEqual(card["TypeAnswer"], "")
+
+    def test_spanish_core_no_known_bad_source_sentences(self):
+        """Test known bad mined source text is corrected or rejected."""
+        all_text = "\n".join(
+            " ".join(str(card.get(field, "")) for field in ("Front", "Examples", "Back"))
+            for card in spanish_core_learning.get_cards()
+        )
+        self.assertNotIn("A mi también", all_text)
+        self.assertNotIn("¨¿Viste", all_text)
 
     def test_spanish_core_learning_tatoeba_attribution(self):
         """Test real sentence-mining cards keep stable Tatoeba source IDs."""
@@ -433,10 +452,33 @@ class TestAnkiAutomation(unittest.TestCase):
         self.assertGreaterEqual(len(audio_cards), 120)
         for card in audio_cards:
             self.assertIn("[sound:tatoeba_spa_", card["Front"])
+            self.assertIn("_____", card["Front"])
             self.assertTrue(card["AudioURL"].startswith("https://audio.tatoeba.org/sentences/spa/"))
             self.assertTrue(card["Audio"].startswith("[sound:tatoeba_spa_"))
             self.assertTrue(card["AudioContributor"])
             self.assertTrue(card["AudioLicense"])
+
+    def test_spanish_tatoeba_sentence_roles_do_not_overlap(self):
+        """Test one source sentence is not reused across text, audio, and dictation modes."""
+        sentence_roles = defaultdict(set)
+        for card in spanish_core_learning.get_cards():
+            source_id = card["SourceID"]
+            if source_id.startswith("tatoeba::"):
+                parts = source_id.split("::")
+                sentence_roles[parts[2]].add(card["CardType"])
+            elif source_id.startswith("tatoeba_audio::"):
+                parts = source_id.split("::")
+                sentence_roles[parts[2]].add(card["CardType"])
+            elif source_id.startswith("tatoeba_dictation::"):
+                parts = source_id.split("::")
+                sentence_roles[parts[2]].add(card["CardType"])
+
+        overlaps = {
+            sentence_id: roles
+            for sentence_id, roles in sentence_roles.items()
+            if len(roles) > 1
+        }
+        self.assertEqual(overlaps, {})
 
     def test_spanish_pronunciation_hint_examples(self):
         """Test readable Latin American Spanish pronunciation hints."""
@@ -571,27 +613,69 @@ class TestAnkiAutomation(unittest.TestCase):
         by_prompt = Counter(card["PromptMode"] for card in cards)
 
         self.assertGreaterEqual(len(cards), 950)
-        self.assertLessEqual(len(cards), 1100)
+        self.assertLessEqual(len(cards), 1200)
         self.assertGreaterEqual(by_type["phrase_cloze"], 350)
         self.assertGreaterEqual(by_type["phrase_production"], 250)
         self.assertGreaterEqual(by_type["typed_contrast"], 90)
+        self.assertGreaterEqual(by_type["typed_cloze"], 100)
         self.assertGreaterEqual(by_type["audio_cloze"], 100)
         self.assertGreaterEqual(by_type["dictation"], 50)
         self.assertEqual(by_type["recognition"], 0)
         self.assertEqual(by_prompt["recognition"], 0)
-        self.assertGreaterEqual(by_prompt["type_exact"] + by_prompt["type_compare"], 850)
+        self.assertGreaterEqual(by_prompt["type_exact"] + by_prompt["type_compare"], 550)
+        self.assertGreaterEqual(by_prompt["self_grade"], 300)
         self.assertEqual(english_mastery.validate_cards(cards), [])
 
     def test_english_mastery_phrase_context_quality(self):
         """Test phrase cloze cards include context and do not leak the answer."""
         for card in english_mastery.get_cards(card_type="phrase_cloze"):
-            self.assertIn("Situation", card["Front"])
+            self.assertIn("Meaning cue", card["Front"])
             self.assertIn("Complete naturally", card["Front"])
             self.assertIn("_____", card["Front"])
             self.assertNotIn("A)", card["Front"])
             self.assertNotIn("B)", card["Front"])
             front_without_blank = card["Front"].lower().replace("_____", "")
             self.assertNotIn(card["Answer"].lower(), front_without_blank)
+
+    def test_english_open_ended_production_is_self_graded(self):
+        """Test open-ended production is active recall, not false exact-answer typing."""
+        for card in english_mastery.get_cards(card_type="phrase_production"):
+            self.assertEqual(card["PromptMode"], "self_grade")
+            self.assertEqual(card["TypeAnswer"], "")
+
+    def test_english_tatoeba_sentence_roles_do_not_overlap(self):
+        """Test one English source sentence is not reused across text and audio modes."""
+        sentence_roles = defaultdict(set)
+        for card in english_mastery.get_cards():
+            source_id = card["SourceID"]
+            if source_id.startswith("tatoeba_eng_mining::"):
+                sentence_roles[source_id.split("::")[2]].add(card["CardType"])
+            elif source_id.startswith("tatoeba_eng_audio::"):
+                sentence_roles[source_id.split("::")[1]].add(card["CardType"])
+            elif source_id.startswith("tatoeba_eng_dictation::"):
+                sentence_roles[source_id.split("::")[1]].add(card["CardType"])
+
+        overlaps = {
+            sentence_id: roles
+            for sentence_id, roles in sentence_roles.items()
+            if len(roles) > 1
+        }
+        self.assertEqual(overlaps, {})
+
+    def test_english_grammar_back_does_not_duplicate_examples(self):
+        """Test grammar examples render only in the dedicated Examples field."""
+        grammar_cards = [
+            card for card in english_mastery.get_cards()
+            if card["SourceID"].startswith(("grammar::", "grammar_rule::"))
+        ]
+        self.assertTrue(grammar_cards)
+        for card in grammar_cards:
+            self.assertNotIn("Examples-", card["Back"])
+            self.assertNotIn("<b>Examples</b>", card["Back"])
+            self.assertNotIn("Self-Grade", card["Back"])
+            self.assertIn("Good =", card["SelfGrade"])
+            if card["Examples"]:
+                self.assertTrue(card["Examples"].startswith("- "))
 
     def test_english_mastery_audio_sources(self):
         """Test listening cards keep source and media metadata."""
@@ -602,6 +686,102 @@ class TestAnkiAutomation(unittest.TestCase):
             self.assertTrue(card["AudioURL"].startswith("https://audio.tatoeba.org/sentences/eng/"))
             self.assertIn("Tatoeba", card["Source"])
             self.assertIn("Tatoeba.org English sentence ID", card["Attribution"])
+
+    def test_english_contrast_single_blank_consistent(self):
+        """Test typed_contrast cards have exactly one blank of consistent width."""
+        contrast_cards = english_mastery.get_cards(card_type="typed_contrast")
+        self.assertGreaterEqual(len(contrast_cards), 90)
+        for card in contrast_cards:
+            front = card["Front"]
+            blanks = re.findall(r"_{4,}", front)
+            self.assertEqual(len(blanks), 1, f"Expected 1 blank, found {len(blanks)} in: {front[:100]}")
+            self.assertEqual(blanks[0], "_____", f"Inconsistent blank width '{blanks[0]}' in: {front[:100]}")
+            self.assertNotIn("Choose:", front)
+            self.assertNotIn("A)", front)
+            self.assertNotIn("B)", front)
+
+    def test_english_contrast_front_answer_consistency(self):
+        """Test typed_contrast answer aligns with front (text before/after blank must match, ignoring trailing punctuation)."""
+        contrast_cards = english_mastery.get_cards(card_type="typed_contrast")
+        for card in contrast_cards:
+            front = re.sub(r"<br><br><span class=\"front-cue\">.*$", "", card["Front"])
+            front = re.sub(r"<[^>]+>", "", front)
+            front = re.sub(r"(?i)^type the correct/natural english form\s*", "", front).strip()
+            answer = card["Answer"]
+            parts = re.split(r"_{3,}", front, maxsplit=1)
+            if len(parts) != 2:
+                self.fail(f"No blank found in front: {front[:100]}")
+            before = parts[0].strip().lower().rstrip(".")
+            after = parts[1].strip().lower().rstrip(".")
+            ans = answer.strip().lower().rstrip(".")
+            if before and not ans.startswith(before):
+                self.fail(
+                    f"Answer does not start with front text before blank.\n"
+                    f"  Expected start: '{before[:60]}'\n"
+                    f"  Answer: '{ans[:100]}'"
+                )
+            if after and not ans.endswith(after):
+                self.fail(
+                    f"Answer does not end with front text after blank.\n"
+                    f"  Expected end: '{after[:60]}'\n"
+                    f"  Answer: '{ans[:100]}'"
+                )
+
+    def test_english_contrast_lexical_cues_when_needed(self):
+        """Test semantically ambiguous grammar cloze cards include lexical target cues."""
+        contrast_cards = english_mastery.get_cards(card_type="typed_contrast")
+        reviewed = [
+            card for card in contrast_cards
+            if "We _____ three versions already this week" in card["Front"]
+        ]
+        self.assertEqual(len(reviewed), 1)
+        self.assertIn("Target cue", reviewed[0]["Front"])
+        self.assertIn("review", reviewed[0]["Front"])
+        london = [
+            card for card in contrast_cards
+            if "I _____ in London since 2018" in card["Front"]
+        ]
+        self.assertEqual(len(london), 1)
+        self.assertIn("Target cue", london[0]["Front"])
+        self.assertIn("live", london[0]["Front"])
+        self.assertNotIn("i / live", london[0]["Front"].lower())
+
+    def test_no_trailing_periods_except_dictation(self):
+        """Test no trailing periods in Answer/TypeAnswer except for dictation cards."""
+        for card in spanish_core_learning.get_cards():
+            self.assertNotRegex(card["Answer"], r"\.+$",
+                f"Spanish card has trailing period: [{card['SourceID']}] {card['Answer'][:60]}")
+        for card in english_mastery.get_cards():
+            if card["CardType"] == "dictation":
+                continue
+            self.assertNotRegex(card["Answer"], r"\.+$",
+                f"English card has trailing period: [{card['SourceID']}] {card['Answer'][:60]}")
+
+    def test_english_audio_cloze_target_variety(self):
+        """Test audio_cloze has enough target variety (>= 30 unique targets)."""
+        audio_cards = english_mastery.get_cards(card_type="audio_cloze")
+        targets = [card["Answer"] for card in audio_cards]
+        unique = set(targets)
+        self.assertGreaterEqual(len(unique), 30,
+            f"Only {len(unique)} unique audio_cloze targets; expected >= 30")
+        from collections import Counter
+        counts = Counter(targets)
+        for target, count in counts.items():
+            self.assertLessEqual(count, 4,
+                f"Audio target '{target}' has {count} cards; expected <= 4")
+
+    def test_english_sentence_mining_cards(self):
+        """Test typed_cloze sentence mining cards from Tatoeba."""
+        mining_cards = english_mastery.get_cards(card_type="typed_cloze")
+        self.assertGreaterEqual(len(mining_cards), 100)
+        for card in mining_cards:
+            self.assertIn("_____", card["Front"])
+            self.assertIn("Complete the English from context", card["Front"])
+            self.assertIn("Target cue", card["Front"])
+            self.assertIn("Tatoeba", card["Source"])
+            self.assertNotIn("Choose:", card["Front"])
+            front_without_blank = card["Front"].lower().replace("_____", "")
+            self.assertNotIn(card["Answer"].lower(), front_without_blank)
 
     def test_spanish_parser_extracts_rows(self):
         """Test TSV parser fields for the new Spanish duplicate workflow."""
@@ -727,6 +907,44 @@ class TestAnkiAutomation(unittest.TestCase):
             rows = spanish_deck.build_spanish_rows(source_rows, glossary)
             self.assertEqual(rows[0]["spanish_meaning"], "fruta")
 
+    def test_spanish_clear_nouns_get_articles(self):
+        """Test clear noun-definition rows display the article for learning gender."""
+        source_rows = [
+            {
+                "english_word": "boat",
+                "english_meaning": "A boat is a vehicle that moves across water.",
+                "english_example": "The boat moved quickly.",
+                "deck": "4000 Essential English Words::1.Book",
+                "card_number": "",
+            },
+            {
+                "english_word": "arrive",
+                "english_meaning": "To arrive is to get somewhere.",
+                "english_example": "They arrive late.",
+                "deck": "4000 Essential English Words::1.Book",
+                "card_number": "",
+            },
+            {
+                "english_word": "August",
+                "english_meaning": "August is the eighth month of the year.",
+                "english_example": "August is hot.",
+                "deck": "4000 Essential English Words::1.Book",
+                "card_number": "",
+            },
+        ]
+        glossary = {
+            "boat": {"spanish": "barco", "english": "boat"},
+            "arrive": {"spanish": "llegar", "english": "arrive"},
+            "august": {"spanish": "agosto", "english": "August"},
+        }
+        rows = spanish_deck.build_spanish_rows(source_rows, glossary)
+        self.assertEqual(rows[0]["spanish"], "el barco")
+        self.assertEqual(rows[0]["spanish_article"], "el")
+        self.assertEqual(rows[0]["spanish_part_of_speech"], "noun")
+        self.assertEqual(rows[1]["spanish"], "llegar")
+        self.assertEqual(rows[1]["spanish_part_of_speech"], "verb")
+        self.assertEqual(rows[2]["spanish"], "agosto")
+
     def test_spanish_glossary_disambiguates_duplicate_words_by_context(self):
         """Test duplicate English words can keep different Spanish senses."""
         source_rows = [
@@ -759,7 +977,7 @@ class TestAnkiAutomation(unittest.TestCase):
             glossary = spanish_deck.load_glossary(str(glossary_path))
             rows = spanish_deck.build_spanish_rows(source_rows, glossary)
             self.assertEqual(rows[0]["spanish"], "azul marino")
-            self.assertEqual(rows[1]["spanish"], "armada")
+            self.assertEqual(rows[1]["spanish"], "la armada")
 
     def test_output_generation_respects_limit(self):
         """Test output generators do not exceed the requested limit."""
@@ -836,18 +1054,16 @@ class TestAnkiAutomation(unittest.TestCase):
                 basic_rows = list(csv.reader(handle, delimiter="\t"))
             basic_data = [row for row in basic_rows if row and not row[0].startswith("#")]
             self.assertEqual(len(basic_data), 2)
-            self.assertEqual(basic_data[1][0], '<img src="apple.jpg" />\nmanzana\nman-SA-na')
+            self.assertEqual(basic_data[1][0], '<img src="apple.jpg" />\nla manzana\nla man-SA-na')
             back = basic_data[1][1]
             self.assertIn("English: apple", back)
-            self.assertIn("Pronunciation: man-SA-na", back)
+            self.assertIn("Pronunciation: la man-SA-na", back)
             self.assertIn("Spanish meaning: fruta", back)
             self.assertIn("Meaning in English: An apple is a fruit.", back)
             self.assertIn("Spanish example: La manzana es roja.", back)
             self.assertIn("Example in English: The apple is red.", back)
             self.assertNotIn("Part of speech: adjective", back)
-            self.assertIn("English source:", back)
-            self.assertIn("An apple is a fruit.", back)
-            self.assertIn("The apple is red.", back)
+            self.assertNotIn("English source:", back)
             self.assertIn("Notes: fruit", back)
 
     def test_no_translation_invented_without_glossary(self):
@@ -877,6 +1093,83 @@ class TestAnkiAutomation(unittest.TestCase):
             self.assertEqual(review_data[1][4], "")
             self.assertEqual(review_data[1][5], "")
             self.assertEqual(review_data[1][6], "")
+
+    def test_spanish_reviewed_glossary_has_no_known_bad_translation_artifacts(self):
+        """Fail on known OCR/profanity/accent artifacts that reached reviewed Spanish rows."""
+        paths = [
+            Path("generated/spanish_reviewed_glossary_full.tsv"),
+            Path("generated/spanish_full/english_spanish_review.tsv"),
+        ]
+        bad_patterns = [
+            "maricón",
+            "ell poema",
+            "Aplausar es",
+            "está moda",
+            "Russian fag",
+            "gordo y al nivel",
+            "\tofensa\t",
+            " accion ",
+            " carcel ",
+        ]
+        for path in paths:
+            text = path.read_text(encoding="utf-8")
+            for pattern in bad_patterns:
+                self.assertNotIn(pattern, text, f"{path} contains known bad artifact: {pattern}")
+
+    def test_4000_difficulty_order_starts_with_book_one_not_extra(self):
+        """Test production rollout uses curriculum order instead of raw Extra-first file order."""
+        source_rows = [
+            {"deck": "4000 Essential English Words::Extra", "card_number": "2_1", "english_word": "backpack"},
+            {"deck": "4000 Essential English Words::1.Book", "card_number": "", "english_word": "agree"},
+            {"deck": "4000 Essential English Words::2.Book", "card_number": "", "english_word": "because"},
+        ]
+        order = sync_4000_production_to_anki.difficulty_order(source_rows)
+        self.assertEqual(order["4000 Essential English Words::1.Book::::agree"], 1)
+        self.assertEqual(order["4000 Essential English Words::1.Book::row-0002::agree"], 1)
+        self.assertEqual(order["4000 Essential English Words::2.Book::::because"], 2)
+        self.assertEqual(order["4000 Essential English Words::Extra::2_1::backpack"], 3)
+
+    def test_spanish_production_cue_requires_article_for_nouns(self):
+        """Test noun production cues ask for English article but answer includes Spanish article."""
+        fields = {
+            "English": {"value": "backpack"},
+            "Spanish": {"value": "la mochila"},
+            "SpanishPartOfSpeech": {"value": "noun"},
+        }
+        self.assertEqual(sync_4000_production_to_anki.spanish_production_cue(fields), "the backpack")
+        self.assertIn("{{type:ProductionAnswer}}", sync_4000_production_to_anki.SPANISH_PRODUCTION_FRONT)
+        self.assertNotIn("{{Image}}", sync_4000_production_to_anki.SPANISH_PRODUCTION_FRONT)
+
+    def test_english_turkish_cues_do_not_define_word_with_itself(self):
+        """Test Turkish production cues avoid tautologies like 'varmak ... varmaktır'."""
+        path = Path("generated/english_4000/english_turkish_production.tsv")
+        if not path.exists():
+            self.skipTest("English Turkish production TSV is not generated")
+
+        bad_rows = []
+        with path.open(encoding="utf-8", newline="") as handle:
+            for row in csv.DictReader(handle, delimiter="\t"):
+                cue = row.get("TurkishCue", "").strip().lower()
+                if re.search(r"^(\w+mak|\w+mek),? .+\1", cue):
+                    bad_rows.append((row.get("English"), row.get("TurkishCue")))
+                if "varmak bir yere varmaktır" in cue or "görünmek, görünmektir" in cue:
+                    bad_rows.append((row.get("English"), row.get("TurkishCue")))
+
+        self.assertEqual([], bad_rows[:10])
+
+    def test_grammar_cards_use_lexical_cues_for_full_forms(self):
+        """Test full-form grammar cards give lexical cues instead of broken auxiliary fragments."""
+        fronts = "\n".join(card["front"] for card in grammar_levels.get_cards())
+        expected = [
+            "Cue: look",
+            "Cue: check",
+            "Cue: lock",
+            "Cue: avoid",
+        ]
+        for marker in expected:
+            self.assertIn(marker, fronts)
+        self.assertNotIn("are you been", fronts)
+        self.assertNotIn("<br>B) has<br>", fronts)
 
     @patch('urllib.request.urlopen')
     def test_get_word_data(self, mock_urlopen):
