@@ -266,6 +266,8 @@ def _card(
     self_grade="",
 ):
     answer = _strip_trailing_period(answer, keep_for_dictation=card_type == "dictation")
+    if card_type == "rule" and formula.strip() == answer:
+        formula = ""
     type_answer = answer if prompt_mode in {"type_exact", "type_compare"} else ""
     return {
         "SourceID": source_id,

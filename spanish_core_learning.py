@@ -199,6 +199,8 @@ def _card(
     attribution="",
 ):
     answer = _strip_trailing_period(answer)
+    if card_type == "rule" and formula.strip() == answer:
+        formula = ""
     type_answer = answer if prompt_mode in {"type_exact", "type_compare"} else ""
     return {
         "SourceID": source_id,
@@ -818,6 +820,9 @@ def _verb_paradigm_cards():
     """Systematic verb conjugation grid cards."""
     cards = []
     for level, verb, tense, paradigm, meaning in VERB_PARADIGMS:
+        is_invariable = "|" not in paradigm
+        formula = "invariable" if is_invariable else "yo | tú | él/ella/usted | nosotros | vosotros | ellos/ellas/ustedes"
+        type_note = "Type the invariable form" if is_invariable else "Type all 6 forms separated by |"
         cards.append(
             _card(
                 f"verb_paradigm::{level}::{verb}::{tense}",
@@ -825,11 +830,11 @@ def _verb_paradigm_cards():
                 f"verb conjugation: {verb}",
                 "verb_paradigm",
                 "type_compare",
-                f"{_front_instruction('Conjugate')} <b>{verb}</b> – {tense} tense<br><span class=\"type-note\">Type all 6 forms separated by |</span>",
+                f"{_front_instruction('Conjugate')} <b>{verb}</b> – {tense} tense<br><span class=\"type-note\">{type_note}</span>",
                 paradigm,
-                f"{verb} ({tense}) = {meaning}<br>{paradigm}",
-                f"Systematic paradigm drill for {verb}.",
-                f"- {paradigm}",
+                f"{verb} ({tense}) = {meaning}",
+                formula,
+                "",
             )
         )
     return cards
