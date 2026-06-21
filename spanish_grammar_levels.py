@@ -133,7 +133,7 @@ TOPICS = [
         "trap": "usted means you formal but uses third-person verb forms.",
         "choose": ("Choose: informal singular you<br>A) tú<br>B) usted", "A) tú", "tú is informal singular you."),
         "correction": ("usted hablas", "usted habla", "usted uses third-person singular verb forms."),
-        "production": ("Write in Spanish: she", "ella", "ella is the subject pronoun for she."),
+        "production": ("Write in Spanish: she", "ella", "Use the feminine third-person singular subject pronoun."),
         "pattern": ("optional subject", "(yo) hablo; (tú) estudias", ["Yo hablo.", "Hablo.", "Ella trabaja."]),
     },
     {

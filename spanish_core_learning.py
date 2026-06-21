@@ -893,21 +893,21 @@ L1_L2_PRODUCTION = [
 
 
 def _l1_l2_production_cards():
-    """L1→L2 sentence-level translation: English meaning → type Spanish."""
+    """English prompt -> Spanish sentence-level production."""
     cards = []
     for level, english, spanish, note in L1_L2_PRODUCTION:
         cards.append(
             _card(
                 f"l1_l2::{level}::{_slug(english)}",
                 level,
-                "L1 to L2 production",
+                "English to Spanish production",
                 "typed_production",
                 "type_compare",
                 f"{_front_instruction('Type the Spanish for')}<br>{english}",
                 spanish,
-                f"{spanish}<br><br>Grammar: {note}",
-                f"L1→L2 sentence production; train the production route.",
-                f"- {spanish}",
+                note,
+                "",
+                "",
             )
         )
     return cards

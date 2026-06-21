@@ -324,7 +324,7 @@ def _phrase_cards():
                 "type_exact" if len(phrase.split()) <= 4 else "type_compare",
                 f'<span class="front-cue">{_front_label("Meaning cue")}<br>{html.escape(item["meaning"])}</span><br><br>{_front_instruction("Complete naturally")}<br>{cloze}',
                 phrase,
-                f"{html.escape(phrase)} = {html.escape(item['meaning'])}",
+                html.escape(item["meaning"]),
                 "Retrieve the full phrase from meaning and sentence context.",
                 examples,
             )
@@ -802,7 +802,7 @@ def _listening_cards():
                     text,
                     "Compare punctuation and weak forms, then replay once.",
                     "Short dictation for word boundaries and spelling.",
-                    f"- {html.escape(text)}",
+                    "",
                     audio=sound,
                     audio_url=_audio_url(eng_id),
                     source=source,
@@ -891,9 +891,9 @@ def _interleaved_contrast_cards():
                 "type_compare",
                 f'{_front_instruction("Type the correct/natural English form")}<br>{sent1_front}<br><br>{_front_instruction("Then")}<br>{sent2_front}',
                 f"{sent1_ans} | {sent2_ans}",
-                f"1. {sent1_ans} — {sent1_note}<br>2. {sent2_ans} — {sent2_note}",
+                f"1. {sent1_note}<br>2. {sent2_note}",
                 f"Interleaved contrast: {topic_name}. Choose the right form for each context.",
-                f"- {sent1_ans}<br>- {sent2_ans}",
+                "",
             )
         )
     return cards

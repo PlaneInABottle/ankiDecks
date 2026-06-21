@@ -430,6 +430,21 @@ class TestAnkiAutomation(unittest.TestCase):
                 self.assertEqual(card["PromptMode"], "self_grade")
                 self.assertEqual(card["TypeAnswer"], "")
 
+    def test_spanish_english_to_spanish_cards_do_not_repeat_answer_as_explanation(self):
+        """Test sentence production cards avoid showing the same answer in every back section."""
+        cards = [
+            card
+            for card in spanish_core_learning.get_cards(card_type="typed_production")
+            if card["SourceID"].startswith("l1_l2::")
+        ]
+        self.assertTrue(cards)
+        for card in cards:
+            self.assertNotIn("L1→L2", card["Back"])
+            self.assertNotIn("L1→L2", card["Formula"])
+            self.assertNotEqual(card["Answer"], re.sub(r"<[^>]+>", "", card["Back"]).strip())
+            self.assertFalse(re.sub(r"<[^>]+>", "", card["Back"]).strip().startswith(card["Answer"]))
+            self.assertEqual("", card["Examples"])
+
     def test_spanish_core_no_known_bad_source_sentences(self):
         """Test known bad mined source text is corrected or rejected."""
         all_text = "\n".join(
@@ -642,6 +657,32 @@ class TestAnkiAutomation(unittest.TestCase):
         for card in english_mastery.get_cards(card_type="phrase_production"):
             self.assertEqual(card["PromptMode"], "self_grade")
             self.assertEqual(card["TypeAnswer"], "")
+
+    def test_english_mastery_back_fields_are_not_redundant(self):
+        """Test English Mastery back fields do not repeat answers as fake explanations."""
+        def clean(text):
+            text = re.sub(r"<br\s*/?>", "\n", text or "")
+            text = re.sub(r"<[^>]+>", "", text)
+            text = re.sub(r"&[#A-Za-z0-9]+;", " ", text)
+            return re.sub(r"\s+", " ", text).strip().strip("-").strip()
+
+        issues = []
+        for card in english_mastery.get_cards():
+            answer = clean(card["Answer"])
+            back = clean(card["Back"])
+            examples = clean(card["Examples"])
+            if card["CardType"] == "phrase_cloze" and back.lower().startswith(answer.lower() + " ="):
+                issues.append((card["SourceID"], "phrase meaning repeats answer"))
+            if card["CardType"] == "interleaved_contrast" and answer:
+                answer_parts = [part.strip() for part in answer.split("|")]
+                if any(part and part in back for part in answer_parts):
+                    issues.append((card["SourceID"], "interleaved why repeats answer"))
+                if examples:
+                    issues.append((card["SourceID"], "interleaved examples repeat answer"))
+            if card["CardType"] == "dictation" and examples == answer:
+                issues.append((card["SourceID"], "dictation examples equal answer"))
+
+        self.assertEqual([], issues[:20])
 
     def test_english_tatoeba_sentence_roles_do_not_overlap(self):
         """Test one English source sentence is not reused across text and audio modes."""

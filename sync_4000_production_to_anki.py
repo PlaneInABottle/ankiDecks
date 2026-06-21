@@ -106,16 +106,18 @@ SPANISH_CSS = """
   margin: 0 auto;
   border-radius: 5px;
 }
-.grid {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 10px;
+.stack {
+  margin: 8px auto 0;
+  max-width: 700px;
   margin-top: 8px;
-  text-align: left;
+  text-align: center;
 }
 .panel {
   border-top: 1px solid #d1d5db;
   padding-top: 7px;
+}
+.panel + .panel {
+  margin-top: 8px;
 }
 .primary {
   font-size: 21px;
@@ -161,7 +163,6 @@ input {
 .card.nightMode .panel,
 .nightMode .card .panel { border-top-color: #6b7280; }
 @media (max-width: 560px) {
-  .grid { grid-template-columns: 1fr; }
   .target { font-size: 28px; }
   .production-cue { font-size: 22px; }
 }
@@ -226,17 +227,15 @@ SPANISH_RECOGNITION_BACK = """
   <div class="target">{{Spanish}}</div>
   <div class="pron">{{PronunciationHint}}</div>
   {{#Image}}<div class="image">{{Image}}</div>{{/Image}}
-  <div class="grid">
+  <div class="stack">
     <div class="panel">
       <div class="primary"><span class="label">English</span>{{English}}</div>
-      {{#EnglishMeaning}}<div class="block"><span class="label">Meaning</span>{{EnglishMeaning}}</div>{{/EnglishMeaning}}
-      {{#EnglishExample}}<div class="block example"><span class="label">Example</span>{{EnglishExample}}</div>{{/EnglishExample}}
-      {{#SpanishMeaningEnglish}}<div class="block"><span class="label">Meaning mirror</span>{{SpanishMeaningEnglish}}</div>{{/SpanishMeaningEnglish}}
-      {{#SpanishExampleEnglish}}<div class="block example"><span class="label">Example mirror</span>{{SpanishExampleEnglish}}</div>{{/SpanishExampleEnglish}}
-    </div>
-    <div class="panel">
       {{#SpanishMeaning}}<div class="block"><span class="label">Spanish meaning</span>{{SpanishMeaning}}</div>{{/SpanishMeaning}}
       {{#SpanishExample}}<div class="block example"><span class="label">Spanish example</span>{{SpanishExample}}</div>{{/SpanishExample}}
+      {{#EnglishExample}}<div class="block example"><span class="label">English example</span>{{EnglishExample}}</div>{{/EnglishExample}}
+      {{#EnglishMeaning}}<div class="block"><span class="label">English meaning</span>{{EnglishMeaning}}</div>{{/EnglishMeaning}}
+    </div>
+    <div class="panel">
       <div class="grammar">
         {{#SpanishPartOfSpeech}}<b>POS:</b> {{SpanishPartOfSpeech}}<br>{{/SpanishPartOfSpeech}}
         {{#SpanishArticle}}<b>Article:</b> {{SpanishArticle}}<br>{{/SpanishArticle}}
@@ -268,15 +267,15 @@ SPANISH_PRODUCTION_BACK = """
   <div class="target">{{Spanish}}</div>
   <div class="pron">{{PronunciationHint}}</div>
   {{#Image}}<div class="image">{{Image}}</div>{{/Image}}
-  <div class="grid">
+  <div class="stack">
     <div class="panel">
       <div class="primary"><span class="label">English</span>{{English}}</div>
-      {{#SpanishMeaningEnglish}}<div class="block"><span class="label">Meaning mirror</span>{{SpanishMeaningEnglish}}</div>{{/SpanishMeaningEnglish}}
-      {{#SpanishExampleEnglish}}<div class="block example"><span class="label">Example mirror</span>{{SpanishExampleEnglish}}</div>{{/SpanishExampleEnglish}}
-    </div>
-    <div class="panel">
       {{#SpanishMeaning}}<div class="block"><span class="label">Spanish meaning</span>{{SpanishMeaning}}</div>{{/SpanishMeaning}}
       {{#SpanishExample}}<div class="block example"><span class="label">Spanish example</span>{{SpanishExample}}</div>{{/SpanishExample}}
+      {{#EnglishExample}}<div class="block example"><span class="label">English example</span>{{EnglishExample}}</div>{{/EnglishExample}}
+      {{#EnglishMeaning}}<div class="block"><span class="label">English meaning</span>{{EnglishMeaning}}</div>{{/EnglishMeaning}}
+    </div>
+    <div class="panel">
       <div class="grammar">
         {{#SpanishPartOfSpeech}}<b>POS:</b> {{SpanishPartOfSpeech}}<br>{{/SpanishPartOfSpeech}}
         {{#SpanishArticle}}<b>Article:</b> {{SpanishArticle}}<br>{{/SpanishArticle}}
