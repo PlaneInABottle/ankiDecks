@@ -158,7 +158,7 @@ BACK_TEMPLATE = """
     <div class="answer">{{Answer}}</div>
   </div>
   <div class="section">
-    <div class="label">Why</div>
+    <div class="label">Note</div>
     <div class="detail">{{Back}}</div>
   </div>
   {{#Formula}}
