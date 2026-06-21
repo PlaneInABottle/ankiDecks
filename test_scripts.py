@@ -1243,6 +1243,15 @@ class TestAnkiAutomation(unittest.TestCase):
             "partneriniz",
             "tramvay, tramvay",
         }
+        weak_tautologies = {
+            "bir konu önemli bir konudur",
+            "insanlar insandır",
+            "şanslıysanız şanslısınız",
+            "mutluysan mutlusundur",
+            "onları çok şaşırtmaktır",
+            "yemek yediği bir iştir",
+            "ankettir",
+        }
         bad_rows = []
         with path.open(encoding="utf-8", newline="") as handle:
             for row in csv.DictReader(handle, delimiter="\t"):
@@ -1252,6 +1261,8 @@ class TestAnkiAutomation(unittest.TestCase):
                 if "varmak bir yere varmaktır" in cue or "görünmek, görünmektir" in cue:
                     bad_rows.append((row.get("English"), row.get("TurkishCue")))
                 if any(cue.startswith(prefix) for prefix in answer_leaking_starts):
+                    bad_rows.append((row.get("English"), row.get("TurkishCue")))
+                if any(phrase in cue for phrase in weak_tautologies):
                     bad_rows.append((row.get("English"), row.get("TurkishCue")))
 
         self.assertEqual([], bad_rows[:10])
