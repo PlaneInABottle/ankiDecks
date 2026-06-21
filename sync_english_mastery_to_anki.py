@@ -20,8 +20,8 @@ FIELDS = english_mastery.FIELDS
 
 CSS = """
 .card {
-  background: #f7f0df;
-  color: #24211c;
+  background: #1a1a1a;
+  color: #e8e6e0;
   font-family: -apple-system, BlinkMacSystemFont, "Helvetica Neue", Arial, sans-serif;
   font-size: 22px;
   line-height: 1.45;
@@ -33,7 +33,7 @@ CSS = """
   padding: 18px 14px;
 }
 .meta {
-  color: #6d6252;
+  color: #a8a09a;
   font-size: 13px;
   letter-spacing: 0;
   text-transform: uppercase;
@@ -44,19 +44,37 @@ CSS = """
   font-weight: 650;
   margin: 14px 0;
 }
+.front-instruction,
+.front-label,
+.front-cue {
+  color: #a8a09a;
+  font-size: 15px;
+  font-weight: 550;
+  line-height: 1.35;
+}
+.front-cue {
+  display: inline-block;
+  max-width: 92%;
+}
+.front-label {
+  color: #d4a564;
+  text-transform: uppercase;
+  font-size: 12px;
+  letter-spacing: 0.02em;
+}
 .answer {
-  color: #1d5f52;
+  color: #5ec9a0;
   font-size: 30px;
   font-weight: 700;
   margin: 14px 0;
 }
 .section {
-  border-top: 1px solid rgba(36, 33, 28, 0.18);
+  border-top: 1px solid rgba(255, 255, 255, 0.12);
   margin-top: 14px;
   padding-top: 12px;
 }
 .label {
-  color: #7a4f20;
+  color: #d4a564;
   font-size: 14px;
   font-weight: 700;
   margin-bottom: 5px;
@@ -65,21 +83,29 @@ CSS = """
   font-size: 19px;
 }
 .examples {
-  color: #373128;
+  color: #c8c0b8;
   font-size: 18px;
 }
 .type-note {
-  color: #6d6252;
+  color: #a8a09a;
   font-size: 14px;
   margin-top: 8px;
 }
 .source {
-  color: #7b7164;
+  color: #888078;
   font-size: 12px;
+  margin-top: 14px;
+}
+.self-grade {
+  color: #8f8880;
+  font-size: 12px;
+  line-height: 1.35;
   margin-top: 14px;
 }
 input {
   max-width: 92%;
+  color: #e8e6e0;
+  background: #2a2a2a;
 }
 """
 
@@ -123,6 +149,9 @@ BACK_TEMPLATE = """
   {{#Source}}
   <div class="source">{{Source}}<br>{{Attribution}}</div>
   {{/Source}}
+  {{#SelfGrade}}
+  <div class="self-grade">{{SelfGrade}}</div>
+  {{/SelfGrade}}
 </div>
 """
 

@@ -88,7 +88,7 @@ Defaults:
 - Output directory: `generated/spanish`
 - Files produced:
   - `english_spanish_review.tsv` (English/source context, Spanish, pronunciation, Spanish meaning/example, English mirrors of the Spanish fields, grammar metadata, notes, status, source identity, tags)
-  - `english_spanish_basic.tsv` (Front, Back, Tags; back includes English translation, Spanish meaning/example, English mirrors, grammar metadata, original English source when available, optional notes, or `TODO: Spanish translation needed` when pending)
+  - `english_spanish_basic.tsv` (Front, Back, Tags; back includes English translation, Spanish meaning/example, English mirrors, grammar metadata, optional notes, or `TODO: Spanish translation needed` when pending)
 
 ## 🧪 Testing
 Run the unit test suite to verify script logic (uses mocks, no internet/Anki required):
