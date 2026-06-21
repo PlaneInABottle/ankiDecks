@@ -23,11 +23,14 @@ _ARTICLE_OVERRIDES = {
     "análisis": "el",
     "arte": "el",
     "azúcar": "el",
+    "agua": "el",
     "capital": "la",
+    "catedral": "la",
     "clima": "el",
     "día": "el",
     "idioma": "el",
     "informe": "el",
+    "llama": "la",
     "mano": "la",
     "mapa": "el",
     "mes": "el",
@@ -37,6 +40,45 @@ _ARTICLE_OVERRIDES = {
     "programa": "el",
     "sistema": "el",
     "tema": "el",
+}
+_NOUN_METADATA_OVERRIDES = {
+    "agua": {
+        "spanish_article": "el",
+        "spanish_gender": "feminine",
+        "spanish_number": "singular",
+        "spanish_part_of_speech": "noun",
+        "spanish_forms": "singular: el agua; plural: las aguas",
+    },
+    "catedral": {
+        "spanish_article": "la",
+        "spanish_gender": "feminine",
+        "spanish_number": "singular",
+        "spanish_part_of_speech": "noun",
+        "spanish_forms": "singular: la catedral; plural: las catedrales",
+    },
+    "llama": {
+        "spanish_article": "la",
+        "spanish_gender": "feminine",
+        "spanish_number": "singular",
+        "spanish_part_of_speech": "noun",
+        "spanish_forms": "singular: la llama; plural: las llamas",
+    },
+}
+_NOUN_PHRASE_METADATA_OVERRIDES = {
+    "el fútbol": {
+        "spanish_article": "el",
+        "spanish_gender": "masculine",
+        "spanish_number": "singular",
+        "spanish_part_of_speech": "noun",
+        "spanish_forms": "singular: el fútbol; plural: los fútboles",
+    },
+    "el fútbol americano": {
+        "spanish_article": "el",
+        "spanish_gender": "masculine",
+        "spanish_number": "singular",
+        "spanish_part_of_speech": "noun",
+        "spanish_forms": "singular: el fútbol americano; plural: los fútboles americanos",
+    },
 }
 _ENGLISH_ARTICLE_SKIP = {
     "april",
@@ -264,6 +306,7 @@ def _spanish_tokens(value: str) -> List[str]:
 def infer_spanish_metadata(spanish: str, english: str = "") -> Dict[str, str]:
     """Infer conservative grammar metadata from the reviewed Spanish headword."""
     tokens = _spanish_tokens(spanish)
+    normalized_spanish = " ".join(tokens)
     article = tokens[0] if tokens and tokens[0] in _SPANISH_ARTICLES else ""
     head = tokens[1] if article and len(tokens) > 1 else (tokens[0] if tokens else "")
     metadata = {
@@ -286,6 +329,10 @@ def infer_spanish_metadata(spanish: str, english: str = "") -> Dict[str, str]:
             singular_head = head
             plural_head = _pluralize_spanish_noun(head)
         metadata["spanish_forms"] = f"singular: {singular_article} {singular_head}; plural: {plural_article} {plural_head}"
+        if head in _NOUN_METADATA_OVERRIDES:
+            metadata.update(_NOUN_METADATA_OVERRIDES[head])
+        if normalized_spanish in _NOUN_PHRASE_METADATA_OVERRIDES:
+            metadata.update(_NOUN_PHRASE_METADATA_OVERRIDES[normalized_spanish])
     elif head.endswith(("ar", "er", "ir")):
         metadata["spanish_part_of_speech"] = "verb"
         metadata["spanish_forms"] = _regular_verb_forms(head)

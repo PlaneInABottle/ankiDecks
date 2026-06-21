@@ -986,6 +986,55 @@ class TestAnkiAutomation(unittest.TestCase):
         self.assertEqual(rows[1]["spanish_part_of_speech"], "verb")
         self.assertEqual(rows[2]["spanish"], "agosto")
 
+    def test_spanish_noun_metadata_handles_article_exceptions(self):
+        """Test feminine nouns with non-obvious articles keep correct gender/forms."""
+        source_rows = [
+            {
+                "english_word": "water",
+                "english_meaning": "Water is a clear liquid that people need.",
+                "english_example": "Drink water.",
+                "deck": "4000 Essential English Words::1.Book",
+                "card_number": "",
+            },
+            {
+                "english_word": "cathedral",
+                "english_meaning": "A cathedral is an important church.",
+                "english_example": "The cathedral is large.",
+                "deck": "4000 Essential English Words::1.Book",
+                "card_number": "",
+            },
+            {
+                "english_word": "flame",
+                "english_meaning": "A flame is part of a fire.",
+                "english_example": "The flame is bright.",
+                "deck": "4000 Essential English Words::1.Book",
+                "card_number": "",
+            },
+            {
+                "english_word": "football",
+                "english_meaning": "Football is a sport with an oval ball.",
+                "english_example": "Football is popular in the United States.",
+                "deck": "4000 Essential English Words::1.Book",
+                "card_number": "",
+            },
+        ]
+        glossary = {
+            "water": {"spanish": "agua", "english": "water"},
+            "cathedral": {"spanish": "catedral", "english": "cathedral"},
+            "flame": {"spanish": "llama", "english": "flame"},
+            "football": {"spanish": "fútbol americano", "english": "football"},
+        }
+        rows = spanish_deck.build_spanish_rows(source_rows, glossary)
+        self.assertEqual(rows[0]["spanish"], "el agua")
+        self.assertEqual(rows[0]["spanish_gender"], "feminine")
+        self.assertIn("plural: las aguas", rows[0]["spanish_forms"])
+        self.assertEqual(rows[1]["spanish"], "la catedral")
+        self.assertEqual(rows[1]["spanish_gender"], "feminine")
+        self.assertEqual(rows[2]["spanish"], "la llama")
+        self.assertEqual(rows[2]["spanish_gender"], "feminine")
+        self.assertEqual(rows[3]["spanish"], "el fútbol americano")
+        self.assertIn("plural: los fútboles americanos", rows[3]["spanish_forms"])
+
     def test_spanish_glossary_disambiguates_duplicate_words_by_context(self):
         """Test duplicate English words can keep different Spanish senses."""
         source_rows = [
@@ -1182,11 +1231,18 @@ class TestAnkiAutomation(unittest.TestCase):
         self.assertNotIn("{{Image}}", sync_4000_production_to_anki.SPANISH_PRODUCTION_FRONT)
 
     def test_english_turkish_cues_do_not_define_word_with_itself(self):
-        """Test Turkish production cues avoid tautologies like 'varmak ... varmaktır'."""
+        """Test Turkish production cues avoid tautologies or answer-leaking cognates."""
         path = Path("generated/english_4000/english_turkish_production.tsv")
         if not path.exists():
             self.skipTest("English Turkish production TSV is not generated")
 
+        answer_leaking_starts = {
+            "bomba,",
+            "etc.",
+            "liste,",
+            "partneriniz",
+            "tramvay, tramvay",
+        }
         bad_rows = []
         with path.open(encoding="utf-8", newline="") as handle:
             for row in csv.DictReader(handle, delimiter="\t"):
@@ -1195,6 +1251,26 @@ class TestAnkiAutomation(unittest.TestCase):
                     bad_rows.append((row.get("English"), row.get("TurkishCue")))
                 if "varmak bir yere varmaktır" in cue or "görünmek, görünmektir" in cue:
                     bad_rows.append((row.get("English"), row.get("TurkishCue")))
+                if any(cue.startswith(prefix) for prefix in answer_leaking_starts):
+                    bad_rows.append((row.get("English"), row.get("TurkishCue")))
+
+        self.assertEqual([], bad_rows[:10])
+
+    def test_rule_cards_do_not_duplicate_answer_as_formula(self):
+        """Test rule cards do not render the same formula twice on the back."""
+        paths = [
+            Path("generated/english_mastery/english_mastery.tsv"),
+            Path("generated/spanish_core/spanish_core_learning.tsv"),
+        ]
+        bad_rows = []
+        for path in paths:
+            if not path.exists():
+                continue
+            with path.open(encoding="utf-8", newline="") as handle:
+                rows = [line for line in handle if not line.startswith("#")]
+            for row in csv.DictReader(rows, delimiter="\t"):
+                if row.get("CardType") == "rule" and row.get("Formula", "").strip() == row.get("Answer", "").strip():
+                    bad_rows.append((path.name, row.get("SourceID"), row.get("Answer")))
 
         self.assertEqual([], bad_rows[:10])
 
