@@ -30,6 +30,8 @@ SPANISH_EXTRA_FIELDS = [
     "ProductionCue",
     "ProductionAnswer",
     "ProductionEnabled",
+    "SpanishContextCue",
+    "SpanishContextProductionEnabled",
 ]
 ENGLISH_EXTRA_FIELDS = [
     "ProductionSourceID",
@@ -96,6 +98,26 @@ SPANISH_CSS = """
   font-size: 12px;
   margin: 6px 0;
 }
+.rescue {
+  color: #6b7280;
+  font-size: 12px;
+  margin: 10px auto 0;
+  max-width: 680px;
+  text-align: left;
+}
+.rescue summary {
+  cursor: pointer;
+  font-weight: 700;
+  text-align: center;
+}
+.rescue-content {
+  border-top: 1px solid #d1d5db;
+  margin-top: 6px;
+  padding-top: 6px;
+}
+.rescue .block {
+  margin: 5px 0;
+}
 .image {
   margin: 4px auto 6px;
 }
@@ -155,13 +177,17 @@ input {
 .card.nightMode .grammar,
 .nightMode .card .grammar,
 .card.nightMode .type-note,
-.nightMode .card .type-note { color: #d1d5db; }
+.nightMode .card .type-note,
+.card.nightMode .rescue,
+.nightMode .card .rescue { color: #d1d5db; }
 .card.nightMode .label,
 .nightMode .card .label,
 .card.nightMode .cue-label,
 .nightMode .card .cue-label { color: #cbd5e1; }
 .card.nightMode .panel,
-.nightMode .card .panel { border-top-color: #6b7280; }
+.nightMode .card .panel,
+.card.nightMode .rescue-content,
+.nightMode .card .rescue-content { border-top-color: #6b7280; }
 @media (max-width: 560px) {
   .target { font-size: 28px; }
   .production-cue { font-size: 22px; }
@@ -229,11 +255,8 @@ SPANISH_RECOGNITION_BACK = """
   {{#Image}}<div class="image">{{Image}}</div>{{/Image}}
   <div class="stack">
     <div class="panel">
-      <div class="primary"><span class="label">English</span>{{English}}</div>
       {{#SpanishMeaning}}<div class="block"><span class="label">Spanish meaning</span>{{SpanishMeaning}}</div>{{/SpanishMeaning}}
       {{#SpanishExample}}<div class="block example"><span class="label">Spanish example</span>{{SpanishExample}}</div>{{/SpanishExample}}
-      {{#EnglishExample}}<div class="block example"><span class="label">English example</span>{{EnglishExample}}</div>{{/EnglishExample}}
-      {{#EnglishMeaning}}<div class="block"><span class="label">English meaning</span>{{EnglishMeaning}}</div>{{/EnglishMeaning}}
     </div>
     <div class="panel">
       <div class="grammar">
@@ -245,6 +268,14 @@ SPANISH_RECOGNITION_BACK = """
       </div>
       {{#Notes}}<div class="grammar">{{Notes}}</div>{{/Notes}}
     </div>
+    <details class="rescue">
+      <summary>English rescue</summary>
+      <div class="rescue-content">
+        <div class="primary"><span class="label">English</span>{{English}}</div>
+        {{#EnglishExample}}<div class="block example"><span class="label">English example</span>{{EnglishExample}}</div>{{/EnglishExample}}
+        {{#EnglishMeaning}}<div class="block"><span class="label">English meaning</span>{{EnglishMeaning}}</div>{{/EnglishMeaning}}
+      </div>
+    </details>
   </div>
 </div>
 """
@@ -269,11 +300,8 @@ SPANISH_PRODUCTION_BACK = """
   {{#Image}}<div class="image">{{Image}}</div>{{/Image}}
   <div class="stack">
     <div class="panel">
-      <div class="primary"><span class="label">English</span>{{English}}</div>
       {{#SpanishMeaning}}<div class="block"><span class="label">Spanish meaning</span>{{SpanishMeaning}}</div>{{/SpanishMeaning}}
       {{#SpanishExample}}<div class="block example"><span class="label">Spanish example</span>{{SpanishExample}}</div>{{/SpanishExample}}
-      {{#EnglishExample}}<div class="block example"><span class="label">English example</span>{{EnglishExample}}</div>{{/EnglishExample}}
-      {{#EnglishMeaning}}<div class="block"><span class="label">English meaning</span>{{EnglishMeaning}}</div>{{/EnglishMeaning}}
     </div>
     <div class="panel">
       <div class="grammar">
@@ -282,9 +310,60 @@ SPANISH_PRODUCTION_BACK = """
         {{#SpanishForms}}<b>Forms:</b> {{SpanishForms}}{{/SpanishForms}}
       </div>
     </div>
+    <details class="rescue">
+      <summary>English rescue</summary>
+      <div class="rescue-content">
+        <div class="primary"><span class="label">English</span>{{English}}</div>
+        {{#EnglishExample}}<div class="block example"><span class="label">English example</span>{{EnglishExample}}</div>{{/EnglishExample}}
+        {{#EnglishMeaning}}<div class="block"><span class="label">English meaning</span>{{EnglishMeaning}}</div>{{/EnglishMeaning}}
+      </div>
+    </details>
   </div>
 </div>
 {{/ProductionCue}}
+"""
+
+SPANISH_CONTEXT_PRODUCTION_FRONT = """
+{{#SpanishContextProductionEnabled}}
+<div class="wrap">
+  <span class="cue-label">Type Spanish from Spanish context</span>
+  <div class="production-cue">{{SpanishContextCue}}</div>
+  <div class="type-note">Use the Spanish context. Include the article for nouns.</div>
+  {{type:ProductionAnswer}}
+</div>
+{{/SpanishContextProductionEnabled}}
+"""
+
+SPANISH_CONTEXT_PRODUCTION_BACK = """
+{{#SpanishContextProductionEnabled}}
+<div class="wrap">
+  {{FrontSide}}
+  <div class="target">{{Spanish}}</div>
+  <div class="pron">{{PronunciationHint}}</div>
+  {{#Image}}<div class="image">{{Image}}</div>{{/Image}}
+  <div class="stack">
+    <div class="panel">
+      {{#SpanishMeaning}}<div class="block"><span class="label">Spanish meaning</span>{{SpanishMeaning}}</div>{{/SpanishMeaning}}
+      {{#SpanishExample}}<div class="block example"><span class="label">Spanish example</span>{{SpanishExample}}</div>{{/SpanishExample}}
+    </div>
+    <div class="panel">
+      <div class="grammar">
+        {{#SpanishPartOfSpeech}}<b>POS:</b> {{SpanishPartOfSpeech}}<br>{{/SpanishPartOfSpeech}}
+        {{#SpanishArticle}}<b>Article:</b> {{SpanishArticle}}<br>{{/SpanishArticle}}
+        {{#SpanishForms}}<b>Forms:</b> {{SpanishForms}}{{/SpanishForms}}
+      </div>
+    </div>
+    <details class="rescue">
+      <summary>English rescue</summary>
+      <div class="rescue-content">
+        <div class="primary"><span class="label">English</span>{{English}}</div>
+        {{#EnglishExample}}<div class="block example"><span class="label">English example</span>{{EnglishExample}}</div>{{/EnglishExample}}
+        {{#EnglishMeaning}}<div class="block"><span class="label">English meaning</span>{{EnglishMeaning}}</div>{{/EnglishMeaning}}
+      </div>
+    </details>
+  </div>
+</div>
+{{/SpanishContextProductionEnabled}}
 """
 
 ENGLISH_PRODUCTION_FRONT = """
@@ -488,6 +567,12 @@ def ensure_models() -> None:
     invoke("updateModelStyling", model={"name": SPANISH_MODEL, "css": SPANISH_CSS})
     ensure_template(SPANISH_MODEL, "Recognition", SPANISH_RECOGNITION_FRONT, SPANISH_RECOGNITION_BACK)
     ensure_template(SPANISH_MODEL, "Production", SPANISH_PRODUCTION_FRONT, SPANISH_PRODUCTION_BACK)
+    ensure_template(
+        SPANISH_MODEL,
+        "Spanish Context Production",
+        SPANISH_CONTEXT_PRODUCTION_FRONT,
+        SPANISH_CONTEXT_PRODUCTION_BACK,
+    )
     for model_name in ENGLISH_MODELS:
         ensure_fields(model_name, ENGLISH_EXTRA_FIELDS)
         try:
@@ -518,6 +603,34 @@ def spanish_production_cue(fields: Dict[str, Dict[str, str]]) -> str:
     if pos == "noun" and english and not english.lower().startswith(("the ", "a ", "an ")):
         return f"the {english}"
     return english
+
+
+def spanish_target_variants(spanish: str) -> List[str]:
+    plain = strip_html(spanish).strip()
+    variants = {plain}
+    tokens = plain.split()
+    if tokens and tokens[0].lower() in {"el", "la", "los", "las", "un", "una", "unos", "unas"}:
+        variants.add(" ".join(tokens[1:]))
+    return sorted((variant for variant in variants if variant), key=len, reverse=True)
+
+
+def mask_spanish_target(text: str, spanish: str) -> str:
+    masked = strip_html(text)
+    for variant in spanish_target_variants(spanish):
+        masked = re.sub(re.escape(variant), "_____", masked, flags=re.IGNORECASE)
+    return masked
+
+
+def spanish_context_cue(fields: Dict[str, Dict[str, str]]) -> str:
+    spanish = fields.get("Spanish", {}).get("value", "")
+    meaning = mask_spanish_target(fields.get("SpanishMeaning", {}).get("value", ""), spanish)
+    example = mask_spanish_target(fields.get("SpanishExample", {}).get("value", ""), spanish)
+    parts = []
+    if meaning:
+        parts.append(f'<div class="block"><span class="label">Significado</span>{html.escape(meaning)}</div>')
+    if example:
+        parts.append(f'<div class="block example"><span class="label">Ejemplo</span>{html.escape(example)}</div>')
+    return "".join(parts)
 
 
 def update_note_fields_many(updates: List[Tuple[int, Dict[str, str]]]) -> None:
@@ -588,6 +701,7 @@ def sync_spanish(order_map: Dict[str, int], active_limit: int) -> Dict[str, int]
         level = level_for_order(order)
         cue = spanish_production_cue(fields)
         answer = strip_html(fields.get("Spanish", {}).get("value", ""))
+        context_enabled = "yes" if order <= active_limit else ""
         updates.append(
             (
                 note["noteId"],
@@ -597,6 +711,8 @@ def sync_spanish(order_map: Dict[str, int], active_limit: int) -> Dict[str, int]
                 "ProductionCue": cue,
                 "ProductionAnswer": answer,
                 "ProductionEnabled": "yes",
+                "SpanishContextCue": spanish_context_cue(fields),
+                "SpanishContextProductionEnabled": context_enabled,
                 },
             )
         )
@@ -621,6 +737,10 @@ def sync_spanish(order_map: Dict[str, int], active_limit: int) -> Dict[str, int]
             deck_cards.setdefault(deck_name, []).append(cards[1])
             (active_cards if production_active else suspended_cards).append(cards[1])
             production_suspended += 0 if production_active else 1
+        if 2 in cards:
+            context_active = order <= active_limit
+            deck_cards.setdefault(deck_name, []).append(cards[2])
+            (active_cards if context_active else suspended_cards).append(cards[2])
     apply_card_plan(deck_cards, active_cards, suspended_cards)
     return {
         "updated_notes": updated,
