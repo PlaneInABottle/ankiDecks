@@ -424,6 +424,41 @@ class TestAnkiAutomation(unittest.TestCase):
         passive_cards = [card for card in cards if not card["PromptMode"].startswith("type_")]
         self.assertTrue(all(card["TypeAnswer"] == "" for card in passive_cards))
 
+    def test_spanish_core_blanks_are_cued(self):
+        """Test Spanish blank prompts include enough information to avoid pure guessing."""
+        for card in spanish_core_learning.get_cards():
+            front = card["Front"]
+            if "_____" not in front:
+                continue
+            if card["CardType"] == "audio_cloze":
+                self.assertIn("[sound:", front)
+                continue
+            self.assertTrue(
+                any(marker in front for marker in ("front-cue", "Meaning:", "Contrast:")),
+                f"{card['SourceID']} has an under-cued blank: {front}",
+            )
+
+        adjective = [
+            card for card in spanish_core_learning.get_cards()
+            if card["SourceID"] == "a0_survival::adjective_agreement::typed_contrast"
+        ][0]
+        self.assertIn("Contrast: rojo / roja", adjective["Front"])
+        self.assertEqual("roja", adjective["Answer"])
+
+        direct_object = [
+            card for card in spanish_core_learning.get_cards()
+            if card["SourceID"] == "a1_2_core_sentences::direct_object_pronouns::typed_contrast"
+        ][0]
+        self.assertIn("Contrast: Lo / La", direct_object["Front"])
+        self.assertEqual("La", direct_object["Answer"])
+
+        interleaved = [
+            card for card in spanish_core_learning.get_cards()
+            if card["SourceID"] == "interleaved::a1_1_foundations::ser_vs_estar_identity_vs_state::1"
+        ][0]
+        self.assertIn("Contrast: ser vs estar", interleaved["Front"])
+        self.assertEqual("es | está", interleaved["Answer"])
+
     def test_spanish_open_ended_production_is_self_graded(self):
         """Test open-ended own-sentence production is not falsely exact-scored."""
         for card in spanish_core_learning.get_cards(card_type="typed_production"):
@@ -1199,6 +1234,15 @@ class TestAnkiAutomation(unittest.TestCase):
             "Russian fag",
             "gordo y al nivel",
             "\tofensa\t",
+            "\toffender\t",
+            "el víctima",
+            "los víctimas",
+            "inquietud o inquietud",
+            "picar y picar",
+            "camino o camino",
+            "debajo o debajo",
+            "brillar y brillar",
+            "avergonzado y avergonzado",
             " accion ",
             " carcel ",
         ]
@@ -1206,6 +1250,27 @@ class TestAnkiAutomation(unittest.TestCase):
             text = path.read_text(encoding="utf-8")
             for pattern in bad_patterns:
                 self.assertNotIn(pattern, text, f"{path} contains known bad artifact: {pattern}")
+
+    def test_spanish_glossary_no_repeated_definition_pairs(self):
+        """Test Spanish reviewed meanings avoid obvious repeated-word definitions."""
+        paths = [
+            Path("generated/spanish_reviewed_glossary_full.tsv"),
+            Path("generated/spanish_full/english_spanish_review.tsv"),
+        ]
+        bad_rows = []
+        for path in paths:
+            with path.open(encoding="utf-8", newline="") as handle:
+                rows = csv.DictReader(handle, delimiter="\t")
+                for row in rows:
+                    spanish_fields = [
+                        row.get("spanish_meaning") or row.get("Spanish Meaning") or "",
+                        row.get("spanish_example") or row.get("Spanish Example") or "",
+                    ]
+                    text = " | ".join(spanish_fields).lower()
+                    if re.search(r"\b(\w{4,})\b\s+(o|y)\s+\1\b", text):
+                        bad_rows.append((path.name, row.get("english") or row.get("English"), text))
+
+        self.assertEqual([], bad_rows[:20])
 
     def test_4000_difficulty_order_starts_with_book_one_not_extra(self):
         """Test production rollout uses curriculum order instead of raw Extra-first file order."""
