@@ -1284,7 +1284,7 @@ class TestAnkiAutomation(unittest.TestCase):
         }
         self.assertEqual("to understand", generate_english_turkish_cues.cue_source(verb))
         self.assertEqual("photograph", generate_english_turkish_cues.cue_source(noun))
-        self.assertEqual("terrible", generate_english_turkish_cues.cue_source(adjective))
+        self.assertEqual("to be terrible", generate_english_turkish_cues.cue_source(adjective))
 
     def test_english_turkish_cues_are_compact_native_cues(self):
         """Test refreshed Turkish cues are compact L1 cues, not translated English definitions."""
@@ -1301,6 +1301,8 @@ class TestAnkiAutomation(unittest.TestCase):
             "instead": "yerine",
             "none": "hiçbiri",
             "issue": "sorun",
+            "patient": "sabırlı",
+            "calm": "sakin",
         }
         rows = {}
         with path.open(encoding="utf-8", newline="") as handle:
@@ -1329,8 +1331,14 @@ class TestAnkiAutomation(unittest.TestCase):
             ("4000 Essential English Words::Extra", "3_52", "cricket"): "cırcır böceği",
             ("4000 Essential English Words::Extra", "3_80", "beef"): "sığır eti",
             ("4000 Essential English Words::Extra", "3_116", "football"): "amerikan futbolu",
+            ("4000 Essential English Words::Extra", "3_42", "mole"): "köstebek",
             ("4000 Essential English Words::Extra", "1_1_2", "temple"): "şakak",
             ("4000 Essential English Words::Extra", "1_1_22", "stomach"): "mide",
+            ("4000 Essential English Words::Extra", "1_1_34", "palm"): "avuç içi",
+            ("4000 Essential English Words::Extra", "1_1_40", "back"): "sırt",
+            ("4000 Essential English Words::Extra", "1_1_41", "hip"): "kalça",
+            ("4000 Essential English Words::Extra", "1_1_42", "bottom"): "kalça",
+            ("4000 Essential English Words::Extra", "1_1_75", "navy"): "lacivert",
         }
         rows = {}
         with path.open(encoding="utf-8", newline="") as handle:
@@ -1339,6 +1347,32 @@ class TestAnkiAutomation(unittest.TestCase):
 
         for key, turkish in expected.items():
             self.assertEqual(turkish, rows[key]["TurkishCue"])
+
+    def test_english_turkish_cues_do_not_use_spanish_words(self):
+        """Test Turkish production cues do not accidentally contain Spanish translations."""
+        path = Path("generated/english_4000/english_turkish_production.tsv")
+        if not path.exists():
+            self.skipTest("English Turkish production TSV is not generated")
+
+        spanish_looking_cues = {
+            "hasta",
+            "pero",
+            "porque",
+            "aunque",
+            "desde",
+            "hacia",
+        }
+        bad_rows = []
+        with path.open(encoding="utf-8", newline="") as handle:
+            for row in csv.DictReader(handle, delimiter="\t"):
+                cue = row["TurkishCue"].strip().lower()
+                meaning = row["EnglishMeaning"].lower()
+                if cue == "hasta" and ("sick" in meaning or "not doing well" in meaning):
+                    continue
+                if cue in spanish_looking_cues:
+                    bad_rows.append((row["English"], row["TurkishCue"]))
+
+        self.assertEqual([], bad_rows)
 
     def test_spanish_cues_do_not_define_word_with_itself(self):
         """Test Spanish definitions avoid tautologies like 'acercarse significa acercarse'."""
