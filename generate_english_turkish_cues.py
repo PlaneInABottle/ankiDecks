@@ -18,12 +18,42 @@ import spanish_deck
 
 OUTPUT_PATH = Path("generated/english_4000/english_turkish_production.tsv")
 CACHE_PATH = Path("generated/english_4000/mymemory_cache.json")
+GOOGLE_CACHE_PATH = Path("generated/english_4000/google_translate_cache.json")
 MYMEMORY_URL = "https://api.mymemory.translated.net/get"
+GOOGLE_TRANSLATE_URL = "https://translate.googleapis.com/translate_a/single"
+GOOGLE_BATCH_SIZE = 80
+
+SOURCE_SPECIFIC_TURKISH_OVERRIDES = {
+    ("4000 Essential English Words::Extra", "2_6", "boxers"): "boxer külot",
+    ("4000 Essential English Words::Extra", "2_7", "cap"): "şapka",
+    ("4000 Essential English Words::Extra", "2_40", "suit"): "takım elbise",
+    ("4000 Essential English Words::Extra", "2_45", "tie"): "kravat",
+    ("4000 Essential English Words::Extra", "3_52", "cricket"): "cırcır böceği",
+    ("4000 Essential English Words::Extra", "3_75", "peanut"): "yer fıstığı",
+    ("4000 Essential English Words::Extra", "3_77", "pistachio"): "antep fıstığı",
+    ("4000 Essential English Words::Extra", "3_80", "beef"): "sığır eti",
+    ("4000 Essential English Words::Extra", "3_116", "football"): "amerikan futbolu",
+    ("4000 Essential English Words::Extra", "1_1_2", "temple"): "şakak",
+    ("4000 Essential English Words::Extra", "1_1_17", "head"): "kafa",
+    ("4000 Essential English Words::Extra", "1_1_22", "stomach"): "mide",
+}
 
 
 def strip_html(value: str) -> str:
     text = re.sub(r"<[^>]+>", "", value or "")
     return html.unescape(" ".join(text.split()))
+
+
+def strip_html_preserve_lines(value: str) -> str:
+    text = re.sub(r"<[^>]+>", "", value or "")
+    return html.unescape(text)
+
+
+def normalize_turkish_cue(value: str) -> str:
+    cue = strip_html(value)
+    cue = re.sub(r"\s*\([^)]*\)\s*$", "", cue).strip()
+    cue = cue.lower().replace("i̇", "i")
+    return cue
 
 
 def source_id(row: Dict[str, str]) -> str:
@@ -65,9 +95,26 @@ def difficulty_order(source_rows: List[Dict[str, str]]) -> Dict[str, int]:
     return {source_id(row): index for index, row in enumerate(sorted_rows, start=1)}
 
 
+def infer_pos(row: Dict[str, str]) -> str:
+    meaning = strip_html(row.get("english_meaning", "")).lower()
+    if meaning.startswith("to "):
+        return "verb"
+    if meaning.startswith(("a ", "an ", "the ")) and " is " in meaning[:80]:
+        return "noun"
+    if meaning.startswith("if ") or meaning.startswith("when "):
+        return "adjective"
+    if " means " in meaning[:80]:
+        return "adverb"
+    return ""
+
+
 def cue_source(row: Dict[str, str]) -> str:
-    meaning = strip_html(row.get("english_meaning", ""))
-    return meaning or strip_html(row.get("english_word", ""))
+    word = strip_html(row.get("english_word", ""))
+    if not word:
+        return ""
+    if infer_pos(row) == "verb" and not word.lower().startswith("to "):
+        return f"to {word}"
+    return word
 
 
 def load_existing(path: Path) -> Dict[str, Dict[str, str]]:
@@ -101,10 +148,97 @@ def translate_mymemory(text: str, cache: Dict[str, str], delay: float = 0.05) ->
     )
     with urllib.request.urlopen(request, timeout=12) as response:
         payload = json.loads(response.read().decode("utf-8"))
-    translated = strip_html(payload.get("responseData", {}).get("translatedText", ""))
+    translated = normalize_turkish_cue(payload.get("responseData", {}).get("translatedText", ""))
     cache[text] = translated
     time.sleep(delay)
     return translated
+
+
+def translate_google(text: str, cache: Dict[str, str], delay: float = 0.03) -> str:
+    text = strip_html(text)
+    if not text:
+        return ""
+    if text in cache:
+        return cache[text]
+    params = urllib.parse.urlencode(
+        {
+            "client": "gtx",
+            "sl": "en",
+            "tl": "tr",
+            "dt": "t",
+            "q": text,
+        }
+    )
+    request = urllib.request.Request(
+        f"{GOOGLE_TRANSLATE_URL}?{params}",
+        headers={"User-Agent": "anki-language-deck-builder/1.0"},
+    )
+    with urllib.request.urlopen(request, timeout=12) as response:
+        payload = json.loads(response.read().decode("utf-8"))
+    translated = normalize_turkish_cue("".join(part[0] for part in payload[0] if part and part[0]))
+    cache[text] = translated
+    time.sleep(delay)
+    return translated
+
+
+def translate_google_batch(texts: List[str], cache: Dict[str, str], delay: float = 0.08) -> None:
+    missing = []
+    seen = set()
+    for text in texts:
+        text = strip_html(text)
+        if not text or text in cache or text in seen:
+            continue
+        missing.append(text)
+        seen.add(text)
+
+    for offset in range(0, len(missing), GOOGLE_BATCH_SIZE):
+        batch = missing[offset : offset + GOOGLE_BATCH_SIZE]
+        params = urllib.parse.urlencode(
+            {
+                "client": "gtx",
+                "sl": "en",
+                "tl": "tr",
+                "dt": "t",
+                "q": "\n".join(batch),
+            }
+        )
+        request = urllib.request.Request(
+            f"{GOOGLE_TRANSLATE_URL}?{params}",
+            headers={"User-Agent": "anki-language-deck-builder/1.0"},
+        )
+        with urllib.request.urlopen(request, timeout=30) as response:
+            payload = json.loads(response.read().decode("utf-8"))
+        translated = strip_html_preserve_lines("".join(part[0] for part in payload[0] if part and part[0]))
+        lines = [normalize_turkish_cue(line) for line in translated.splitlines()]
+        if len(lines) != len(batch):
+            for text in batch:
+                translate_google(text, cache, delay=0)
+        else:
+            for text, line in zip(batch, lines):
+                cache[text] = line
+        time.sleep(delay)
+
+
+def translate_cue(text: str, provider: str, cache: Dict[str, str]) -> str:
+    if provider == "google":
+        return translate_google(text, cache)
+    if provider == "mymemory":
+        return translate_mymemory(text, cache)
+    raise ValueError(f"Unsupported provider: {provider}")
+
+
+def prefetch_translations(texts: List[str], provider: str, cache: Dict[str, str]) -> None:
+    if provider == "google":
+        translate_google_batch(texts, cache)
+
+
+def source_specific_override(row: Dict[str, str]) -> str:
+    key = (
+        row.get("deck", ""),
+        row.get("card_number", ""),
+        strip_html(row.get("english_word", "")).lower(),
+    )
+    return SOURCE_SPECIFIC_TURKISH_OVERRIDES.get(key, "")
 
 
 def build_rows(
@@ -114,21 +248,36 @@ def build_rows(
     limit: int | None,
     output_path: Path | None = None,
     cache_path: Path | None = None,
+    provider: str = "google",
+    refresh: bool = False,
 ) -> List[Dict[str, str]]:
     rows: List[Dict[str, str]] = []
     order_map = difficulty_order(source_rows)
+    texts_to_translate = []
+    for index, row in enumerate(source_rows, start=1):
+        sid = source_id(row)
+        order = order_map.get(sid, index)
+        previous = existing.get(sid, {})
+        if not refresh and previous.get("TurkishCue", "").strip():
+            continue
+        if limit is None or order <= limit:
+            texts_to_translate.append(cue_source(row))
+    prefetch_translations(texts_to_translate, provider, cache)
+    if cache_path is not None:
+        save_cache(cache_path, cache)
+
     for index, row in enumerate(source_rows, start=1):
         sid = source_id(row)
         order = order_map.get(sid, index)
         previous = existing.get(sid, {})
         source_text = cue_source(row)
-        turkish_cue = previous.get("TurkishCue", "").strip()
-        status = previous.get("Status", "").strip()
+        turkish_cue = "" if refresh else previous.get("TurkishCue", "").strip()
+        status = "" if refresh else previous.get("Status", "").strip()
         if not turkish_cue:
             if limit is None or order <= limit:
                 try:
-                    turkish_cue = translate_mymemory(source_text, cache)
-                    status = "draft_mymemory"
+                    turkish_cue = translate_cue(source_text, provider, cache)
+                    status = f"draft_{provider}_word"
                 except Exception as error:
                     turkish_cue = ""
                     status = f"error:{type(error).__name__}"
@@ -144,7 +293,7 @@ def build_rows(
                 "EnglishMeaning": strip_html(row.get("english_meaning", "")),
                 "EnglishExample": strip_html(row.get("english_example", "")),
                 "CueSource": source_text,
-                "TurkishCue": turkish_cue,
+                "TurkishCue": source_specific_override(row) or normalize_turkish_cue(turkish_cue),
                 "Status": status,
             }
         )
@@ -180,7 +329,9 @@ def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description="Generate Turkish cue TSV for English 4000 production cards.")
     parser.add_argument("--source", default="4000 Essential English Words.txt")
     parser.add_argument("--output", default=str(OUTPUT_PATH))
-    parser.add_argument("--cache", default=str(CACHE_PATH))
+    parser.add_argument("--cache", help="Translation cache path. Defaults to provider-specific cache.")
+    parser.add_argument("--provider", choices=["google", "mymemory"], default="google")
+    parser.add_argument("--refresh", action="store_true", help="Regenerate existing cues instead of preserving them.")
     parser.add_argument("--limit", type=int, help="Translate only the first N missing cues; keep later rows pending.")
     return parser.parse_args()
 
@@ -189,10 +340,19 @@ def main() -> int:
     args = parse_args()
     source_rows = spanish_deck.parse_source_deck(args.source)
     output = Path(args.output)
-    cache_path = Path(args.cache)
+    cache_path = Path(args.cache) if args.cache else (GOOGLE_CACHE_PATH if args.provider == "google" else CACHE_PATH)
     existing = load_existing(output)
     cache = load_cache(cache_path)
-    rows = build_rows(source_rows, existing, cache, args.limit, output, cache_path)
+    rows = build_rows(
+        source_rows,
+        existing,
+        cache,
+        args.limit,
+        output,
+        cache_path,
+        provider=args.provider,
+        refresh=args.refresh,
+    )
     write_rows(output, rows)
     save_cache(cache_path, cache)
     counts: Dict[str, int] = {}
