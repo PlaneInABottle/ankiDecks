@@ -1303,6 +1303,8 @@ class TestAnkiAutomation(unittest.TestCase):
             "issue": "sorun",
             "patient": "sabırlı",
             "calm": "sakin",
+            "alien": "uzaylı",
+            "capital": "başkent",
         }
         rows = {}
         with path.open(encoding="utf-8", newline="") as handle:
@@ -1331,6 +1333,7 @@ class TestAnkiAutomation(unittest.TestCase):
             ("4000 Essential English Words::Extra", "3_52", "cricket"): "cırcır böceği",
             ("4000 Essential English Words::Extra", "3_80", "beef"): "sığır eti",
             ("4000 Essential English Words::Extra", "3_116", "football"): "amerikan futbolu",
+            ("4000 Essential English Words::Extra", "3_30", "seal"): "fok",
             ("4000 Essential English Words::Extra", "3_42", "mole"): "köstebek",
             ("4000 Essential English Words::Extra", "1_1_2", "temple"): "şakak",
             ("4000 Essential English Words::Extra", "1_1_22", "stomach"): "mide",
@@ -1339,6 +1342,11 @@ class TestAnkiAutomation(unittest.TestCase):
             ("4000 Essential English Words::Extra", "1_1_41", "hip"): "kalça",
             ("4000 Essential English Words::Extra", "1_1_42", "bottom"): "kalça",
             ("4000 Essential English Words::Extra", "1_1_75", "navy"): "lacivert",
+            ("4000 Essential English Words::1.Book", "", "capital"): "başkent",
+            ("4000 Essential English Words::1.Book", "", "football"): "amerikan futbolu",
+            ("4000 Essential English Words::3.Book", "", "found"): "kurmak",
+            ("4000 Essential English Words::4.Book", "", "tie"): "bağlamak",
+            ("4000 Essential English Words::4.Book", "", "found"): "dayandırmak",
         }
         rows = {}
         with path.open(encoding="utf-8", newline="") as handle:
