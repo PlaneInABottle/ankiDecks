@@ -19,6 +19,7 @@ import grammar_levels
 import spanish_grammar_levels
 import spanish_core_learning
 import spanish_deck
+import sync_spanish_core_to_anki
 import sync_4000_production_to_anki
 import english_phrases
 import english_mastery
@@ -1295,6 +1296,42 @@ class TestAnkiAutomation(unittest.TestCase):
         self.assertEqual(sync_4000_production_to_anki.spanish_production_cue(fields), "the backpack")
         self.assertIn("{{type:ProductionAnswer}}", sync_4000_production_to_anki.SPANISH_PRODUCTION_FRONT)
         self.assertNotIn("{{Image}}", sync_4000_production_to_anki.SPANISH_PRODUCTION_FRONT)
+
+    def test_spanish_4000_templates_are_spanish_first_with_english_rescue(self):
+        """Test Spanish 4000 backs do not put English beside Spanish learning content."""
+        for template in (
+            sync_4000_production_to_anki.SPANISH_RECOGNITION_BACK,
+            sync_4000_production_to_anki.SPANISH_PRODUCTION_BACK,
+            sync_4000_production_to_anki.SPANISH_CONTEXT_PRODUCTION_BACK,
+        ):
+            before_rescue, rescue = template.split('<details class="rescue">', 1)
+            self.assertIn("{{SpanishMeaning}}", before_rescue)
+            self.assertIn("{{SpanishExample}}", before_rescue)
+            self.assertNotIn("{{English}}", before_rescue)
+            self.assertNotIn("{{EnglishMeaning}}", before_rescue)
+            self.assertNotIn("{{EnglishExample}}", before_rescue)
+            self.assertIn("{{English}}", rescue)
+
+    def test_spanish_context_production_masks_target_without_english_or_image(self):
+        """Test Spanish-context production forces recall from Spanish data."""
+        fields = {
+            "Spanish": {"value": "la mochila"},
+            "SpanishMeaning": {"value": "La mochila es una bolsa para llevar objetos."},
+            "SpanishExample": {"value": "Guardo mis libros en la mochila."},
+        }
+        cue = sync_4000_production_to_anki.spanish_context_cue(fields)
+        self.assertIn("_____", cue)
+        self.assertNotIn("mochila", cue.lower())
+        self.assertNotIn("{{English", sync_4000_production_to_anki.SPANISH_CONTEXT_PRODUCTION_FRONT)
+        self.assertNotIn("{{Image}}", sync_4000_production_to_anki.SPANISH_CONTEXT_PRODUCTION_FRONT)
+        self.assertIn("{{type:ProductionAnswer}}", sync_4000_production_to_anki.SPANISH_CONTEXT_PRODUCTION_FRONT)
+
+    def test_spanish_core_back_prioritizes_pattern_before_support_note(self):
+        """Test Spanish Core back shows formula/examples before explanatory support text."""
+        template = sync_spanish_core_to_anki.BACK_TEMPLATE
+        self.assertLess(template.index("Formula"), template.index("Support note"))
+        self.assertLess(template.index("Examples"), template.index("Support note"))
+        self.assertNotIn("<div class=\"label\">Note</div>", template)
 
     def test_english_turkish_cues_do_not_define_word_with_itself(self):
         """Test Turkish production cues avoid tautologies or answer-leaking cognates."""
