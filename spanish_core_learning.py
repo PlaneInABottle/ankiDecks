@@ -153,11 +153,52 @@ def _front_label(text):
     return f'<span class="front-label">{html.escape(text)}</span>'
 
 
+def _front_cue(label, text):
+    return f'<span class="front-cue">{html.escape(label)}: {html.escape(text)}</span>'
+
+
 def _typed_contrast_front(choose_front):
     prompt = re.sub(r"(?i)^choose:?\s*", "", choose_front).strip()
+    options = re.findall(r"<br>[A-Z]\)\s*([^<]+)", prompt)
     prompt = re.sub(r"<br>[A-Z]\)\s*[^<]+", "", prompt).strip()
     prompt = prompt.replace("___", "_____")
-    return f"{_front_instruction('Type the correct Spanish form')}<br>{prompt}"
+    option_cue = ""
+    if options:
+        option_cue = f"<br><span class=\"front-cue\">Contrast: {' / '.join(html.escape(option.strip()) for option in options)}</span>"
+    return f"{_front_instruction('Type the correct Spanish form')}<br>{prompt}{option_cue}"
+
+
+def _plain_front_text(text):
+    without_cues = re.sub(r'<span class="front-cue">.*?</span>', "", text or "", flags=re.DOTALL)
+    plain = html.unescape(re.sub(r"<[^>]+>", " ", without_cues))
+    plain = re.sub(
+        r"^(Type the correct Spanish form|Complete the Spanish from context|Listen first, then complete the chunk)\s+",
+        "",
+        plain.strip(),
+        flags=re.IGNORECASE,
+    )
+    return re.sub(r"\s+", " ", plain).strip()
+
+
+def _derive_blank_answer(front, full_answer):
+    prompt = _plain_front_text(front)
+    if "->" in prompt:
+        arrow_tail = prompt.rsplit("->", 1)[1].strip()
+        if "_____" in arrow_tail:
+            prompt = arrow_tail
+    answer = re.sub(r"\s+", " ", full_answer or "").strip()
+    if "_____" not in prompt or not answer:
+        return answer
+    before, after = prompt.split("_____", 1)
+    before = before.strip().strip(" ,.;:¿?¡!")
+    after = after.strip().strip(" ,.;:¿?¡!")
+    candidate = answer.strip(" ,.;:¿?¡!")
+    if before and candidate.lower().startswith(before.lower()):
+        candidate = candidate[len(before):].strip()
+    if after and candidate.lower().endswith(after.lower()):
+        candidate = candidate[: -len(after)].strip()
+    candidate = candidate.strip(" ,.;:¿?¡!")
+    return candidate or answer
 
 
 def _tags(level, topic, card_type):
@@ -247,7 +288,9 @@ def _topic_cards(topic):
     ]
     choose_front, choose_answer, choose_reason = topic["choose"]
     typed_contrast_answer = _strip_choice_prefix(choose_answer)
-    typed_contrast_mode = "type_exact" if len(typed_contrast_answer.split()) <= 4 else "type_compare"
+    typed_contrast_front = _typed_contrast_front(choose_front)
+    typed_answer = _derive_blank_answer(typed_contrast_front, typed_contrast_answer)
+    typed_contrast_mode = "type_exact" if len(typed_answer.split()) <= 4 else "type_compare"
     cards.append(
         _card(
             f"{level}::{slug}::typed_contrast",
@@ -255,9 +298,9 @@ def _topic_cards(topic):
             topic_name,
             "typed_contrast",
             typed_contrast_mode,
-            _typed_contrast_front(choose_front),
-            typed_contrast_answer,
-            choose_reason,
+            typed_contrast_front,
+            typed_answer,
+            f"{choose_reason}<br><br>Full sentence: {typed_contrast_answer}",
             topic["formula"],
             examples,
         )
@@ -965,6 +1008,7 @@ def _interleaved_contrast_cards():
     """Cards that mix two competing patterns to train real-time discrimination."""
     cards = []
     for level, topic_name, sent1_front, sent1_ans, sent1_note, sent2_front, sent2_ans, sent2_note in INTERLEAVED_CONTRASTS:
+        typed_answer = f"{_derive_blank_answer(sent1_front, sent1_ans)} | {_derive_blank_answer(sent2_front, sent2_ans)}"
         cards.append(
             _card(
                 f"interleaved::{level}::{_slug(topic_name)}::1",
@@ -972,8 +1016,8 @@ def _interleaved_contrast_cards():
                 topic_name,
                 "interleaved_contrast",
                 "type_compare",
-                f"{_front_instruction('Type the correct Spanish form')}<br>{sent1_front}<br><br>{_front_instruction('Then')}<br>{sent2_front}",
-                f"{sent1_ans} | {sent2_ans}",
+                f"{_front_instruction('Type the correct Spanish form')}<br>{_front_cue('Contrast', topic_name)}<br>{sent1_front}<br><br>{_front_instruction('Then')}<br>{sent2_front}",
+                typed_answer,
                 f"1. {sent1_ans} — {sent1_note}<br>2. {sent2_ans} — {sent2_note}",
                 f"Interleaved contrast: {topic_name}. Choose the right form for each context.",
                 f"- {sent1_ans}<br>- {sent2_ans}",
@@ -1011,7 +1055,7 @@ def _sentence_cards(audio_card_quotas=None):
                     topic,
                     "typed_cloze",
                     "type_exact",
-                    f"{_front_instruction('Complete the Spanish from context')}<br>{cloze}",
+                    f"{_front_instruction('Complete the Spanish from meaning and context')}<br>{_front_cue('Meaning', eng_text)}<br>{cloze}",
                     target,
                     "Type the missing Spanish word/chunk from the real sentence.",
                     "Real sentence cloze; retrieve the missing chunk from context.",
