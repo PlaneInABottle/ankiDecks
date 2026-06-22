@@ -22,6 +22,7 @@ import spanish_deck
 import sync_4000_production_to_anki
 import english_phrases
 import english_mastery
+import generate_english_turkish_cues
 
 
 def _template_stem(text):
@@ -1266,6 +1267,78 @@ class TestAnkiAutomation(unittest.TestCase):
                     bad_rows.append((row.get("English"), row.get("TurkishCue")))
 
         self.assertEqual([], bad_rows[:10])
+
+    def test_english_turkish_cue_source_uses_headword_not_definition(self):
+        """Test English production cues translate the target word, not its full definition."""
+        verb = {
+            "english_word": "understand",
+            "english_meaning": "To understand is to know what something means.",
+        }
+        noun = {
+            "english_word": "photograph",
+            "english_meaning": "A photograph is a picture made with a camera.",
+        }
+        adjective = {
+            "english_word": "terrible",
+            "english_meaning": "If something is terrible, it is very bad.",
+        }
+        self.assertEqual("to understand", generate_english_turkish_cues.cue_source(verb))
+        self.assertEqual("photograph", generate_english_turkish_cues.cue_source(noun))
+        self.assertEqual("terrible", generate_english_turkish_cues.cue_source(adjective))
+
+    def test_english_turkish_cues_are_compact_native_cues(self):
+        """Test refreshed Turkish cues are compact L1 cues, not translated English definitions."""
+        path = Path("generated/english_4000/english_turkish_production.tsv")
+        if not path.exists():
+            self.skipTest("English Turkish production TSV is not generated")
+
+        expected = {
+            "understand": "anlamak",
+            "terrible": "korkunç",
+            "photograph": "fotoğraf",
+            "shape": "şekil",
+            "suppose": "varsaymak",
+            "instead": "yerine",
+            "none": "hiçbiri",
+            "issue": "sorun",
+        }
+        rows = {}
+        with path.open(encoding="utf-8", newline="") as handle:
+            for row in csv.DictReader(handle, delimiter="\t"):
+                rows.setdefault(row["English"].lower(), row)
+
+        for english, turkish in expected.items():
+            self.assertEqual(turkish, rows[english]["TurkishCue"].strip().lower())
+            self.assertLessEqual(
+                len(rows[english]["TurkishCue"].split()),
+                3,
+                f"{english} has a definition-shaped cue: {rows[english]['TurkishCue']}",
+            )
+
+    def test_english_turkish_cues_disambiguate_contextless_extra_words(self):
+        """Test contextless Extra rows use source-specific cues for ambiguous vocabulary."""
+        path = Path("generated/english_4000/english_turkish_production.tsv")
+        if not path.exists():
+            self.skipTest("English Turkish production TSV is not generated")
+
+        expected = {
+            ("4000 Essential English Words::Extra", "2_6", "boxers"): "boxer külot",
+            ("4000 Essential English Words::Extra", "2_7", "cap"): "şapka",
+            ("4000 Essential English Words::Extra", "2_40", "suit"): "takım elbise",
+            ("4000 Essential English Words::Extra", "2_45", "tie"): "kravat",
+            ("4000 Essential English Words::Extra", "3_52", "cricket"): "cırcır böceği",
+            ("4000 Essential English Words::Extra", "3_80", "beef"): "sığır eti",
+            ("4000 Essential English Words::Extra", "3_116", "football"): "amerikan futbolu",
+            ("4000 Essential English Words::Extra", "1_1_2", "temple"): "şakak",
+            ("4000 Essential English Words::Extra", "1_1_22", "stomach"): "mide",
+        }
+        rows = {}
+        with path.open(encoding="utf-8", newline="") as handle:
+            for row in csv.DictReader(handle, delimiter="\t"):
+                rows[(row["SourceDeck"], row["SourceCard"], row["English"].lower())] = row
+
+        for key, turkish in expected.items():
+            self.assertEqual(turkish, rows[key]["TurkishCue"])
 
     def test_spanish_cues_do_not_define_word_with_itself(self):
         """Test Spanish definitions avoid tautologies like 'acercarse significa acercarse'."""
