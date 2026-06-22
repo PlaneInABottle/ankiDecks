@@ -24,6 +24,12 @@ GOOGLE_TRANSLATE_URL = "https://translate.googleapis.com/translate_a/single"
 GOOGLE_BATCH_SIZE = 80
 
 SOURCE_SPECIFIC_TURKISH_OVERRIDES = {
+    ("4000 Essential English Words::1.Book", "", "boat"): "tekne",
+    ("4000 Essential English Words::1.Book", "", "grade"): "not",
+    ("4000 Essential English Words::1.Book", "", "secret"): "sır",
+    ("4000 Essential English Words::1.Book", "", "ever"): "herhangi bir zaman",
+    ("4000 Essential English Words::1.Book", "", "instead"): "yerine",
+    ("4000 Essential English Words::1.Book", "", "fashionable"): "modaya uygun",
     ("4000 Essential English Words::Extra", "2_6", "boxers"): "boxer külot",
     ("4000 Essential English Words::Extra", "2_7", "cap"): "şapka",
     ("4000 Essential English Words::Extra", "2_40", "suit"): "takım elbise",
@@ -33,9 +39,15 @@ SOURCE_SPECIFIC_TURKISH_OVERRIDES = {
     ("4000 Essential English Words::Extra", "3_77", "pistachio"): "antep fıstığı",
     ("4000 Essential English Words::Extra", "3_80", "beef"): "sığır eti",
     ("4000 Essential English Words::Extra", "3_116", "football"): "amerikan futbolu",
+    ("4000 Essential English Words::Extra", "3_42", "mole"): "köstebek",
     ("4000 Essential English Words::Extra", "1_1_2", "temple"): "şakak",
     ("4000 Essential English Words::Extra", "1_1_17", "head"): "kafa",
     ("4000 Essential English Words::Extra", "1_1_22", "stomach"): "mide",
+    ("4000 Essential English Words::Extra", "1_1_34", "palm"): "avuç içi",
+    ("4000 Essential English Words::Extra", "1_1_40", "back"): "sırt",
+    ("4000 Essential English Words::Extra", "1_1_41", "hip"): "kalça",
+    ("4000 Essential English Words::Extra", "1_1_42", "bottom"): "kalça",
+    ("4000 Essential English Words::Extra", "1_1_75", "navy"): "lacivert",
 }
 
 
@@ -101,7 +113,7 @@ def infer_pos(row: Dict[str, str]) -> str:
         return "verb"
     if meaning.startswith(("a ", "an ", "the ")) and " is " in meaning[:80]:
         return "noun"
-    if meaning.startswith("if ") or meaning.startswith("when "):
+    if meaning.startswith(("if ", "when ", "something ", "someone ")):
         return "adjective"
     if " means " in meaning[:80]:
         return "adverb"
@@ -114,6 +126,8 @@ def cue_source(row: Dict[str, str]) -> str:
         return ""
     if infer_pos(row) == "verb" and not word.lower().startswith("to "):
         return f"to {word}"
+    if infer_pos(row) == "adjective":
+        return f"to be {word}"
     return word
 
 
@@ -241,6 +255,13 @@ def source_specific_override(row: Dict[str, str]) -> str:
     return SOURCE_SPECIFIC_TURKISH_OVERRIDES.get(key, "")
 
 
+def polish_cue_for_row(row: Dict[str, str], cue: str) -> str:
+    cue = normalize_turkish_cue(cue)
+    if infer_pos(row) == "adjective":
+        cue = re.sub(r"\s+olmak$", "", cue).strip()
+    return cue
+
+
 def build_rows(
     source_rows: List[Dict[str, str]],
     existing: Dict[str, Dict[str, str]],
@@ -293,7 +314,7 @@ def build_rows(
                 "EnglishMeaning": strip_html(row.get("english_meaning", "")),
                 "EnglishExample": strip_html(row.get("english_example", "")),
                 "CueSource": source_text,
-                "TurkishCue": source_specific_override(row) or normalize_turkish_cue(turkish_cue),
+                "TurkishCue": source_specific_override(row) or polish_cue_for_row(row, turkish_cue),
                 "Status": status,
             }
         )
