@@ -121,6 +121,7 @@ _ENGLISH_ARTICLE_SKIP = {
 }
 _SPANISH_ARTICLE_SKIP = {
     "a menudo",
+    "aún",
     "de moda",
     "dar la casualidad",
 }
