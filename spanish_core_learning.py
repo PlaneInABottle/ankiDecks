@@ -765,8 +765,21 @@ DICTATION_LEVEL_QUOTAS = {
 }
 
 
+def _audio_word_cloze_target(target):
+    """Choose one word from a sentence-mining target for audio cloze practice."""
+    words = target.split()
+    if len(words) == 1:
+        return target, re.compile(TARGET_PATTERNS[target])
+
+    if words[0] in {"me", "te", "le"} and len(words) > 1:
+        answer = words[1]
+    else:
+        answer = words[0]
+    return answer, re.compile(rf"\b{re.escape(answer)}\b", re.IGNORECASE)
+
+
 def _dictation_cards():
-    """Full-sentence dictation: hear audio, type the entire Spanish sentence."""
+    """Audio word cloze cards using the old dictation SourceIDs for stable updates."""
     pairs = _load_tatoeba_pairs()
     roles = _assign_sentence_roles(pairs)
     cards = []
@@ -779,6 +792,11 @@ def _dictation_cards():
         level = row["level"]
         spa_text = row["spa_text"]
         eng_text = row["eng_text"]
+        target = row["target"]
+        answer, pattern = _audio_word_cloze_target(target)
+        cloze = pattern.sub("_____", spa_text, count=1)
+        if cloze == spa_text:
+            continue
         sound = f"[sound:tatoeba_spa_{spa_id}.mp3]"
         source = f"Tatoeba spa:{spa_id} eng:{row['eng_id']}"
         attribution = TATOEBA_ATTRIBUTION.format(spa_id=spa_id, eng_id=row["eng_id"])
@@ -786,13 +804,13 @@ def _dictation_cards():
             _card(
                 f"tatoeba_dictation::{level}::{spa_id}::{row['eng_id']}",
                 level,
-                "short dictation",
-                "dictation",
-                "type_compare",
-                f"{sound}<br><br>{_front_instruction('Type the full Spanish sentence you hear')}",
-                spa_text,
-                f"Compare spelling, accents, and punctuation, then replay once.<br><br>Meaning: {eng_text}",
-                "Full dictation; tests word boundaries, accents, and spelling.",
+                "listening word cloze",
+                "audio_cloze",
+                "type_exact",
+                f"{sound}<br><br>{_front_instruction('Listen first, then type the missing word')}<br>{cloze}",
+                answer,
+                f"Listen first, type only the missing word, then replay and shadow the full sentence once.<br><br>Meaning: {eng_text}",
+                "Audio word cloze; retrieve one word from sound and context.",
                 f"- {spa_text}<br>- {eng_text}",
                 audio=sound,
                 audio_url=_audio_url(spa_id),
