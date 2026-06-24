@@ -1022,6 +1022,90 @@ INTERLEAVED_CONTRASTS = [
 ]
 
 
+TARGETED_RECALL_CARDS = [
+    ("a1_1_foundations", "ser vs estar targeted recall", "Soy _____ Turquía.", "de", "ser de = origin", "origin after ser", "- Soy de Turquía<br>- Ella es de México"),
+    ("a1_1_foundations", "ser vs estar targeted recall", "Estoy _____ casa.", "en", "estar en = location", "location after estar", "- Estoy en casa<br>- Estamos en la oficina"),
+    ("a1_1_foundations", "ser vs estar targeted recall", "Mi hermano _____ médico.", "es", "ser = identity/profession", "ser + profession", "- Mi hermano es médico<br>- Laura es profesora"),
+    ("a1_1_foundations", "ser vs estar targeted recall", "La puerta _____ abierta ahora.", "está", "estar = current state/result", "estar + state", "- La puerta está abierta<br>- El café está frío"),
+    ("a1_1_foundations", "ser vs estar targeted recall", "La reunión _____ a las tres.", "es", "ser = scheduled event time", "ser + time for events", "- La reunión es a las tres<br>- La clase es mañana"),
+    ("a1_1_foundations", "ser vs estar targeted recall", "Hoy _____ lunes.", "es", "ser = date/day", "ser + day/date", "- Hoy es lunes<br>- Mañana es viernes"),
+    ("a1_2_core_sentences", "direct object pronoun targeted recall", "Veo el libro. _____ veo.", "Lo", "lo replaces masculine singular direct object", "lo = it/him", "- Lo veo<br>- Lo necesito"),
+    ("a1_2_core_sentences", "direct object pronoun targeted recall", "Veo la mesa. _____ veo.", "La", "la replaces feminine singular direct object", "la = it/her", "- La veo<br>- La necesito"),
+    ("a1_2_core_sentences", "direct object pronoun targeted recall", "Compro los zapatos. _____ compro.", "Los", "los replaces masculine plural direct object", "los = them", "- Los compro<br>- Los llevo"),
+    ("a1_2_core_sentences", "direct object pronoun targeted recall", "Compro las entradas. _____ compro.", "Las", "las replaces feminine plural direct object", "las = them", "- Las compro<br>- Las tengo"),
+    ("a1_2_core_sentences", "indirect object pronoun targeted recall", "Doy el libro a Ana. _____ doy el libro.", "Le", "le = to him/her/you formal", "le + verb", "- Le doy el libro<br>- Le escribo mañana"),
+    ("a1_2_core_sentences", "indirect object pronoun targeted recall", "Doy los libros a mis amigos. _____ doy los libros.", "Les", "les = to them/you plural", "les + verb", "- Les doy los libros<br>- Les escribo hoy"),
+    ("a1_2_core_sentences", "gustar targeted recall", "Me _____ el café.", "gusta", "gustar agrees with the thing liked", "singular thing -> gusta", "- Me gusta el café<br>- Te gusta la música"),
+    ("a1_2_core_sentences", "gustar targeted recall", "Me _____ las películas.", "gustan", "gustar agrees with the thing liked", "plural thing -> gustan", "- Me gustan las películas<br>- Nos gustan los libros"),
+    ("a1_2_core_sentences", "gustar targeted recall", "A ella _____ gusta bailar.", "le", "le marks the person who likes something", "a ella -> le", "- A ella le gusta bailar<br>- A Juan le gusta correr"),
+    ("a1_2_core_sentences", "gustar targeted recall", "A nosotros _____ gustan los perros.", "nos", "nos marks what we like", "a nosotros -> nos", "- A nosotros nos gustan los perros<br>- Nos gusta estudiar"),
+    ("a1_2_core_sentences", "reflexive verb targeted recall", "Yo _____ levanto temprano.", "me", "me marks a reflexive action for yo", "yo -> me", "- Me levanto temprano<br>- Me ducho por la mañana"),
+    ("a1_2_core_sentences", "reflexive verb targeted recall", "Tú _____ acuestas tarde.", "te", "te marks a reflexive action for tú", "tú -> te", "- Te acuestas tarde<br>- Te despiertas a las siete"),
+    ("a1_2_core_sentences", "reflexive verb targeted recall", "Ella _____ viste rápido.", "se", "se marks a reflexive action for él/ella/usted", "ella -> se", "- Ella se viste rápido<br>- Él se lava las manos"),
+    ("a1_2_core_sentences", "reflexive verb targeted recall", "Nosotros _____ quedamos en casa.", "nos", "nos marks a reflexive/reciprocal action for nosotros", "nosotros -> nos", "- Nos quedamos en casa<br>- Nos vemos mañana"),
+    ("a2_1_daily_past", "preterite targeted recall", "Ayer yo _____ al mercado.", "fui", "preterite of ir for completed movement", "ayer + ir -> fui", "- Ayer fui al mercado<br>- Fui a la oficina"),
+    ("a2_1_daily_past", "preterite targeted recall", "Anoche nosotros _____ tarde.", "llegamos", "preterite for completed action at a specific time", "anoche + llegar", "- Anoche llegamos tarde<br>- Llegamos a las ocho"),
+    ("a2_1_daily_past", "preterite targeted recall", "La semana pasada ella _____ mucho.", "trabajó", "preterite for completed past period", "la semana pasada + trabajar", "- Ella trabajó mucho<br>- Trabajó en casa"),
+    ("a2_1_daily_past", "preterite targeted recall", "Ayer ellos _____ una película.", "vieron", "preterite of ver for completed event", "ayer + ver", "- Ellos vieron una película<br>- Vieron el partido"),
+    ("a2_1_daily_past", "imperfect targeted recall", "De niño, yo _____ mucho al fútbol.", "jugaba", "imperfect for repeated past habit", "de niño + jugar", "- De niño, jugaba al fútbol<br>- Jugaba cada tarde"),
+    ("a2_1_daily_past", "imperfect targeted recall", "Antes nosotros _____ cerca del mar.", "vivíamos", "imperfect for past background/habit", "antes + vivir", "- Antes vivíamos cerca del mar<br>- Vivíamos en Ankara"),
+    ("a2_1_daily_past", "imperfect targeted recall", "Cuando era joven, ella _____ mucho.", "leía", "imperfect for repeated past habit", "cuando era joven + leer", "- Ella leía mucho<br>- Leía cada noche"),
+    ("a2_1_daily_past", "imperfect targeted recall", "La casa _____ muy tranquila.", "era", "imperfect of ser for description", "description in the past", "- La casa era tranquila<br>- El día era largo"),
+    ("a2_1_daily_past", "preterite vs imperfect targeted recall", "Mientras yo estudiaba, mi hermano _____.", "llegó", "preterite interrupts imperfect background", "interruption event", "- Mientras estudiaba, llegó mi hermano<br>- Cuando dormía, sonó el teléfono"),
+    ("a2_1_daily_past", "preterite vs imperfect targeted recall", "Yo _____ cuando sonó el teléfono.", "dormía", "imperfect gives the background action", "background action", "- Dormía cuando sonó el teléfono<br>- Comía cuando llegó Ana"),
+    ("a2_1_daily_past", "preterite vs imperfect targeted recall", "Primero cerré la puerta y después _____ la luz.", "apagué", "preterite for sequence of completed actions", "action sequence", "- Cerré la puerta y apagué la luz<br>- Llegué y llamé"),
+    ("a2_1_daily_past", "preterite vs imperfect targeted recall", "Todos los veranos nosotros _____ a la playa.", "íbamos", "imperfect for repeated past routine", "past routine", "- Íbamos a la playa<br>- Visitábamos a mis abuelos"),
+    ("a2_2_natural_spanish", "por vs para targeted recall", "Trabajo _____ ganar dinero.", "para", "para + infinitive = purpose", "purpose", "- Trabajo para ganar dinero<br>- Estudio para aprender"),
+    ("a2_2_natural_spanish", "por vs para targeted recall", "Gracias _____ tu ayuda.", "por", "por = reason/cause", "reason", "- Gracias por tu ayuda<br>- Lo hice por ti"),
+    ("a2_2_natural_spanish", "por vs para targeted recall", "Este regalo es _____ Ana.", "para", "para = recipient/destination", "recipient", "- Es para Ana<br>- La carta es para ti"),
+    ("a2_2_natural_spanish", "por vs para targeted recall", "Caminamos _____ el parque.", "por", "por = through/around a place", "movement through", "- Caminamos por el parque<br>- Pasé por tu casa"),
+    ("a2_2_natural_spanish", "por vs para targeted recall", "Lo necesito _____ mañana.", "para", "para = deadline", "deadline", "- Lo necesito para mañana<br>- Es para el viernes"),
+    ("a2_2_natural_spanish", "por vs para targeted recall", "No salí _____ la lluvia.", "por", "por = cause", "cause", "- No salí por la lluvia<br>- Llegué tarde por el tráfico"),
+    ("a2_2_natural_spanish", "future targeted recall", "Mañana _____ a estudiar.", "voy", "ir a + infinitive expresses near future", "yo -> voy a", "- Mañana voy a estudiar<br>- Voy a llamar"),
+    ("a2_2_natural_spanish", "future targeted recall", "Este verano nosotros _____ a viajar.", "vamos", "ir a + infinitive; nosotros -> vamos", "nosotros -> vamos a", "- Vamos a viajar<br>- Vamos a empezar"),
+    ("a2_2_natural_spanish", "future targeted recall", "Creo que ella _____ tarde.", "llegará", "future tense for prediction", "future prediction", "- Ella llegará tarde<br>- Todo saldrá bien"),
+    ("a2_2_natural_spanish", "future targeted recall", "Si puedo, te _____ mañana.", "llamaré", "future tense for promise/intention", "future intention", "- Te llamaré mañana<br>- Lo haré después"),
+    ("b1_bridge", "subjunctive targeted recall", "Quiero que tú _____.", "vengas", "querer que + subjunctive", "querer que + subjunctive", "- Quiero que vengas<br>- Necesito que me ayudes"),
+    ("b1_bridge", "subjunctive targeted recall", "No creo que él _____.", "venga", "no creer que + subjunctive", "doubt/negated belief", "- No creo que venga<br>- No pienso que sea fácil"),
+    ("b1_bridge", "subjunctive targeted recall", "Es importante que nosotros _____.", "estudiemos", "es importante que + subjunctive", "impersonal expression + subjunctive", "- Es importante que estudiemos<br>- Es necesario que salgamos"),
+    ("b1_bridge", "subjunctive targeted recall", "Busco a alguien que _____ español.", "hable", "unknown/non-specific person + subjunctive", "non-specific antecedent", "- Busco a alguien que hable español<br>- Necesito un lugar que sea tranquilo"),
+    ("b1_bridge", "indicative targeted recall", "Creo que él _____.", "viene", "creer que + indicative", "belief/fact", "- Creo que viene<br>- Pienso que es verdad"),
+    ("b1_bridge", "indicative targeted recall", "Conozco a alguien que _____ español.", "habla", "known/specific person + indicative", "specific antecedent", "- Conozco a alguien que habla español<br>- Tengo un amigo que vive aquí"),
+    ("b1_bridge", "conditional targeted recall", "Si tuviera tiempo, _____ más.", "estudiaría", "si + imperfect subjunctive, conditional result", "conditional result", "- Si tuviera tiempo, estudiaría más<br>- Si pudiera, viajaría"),
+    ("b1_bridge", "conditional targeted recall", "Yo _____ más, pero no tengo tiempo.", "estudiaría", "conditional for hypothetical willingness", "would + verb", "- Estudiaría más, pero no tengo tiempo<br>- Compraría el libro, pero es caro"),
+    ("b1_bridge", "conditional targeted recall", "¿_____ ayudarme?", "Podrías", "conditional for polite request", "polite request", "- ¿Podrías ayudarme?<br>- ¿Podría hablar contigo?"),
+    ("b1_bridge", "conditional targeted recall", "Me _____ vivir en España.", "gustaría", "me gustaría = I would like", "gustaría + infinitive", "- Me gustaría vivir en España<br>- Nos gustaría aprender más"),
+    ("b1_bridge", "object pronoun order targeted recall", "Doy el libro a Ana. _____ doy.", "Se lo", "le/les becomes se before lo/la/los/las", "se + lo", "- Se lo doy<br>- Se la envío"),
+    ("b1_bridge", "object pronoun order targeted recall", "Compro flores para mis padres. _____ compro.", "Se las", "les becomes se before las", "se + las", "- Se las compro<br>- Se los mando"),
+    ("b1_bridge", "object pronoun order targeted recall", "Voy a dar el libro a Ana. Voy a _____.", "dárselo", "pronouns attach to infinitive; accent preserves stress", "infinitive + se + lo", "- Voy a dárselo<br>- Quiero explicárselo"),
+    ("b1_bridge", "object pronoun order targeted recall", "Estoy escribiendo la carta a Juan. Estoy _____.", "escribiéndosela", "pronouns attach to gerund; accent preserves stress", "gerund + se + la", "- Estoy escribiéndosela<br>- Está contándomelo"),
+    ("b1_bridge", "relative clause targeted recall", "La persona _____ vive aquí es mi amiga.", "que", "que introduces a defining relative clause", "relative pronoun", "- La persona que vive aquí<br>- El libro que compré"),
+    ("b1_bridge", "relative clause targeted recall", "El lugar _____ vivo es tranquilo.", "donde", "donde refers to place", "place relative", "- El lugar donde vivo<br>- La ciudad donde nací"),
+    ("b1_bridge", "reported speech targeted recall", "Dice que _____ cansado.", "está", "reported speech keeps present when still true", "dice que + present", "- Dice que está cansado<br>- Dice que tiene tiempo"),
+    ("b1_bridge", "reported speech targeted recall", "Dijo que _____ cansado.", "estaba", "reported speech shifts present state to imperfect", "dijo que + imperfect", "- Dijo que estaba cansado<br>- Dijo que tenía tiempo"),
+]
+
+
+def _targeted_recall_cards():
+    cards = []
+    for index, (level, topic_name, front, answer, back, formula, examples) in enumerate(TARGETED_RECALL_CARDS, start=1):
+        cards.append(
+            _card(
+                f"targeted::{level}::{_slug(topic_name)}::{index:03d}",
+                level,
+                topic_name,
+                "typed_contrast",
+                "type_exact",
+                f"{_front_instruction('Type the Spanish chunk')}<br>{_front_cue('Pattern', formula)}<br>{front}",
+                answer,
+                back,
+                formula,
+                examples,
+            )
+        )
+    return cards
+
+
 def _interleaved_contrast_cards():
     """Cards that mix two competing patterns to train real-time discrimination."""
     cards = []
@@ -1116,6 +1200,7 @@ def build_cards(include_tatoeba=True):
         cards.extend(_topic_cards(topic))
     cards.extend(_verb_paradigm_cards())
     cards.extend(_l1_l2_production_cards())
+    cards.extend(_targeted_recall_cards())
     cards.extend(_interleaved_contrast_cards())
     if include_tatoeba:
         cards.extend(_sentence_cards())

@@ -4,6 +4,7 @@ import io
 from unittest.mock import patch, MagicMock
 import os
 import json
+import html
 import re
 import tempfile
 from pathlib import Path
@@ -727,9 +728,6 @@ class TestAnkiAutomation(unittest.TestCase):
             if card["CardType"] == "phrase_cloze" and back.lower().startswith(answer.lower() + " ="):
                 issues.append((card["SourceID"], "phrase meaning repeats answer"))
             if card["CardType"] == "interleaved_contrast" and answer:
-                answer_parts = [part.strip() for part in answer.split("|")]
-                if any(part and part in back for part in answer_parts):
-                    issues.append((card["SourceID"], "interleaved why repeats answer"))
                 if examples:
                     issues.append((card["SourceID"], "interleaved examples repeat answer"))
             if card["CardType"] == "dictation" and examples == answer:
@@ -795,7 +793,7 @@ class TestAnkiAutomation(unittest.TestCase):
             self.assertNotIn("B)", front)
 
     def test_english_contrast_front_answer_consistency(self):
-        """Test typed_contrast answer aligns with front (text before/after blank must match, ignoring trailing punctuation)."""
+        """Test typed_contrast answers are missing chunks that reconstruct the full sentence."""
         contrast_cards = english_mastery.get_cards(card_type="typed_contrast")
         for card in contrast_cards:
             front = re.sub(r"<br><br><span class=\"front-cue\">.*$", "", card["Front"])
@@ -805,25 +803,35 @@ class TestAnkiAutomation(unittest.TestCase):
             parts = re.split(r"_{3,}", front, maxsplit=1)
             if len(parts) != 2:
                 self.fail(f"No blank found in front: {front[:100]}")
-            before = parts[0].strip().lower().rstrip(".")
-            after = parts[1].strip().lower().rstrip(".")
-            ans = answer.strip().lower().rstrip(".")
-            if before and not ans.startswith(before):
-                self.fail(
-                    f"Answer does not start with front text before blank.\n"
-                    f"  Expected start: '{before[:60]}'\n"
-                    f"  Answer: '{ans[:100]}'"
-                )
-            if after and not ans.endswith(after):
-                self.fail(
-                    f"Answer does not end with front text after blank.\n"
-                    f"  Expected end: '{after[:60]}'\n"
-                    f"  Answer: '{ans[:100]}'"
-                )
+            self.assertLessEqual(
+                len(re.findall(r"[A-Za-z']+", answer)),
+                5,
+                f"Contrast answer should be the missing chunk, not the full sentence: {card['SourceID']} -> {answer}",
+            )
+            full_sentence_match = re.search(r"Full sentence:\s*(.*)", card["Back"])
+            if not full_sentence_match:
+                continue
+            reconstructed = f"{parts[0]}{answer}{parts[1]}"
+            reconstructed = re.sub(r"[,;:]", "", reconstructed)
+            reconstructed = re.sub(r"\s+", " ", reconstructed).strip().lower().rstrip(".")
+            expected = html.unescape(re.sub(r"\s+", " ", full_sentence_match.group(1)))
+            expected = re.sub(r"[,;:]", "", expected).strip().lower().rstrip(".")
+            self.assertEqual(
+                expected,
+                reconstructed,
+                f"Typed chunk does not reconstruct full sentence for {card['SourceID']}",
+            )
 
     def test_english_contrast_lexical_cues_when_needed(self):
         """Test semantically ambiguous grammar cloze cards include lexical target cues."""
         contrast_cards = english_mastery.get_cards(card_type="typed_contrast")
+        grammar_contrasts = [card for card in contrast_cards if card["SourceID"].startswith("grammar::")]
+        self.assertTrue(grammar_contrasts)
+        for card in grammar_contrasts:
+            self.assertTrue(
+                "Target cue" in card["Front"] or "Pattern cue" in card["Front"],
+                f"Grammar contrast has no cue: {card['SourceID']}",
+            )
         reviewed = [
             card for card in contrast_cards
             if "We _____ three versions already this week" in card["Front"]
@@ -839,6 +847,16 @@ class TestAnkiAutomation(unittest.TestCase):
         self.assertIn("Target cue", london[0]["Front"])
         self.assertIn("live", london[0]["Front"])
         self.assertNotIn("i / live", london[0]["Front"].lower())
+
+    def test_english_interleaved_contrasts_are_cued(self):
+        """Test paired contrast prompts include a cue for each blanked sentence."""
+        cards = english_mastery.get_cards(card_type="interleaved_contrast")
+        self.assertGreaterEqual(len(cards), 20)
+        for card in cards:
+            blanks = re.findall(r"_{4,}", card["Front"])
+            cues = re.findall(r"<span class=\"front-cue\">", card["Front"])
+            self.assertGreaterEqual(len(blanks), 2, card["SourceID"])
+            self.assertGreaterEqual(len(cues), 2, card["SourceID"])
 
     def test_no_trailing_periods_except_dictation(self):
         """Test no trailing periods in Answer/TypeAnswer except for dictation cards."""
