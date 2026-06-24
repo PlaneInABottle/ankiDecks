@@ -466,8 +466,12 @@ def _missing_chunk_from_front_answer(front, answer):
     answer_text = _strip_html(answer).strip()
     if before and answer_text.lower().startswith(before.lower()):
         answer_text = answer_text[len(before):].strip()
-    if after and answer_text.lower().endswith(after.lower()):
-        answer_text = answer_text[: -len(after)].strip()
+    if after:
+        after_variants = [after, after.rstrip(" .;:!?")]
+        for after_variant in after_variants:
+            if after_variant and answer_text.lower().endswith(after_variant.lower()):
+                answer_text = answer_text[: -len(after_variant)].strip()
+                break
     return answer_text.strip(" ,.;:!?")
 
 
@@ -500,11 +504,17 @@ def _lemma_for_cue(word):
     return lowered
 
 
-def _prompt_with_optional_lexical_cue(prompt, answer):
-    cue = _lexical_cue_from_chunk(_missing_chunk_from_front_answer(prompt, answer))
-    if not cue:
-        return prompt
-    return f"{prompt}<br><br>{_front_cue('Target cue', cue)}"
+def _cue_for_missing_chunk(chunk, topic="", formula=""):
+    cue = _lexical_cue_from_chunk(chunk)
+    if cue:
+        return "Target cue", cue
+    pattern = topic.strip() or formula.strip() or "grammar pattern"
+    return "Pattern cue", pattern
+
+
+def _prompt_with_required_cue(prompt, chunk, topic="", formula=""):
+    cue_label, cue = _cue_for_missing_chunk(chunk, topic, formula)
+    return f"{prompt}<br><br>{_front_cue(cue_label, cue)}"
 
 
 def _grammar_formula(back):
@@ -570,9 +580,14 @@ def _grammar_cards():
             prompt_mode = "type_compare"
         else:
             card_type = "typed_contrast"
-            prompt = _front_instruction("Type the correct/natural English form") + "<br>" + _front_without_choices(front)
-            prompt = _prompt_with_optional_lexical_cue(prompt, answer)
-            prompt_mode = "type_exact" if len(answer.split()) <= 8 else "type_compare"
+            prompt_base = _front_instruction("Type the correct/natural English form") + "<br>" + _front_without_choices(front)
+            missing_answer = _missing_chunk_from_front_answer(prompt_base, answer)
+            answer_for_card = missing_answer or answer
+            prompt = _prompt_with_required_cue(prompt_base, answer_for_card, topic, formula)
+            prompt_mode = "type_exact" if len(answer_for_card.split()) <= 5 else "type_compare"
+            if answer_for_card != answer:
+                reason = f"{reason}<br><br>Full sentence: {html.escape(answer)}"
+            answer = answer_for_card
         cards.append(
             _card(
                 f"{source_base}::{card_type}",
@@ -819,8 +834,8 @@ ENGLISH_INTERLEAVED_CONTRASTS = [
      "I _____ in London since 2018.", "I have lived in London since 2018", "present perfect: unfinished time (since)",
      "I _____ in London in 2018.", "I lived in London in 2018", "past simple: finished time (in)"),
     ("b2_tense_system", "present perfect vs past simple (experience)",
-     "_____ you ever _____ sushi?", "Have you ever eaten sushi", "present perfect: life experience (ever)",
-     "_____ you _____ sushi last night?", "Did you eat sushi last night", "past simple: specific past time"),
+     "Have you ever _____ sushi?", "Have you ever eaten sushi", "present perfect: life experience (ever)",
+     "Did you _____ sushi last night?", "Did you eat sushi last night", "past simple: specific past time"),
     ("b2_tense_system", "past perfect vs past simple",
      "By the time we arrived, they _____ already _____.", "By the time we arrived, they had already left", "past perfect: earlier event",
      "When we arrived, they _____ already _____.", "When we arrived, they already left", "past simple: sequential events"),
@@ -843,7 +858,7 @@ ENGLISH_INTERLEAVED_CONTRASTS = [
      "I _____ play tennis every weekend.", "I used to play tennis every weekend", "used to + infinitive: past habit",
      "I _____ playing tennis every weekend.", "I am used to playing tennis every weekend", "be used to + gerund: accustomed to"),
     ("b2_verb_patterns", "used to vs get used to",
-     "I _____ waking up early as a child.", "I used to wake up early as a child", "used to: past habit",
+     "I _____ early as a child.", "I used to wake up early as a child", "used to: past habit",
      "I'm _____ waking up early.", "I'm getting used to waking up early", "get used to: process of becoming accustomed"),
     ("b2_verb_patterns", "had better vs would rather",
      "You _____ see a doctor.", "You had better see a doctor", "had better + infinitive: strong advice",
@@ -883,6 +898,10 @@ def _interleaved_contrast_cards():
     cards = []
     for level, topic_name, sent1_front, sent1_ans, sent1_note, sent2_front, sent2_ans, sent2_note in ENGLISH_INTERLEAVED_CONTRASTS:
         deck = _deck_for_level(level)
+        sent1_chunk = _missing_chunk_from_front_answer(sent1_front, sent1_ans) or sent1_ans
+        sent2_chunk = _missing_chunk_from_front_answer(sent2_front, sent2_ans) or sent2_ans
+        cue1_label, cue1 = _cue_for_missing_chunk(sent1_chunk, topic_name)
+        cue2_label, cue2 = _cue_for_missing_chunk(sent2_chunk, topic_name)
         cards.append(
             _card(
                 f"interleaved::{level}::{_slug(topic_name)}::1",
@@ -891,9 +910,9 @@ def _interleaved_contrast_cards():
                 topic_name,
                 "interleaved_contrast",
                 "type_compare",
-                f'{_front_instruction("Type the correct/natural English form")}<br>{sent1_front}<br><br>{_front_instruction("Then")}<br>{sent2_front}',
-                f"{sent1_ans} | {sent2_ans}",
-                f"1. {sent1_note}<br>2. {sent2_note}",
+                f'{_front_instruction("Type the correct/natural English form")}<br>{sent1_front}<br>{_front_cue(cue1_label, cue1)}<br><br>{_front_instruction("Then")}<br>{sent2_front}<br>{_front_cue(cue2_label, cue2)}',
+                f"{sent1_chunk} | {sent2_chunk}",
+                f"1. {html.escape(sent1_ans)} — {sent1_note}<br>2. {html.escape(sent2_ans)} — {sent2_note}",
                 f"Interleaved contrast: {topic_name}. Choose the right form for each context.",
                 "",
             )

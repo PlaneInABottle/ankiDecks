@@ -2068,8 +2068,8 @@ def _build_choose_only_grammar_cards():
             ],
             "parallelism": [
                 (
-                    "Choose: The tool is faster, safer, and _____ reliable.<br>A) more<br>B) to be more",
-                    "A) The tool is faster, safer, and reliable.",
+                    "Choose: The tool is fast, safe, and _____.<br>A) reliable<br>B) reliably",
+                    "A) The tool is fast, safe, and reliable.",
                     "Parallelism",
                     "match item form in list",
                     "All items in coordination should match grammatical form.",
