@@ -119,6 +119,11 @@ _ENGLISH_ARTICLE_SKIP = {
     "white",
     "yellow",
 }
+_SPANISH_ARTICLE_SKIP = {
+    "a menudo",
+    "de moda",
+    "dar la casualidad",
+}
 
 
 def normalize_word(value: str) -> str:
@@ -384,6 +389,8 @@ def _infer_definite_article(spanish: str) -> str:
 def add_article_to_clear_noun(spanish: str, english: str, english_meaning: str) -> str:
     """Add a definite article for clear noun-definition rows when gender is inferable."""
     if not spanish or _starts_with_article(spanish):
+        return spanish
+    if " ".join(_spanish_tokens(spanish)) in _SPANISH_ARTICLE_SKIP:
         return spanish
     metadata = infer_spanish_metadata(spanish, english)
     if metadata.get("spanish_part_of_speech") == "verb":

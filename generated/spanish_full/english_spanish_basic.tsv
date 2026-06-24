@@ -3039,14 +3039,20 @@ Spanish example: Mi cadera cruje al caminar.
 Example in English: My hip creaks when I walk.
 Meaning in English: The hip connects the pelvis to the leg."	spanish from_4000_english 4000_essential_english_words_extra reviewed
 "<img src=""bottom__1397924728921.jpg"" />
-parte inferior
-PAR-te in-fe-RIOR"	"English: bottom
-Pronunciation: PAR-te in-fe-RIOR
-Spanish meaning: La parte inferior es la zona más baja o trasera.
-Spanish example: Se sentó en el fondo de la silla.
+la parte inferior
+la PAR-te in-fe-RIOR"	"English: bottom
+Pronunciation: la PAR-te in-fe-RIOR
+Spanish meaning: La parte inferior es el lado de abajo de algo.
+Spanish example: Se sentó en la parte inferior de la silla.
 Example in English: He sat at the bottom of the chair.
 Meaning in English: The bottom is the lowest or rear area.
-Notes: Sense: lower part or underside."	spanish from_4000_english 4000_essential_english_words_extra reviewed
+Grammar:
+Part of speech: noun
+Article: la
+Gender: feminine
+Number: singular
+Forms: singular: la parte; plural: las partes
+Notes: Source sense is lower part."	spanish from_4000_english 4000_essential_english_words_extra reviewed
 "<img src=""heel_1397924728921.jpg"" />
 talón
 ta-LON"	"English: heel
@@ -3508,8 +3514,8 @@ Forms: singular: el pato; plural: los patos"	spanish from_4000_english 4000_esse
 disfrutar
 dis-fru-TAR"	"English: enjoy
 Pronunciation: dis-fru-TAR
-Spanish meaning: Disfrutar es gustar algo o encontrar placer en ello.
-Spanish example: A la mujer le gusta montar en bicicleta.
+Spanish meaning: Disfrutar es sentir placer con algo.
+Spanish example: La mujer disfruta montar en bicicleta.
 Example in English: The woman enjoys riding her bicycle.
 Meaning in English: To enjoy is to like something.
 Grammar:
@@ -3531,7 +3537,7 @@ amar
 a-MAR"	"English: love
 Pronunciation: a-MAR
 Spanish meaning: Amar es querer mucho a alguien o algo.
-Spanish example: Quiero mucho a mi familia.
+Spanish example: Amo mucho a mi familia.
 Example in English: I love my family very much.
 Meaning in English: To love is to like something or someone a lot.
 Grammar:
@@ -3654,11 +3660,11 @@ Spanish example: El bebé bajó las escaleras cuidadosamente.
 Example in English: The baby carefully climbed down the stairs.
 Meaning in English: Carefully means with great attention, especially to detail or safety."	spanish from_4000_english 4000_essential_english_words_1_book reviewed
 "<img src=""02_0024.jpg"" />
-el químico
-el KI-mi-ko"	"English: chemical
-Pronunciation: el KI-mi-ko
-Spanish meaning: Un químico es una sustancia que se usa en la química.
-Spanish example: El científico mezcló los químicos.
+el producto químico
+el pro-DU-kto KI-mi-ko"	"English: chemical
+Pronunciation: el pro-DU-kto KI-mi-ko
+Spanish meaning: Un producto químico es una sustancia usada en química.
+Spanish example: El científico mezcló los productos químicos.
 Example in English: The scientist mixed the chemicals.
 Meaning in English: A chemical is something that scientists use in chemistry.
 Grammar:
@@ -3666,7 +3672,8 @@ Part of speech: noun
 Article: el
 Gender: masculine
 Number: singular
-Forms: singular: el químico; plural: los químicos"	spanish from_4000_english 4000_essential_english_words_1_book reviewed
+Forms: singular: el producto; plural: los productos
+Notes: Avoids confusing chemical substance with chemist."	spanish from_4000_english 4000_essential_english_words_1_book reviewed
 "<img src=""02_0025.jpg"" />
 crear
 KREAR"	"English: create
@@ -3726,19 +3733,20 @@ Gender: masculine
 Number: singular
 Forms: singular: el laboratorio; plural: los laboratorios"	spanish from_4000_english 4000_essential_english_words_1_book reviewed
 "<img src=""02_0030.jpg"">
-el reír
-el REIR"	"English: laugh
-Pronunciation: el REIR
-Spanish meaning: La risa es el sonido que se hace al estar feliz o cuando pasa algo divertido.
+la risa
+la RI-sa"	"English: laugh
+Pronunciation: la RI-sa
+Spanish meaning: La risa es el sonido que hace alguien cuando está feliz o algo es gracioso.
 Spanish example: El sonido de su risa llenó la sala.
 Example in English: The sound of her laugh filled the room.
 Meaning in English: Laugh is the sound made when someone is happy or a funny thing occurs.
 Grammar:
 Part of speech: noun
-Article: el
-Gender: masculine
+Article: la
+Gender: feminine
 Number: singular
-Forms: singular: el reír; plural: los reires"	spanish from_4000_english 4000_essential_english_words_1_book reviewed
+Forms: singular: la risa; plural: las risas
+Notes: Noun sense, not infinitive reír."	spanish from_4000_english 4000_essential_english_words_1_book reviewed
 "<img src=""02_0031.jpg"">
 fuerte
 FUER-te"	"English: loud
@@ -3773,8 +3781,8 @@ Forms: singular: el ruido; plural: los ruidos"	spanish from_4000_english 4000_es
 el proyecto
 el pro-YE-kto"	"English: project
 Pronunciation: el pro-YE-kto
-Spanish meaning: Un proyecto es un trabajo que se realiza para escuela o trabajo.
-Spanish example: Su trabajo de la tarde fue pintar la habitación de verde.
+Spanish meaning: Un proyecto es un trabajo que se realiza para la escuela o el trabajo.
+Spanish example: Su proyecto de la tarde fue pintar la habitación de verde.
 Example in English: His afternoon work project was to paint the room green.
 Meaning in English: A project is a type of work that you do for school or a job.
 Grammar:
@@ -4162,9 +4170,9 @@ Grammar:
 Part of speech: verb
 Forms: infinitive: instruir; -ir pattern: yo -o; tú -es; él/ella -e; nosotros -imos; ellos -en; check irregular or stem-changing forms separately"	spanish from_4000_english 4000_essential_english_words_1_book reviewed
 "<img src=""04_0071.jpg"" />
-el problema
-el pro-BLE-ma"	"English: issue
-Pronunciation: el pro-BLE-ma
+el tema
+el TE-ma"	"English: issue
+Pronunciation: el TE-ma
 Spanish meaning: Un tema importante es un asunto que merece atención.
 Spanish example: Los hombres hablaron de temas importantes para la gente.
 Example in English: The men spoke about issues that were important to the people.
@@ -4174,7 +4182,8 @@ Part of speech: noun
 Article: el
 Gender: masculine
 Number: singular
-Forms: singular: el problema; plural: los problemas"	spanish from_4000_english 4000_essential_english_words_1_book reviewed
+Forms: singular: el tema; plural: los temas
+Notes: Source sense is topic/issue, not problem."	spanish from_4000_english 4000_essential_english_words_1_book reviewed
 "<img src=""04_0072.jpg"" />
 ninguno
 nin-GU-no"	"English: none
@@ -4196,7 +4205,7 @@ positivo
 po-si-TI-bo"	"English: positive
 Pronunciation: po-si-TI-bo
 Spanish meaning: Positivo significa bueno o favorable.
-Spanish example: Ella tiene un futuro prometedor después de terminar la universidad.
+Spanish example: Ella tiene un futuro positivo después de terminar la universidad.
 Example in English: She has a positive future ahead of her after finishing college.
 Meaning in English: If something is positive, it is good."	spanish from_4000_english 4000_essential_english_words_1_book reviewed
 "<img src=""04_0075.jpg"" />
@@ -4394,7 +4403,7 @@ divertido
 di-ber-TI-do"	"English: fun
 Pronunciation: di-ber-TI-do
 Spanish meaning: Divertido significa que algo resulta agradable.
-Spanish example: Nos lo pasamos muy bien en la fiesta de cumpleaños.
+Spanish example: Pasamos un rato divertido en la fiesta de cumpleaños.
 Example in English: We had a fun time at the birthday party.
 Meaning in English: When something is fun, it is enjoyable."	spanish from_4000_english 4000_essential_english_words_1_book reviewed
 "<img src=""05_0092.jpg"" />
@@ -4473,19 +4482,13 @@ Gender: masculine
 Number: singular
 Forms: singular: el kilómetro; plural: los kilómetros"	spanish from_4000_english 4000_essential_english_words_1_book reviewed
 "<img src=""05_0098.jpg"" />
-la a menudo
-la A me-NU-do"	"English: often
-Pronunciation: la A me-NU-do
-Spanish meaning: A menudo significa que algo sucede muchas veces.
-Spanish example: Él suele acostarse temprano durante la semana.
+a menudo
+A me-NU-do"	"English: often
+Pronunciation: A me-NU-do
+Spanish meaning: A menudo significa que algo pasa muchas veces.
+Spanish example: Él a menudo se acuesta temprano durante la semana.
 Example in English: He often goes to bed early during the week.
-Meaning in English: Often is when something happens many times.
-Grammar:
-Part of speech: noun
-Article: la
-Gender: feminine
-Number: singular
-Forms: singular: la a; plural: las as"	spanish from_4000_english 4000_essential_english_words_1_book reviewed
+Meaning in English: Often is when something happens many times."	spanish from_4000_english 4000_essential_english_words_1_book reviewed
 "<img src=""05_0099.jpg"" />
 mucho
 MU-ço"	"English: plenty
@@ -4572,11 +4575,11 @@ Gender: masculine
 Number: singular
 Forms: singular: el asco; plural: los ascos"	spanish from_4000_english 4000_essential_english_words_1_book reviewed
 "<img src=""06_0107.jpg"" />
-moderno
-mo-DER-no"	"English: fashionable
-Pronunciation: mo-DER-no
-Spanish meaning: Algo moderno o de moda es aquello que la gente usa y hace en este momento.
-Spanish example: Es muy de moda llevar sombrero.
+de moda
+DE MO-da"	"English: fashionable
+Pronunciation: DE MO-da
+Spanish meaning: Algo de moda es aquello que la gente usa o hace en este momento.
+Spanish example: Está muy de moda llevar sombrero.
 Example in English: It is very fashionable to wear a hat.
 Meaning in English: Something fashionable is what people like to wear and do now."	spanish from_4000_english 4000_essential_english_words_1_book reviewed
 "<img src=""06_0108.jpg"" />
@@ -4658,7 +4661,7 @@ hablado
 a-BLA-do"	"English: spoken
 Pronunciation: a-BLA-do
 Spanish meaning: El lenguaje hablado es lo que decimos.
-Spanish example: No podemos echar atrás lo que ya se ha dicho.
+Spanish example: No podemos retirar las palabras ya habladas.
 Example in English: We cannot take back what has been spoken.
 Meaning in English: Spoken language is what we say."	spanish from_4000_english 4000_essential_english_words_1_book reviewed
 "<img src=""06_0116.jpg"" />
@@ -5110,24 +5113,25 @@ Spanish example: Estoy muy satisfecho con tu trabajo.
 Example in English: I am very satisfied with your work.
 Meaning in English: You are satisfied when you have what you wanted."	spanish from_4000_english 4000_essential_english_words_1_book reviewed
 "<img src=""08_0158.jpg"" />
-solitario
-so-li-TA-rio"	"English: single
-Pronunciation: so-li-TA-rio
-Spanish meaning: Si algo es único, entonces hay solo uno.
+solo
+SO-lo"	"English: single
+Pronunciation: SO-lo
+Spanish meaning: Si algo está solo, entonces hay solo uno.
 Spanish example: Tengo una sola llave en la mano.
 Example in English: I have a single key in my hand.
-Meaning in English: If something is single, then there is only one."	spanish from_4000_english 4000_essential_english_words_1_book reviewed
+Meaning in English: If something is single, then there is only one.
+Notes: Source sense is only one, not unmarried."	spanish from_4000_english 4000_essential_english_words_1_book reviewed
 "<img src=""08_0159.jpg"" />
-romper
-rom-PER"	"English: tear
-Pronunciation: rom-PER
+rasgar
+ras-GAR"	"English: tear
+Pronunciation: ras-GAR
 Spanish meaning: Rasgar algo significa separarlo tirándolo.
 Spanish example: Es fácil rasgar papel.
 Example in English: It is easy to tear paper.
 Meaning in English: To tear something means to pull it apart.
 Grammar:
 Part of speech: verb
-Forms: infinitive: romper; -er pattern: yo -o; tú -es; él/ella -e; nosotros -emos; ellos -en; check irregular or stem-changing forms separately"	spanish from_4000_english 4000_essential_english_words_1_book reviewed
+Forms: infinitive: rasgar; -ar pattern: yo -o; tú -as; él/ella -a; nosotros -amos; ellos -an; check irregular or stem-changing forms separately"	spanish from_4000_english 4000_essential_english_words_1_book reviewed
 "<img src=""08_0160.jpg"" />
 la teoría
 la teo-RIA"	"English: theory
@@ -5631,8 +5635,8 @@ Forms: infinitive: anunciar; -ar pattern: yo -o; tú -as; él/ella -a; nosotros 
 consciente
 kon-SSIEN-te"	"English: aware
 Pronunciation: kon-SSIEN-te
-Spanish meaning: Saber que algo existe o que pasa.
-Spanish example: El estudiante se dio cuenta de que el profesor lo estaba mirando.
+Spanish meaning: Ser consciente significa saber que algo existe o que pasa.
+Spanish example: El estudiante fue consciente de que el profesor lo estaba mirando.
 Example in English: The student became aware that the teacher was watching him.
 Meaning in English: If someone is aware, they know that something or a situation exists."	spanish from_4000_english 4000_essential_english_words_1_book reviewed
 "<img src=""11_0203.jpg"" />
@@ -5716,13 +5720,14 @@ Spanish example: Algunas marcas hacen autos eléctricos.
 Example in English: Some car companies make electric cars.
 Meaning in English: If something is electric, it uses electricity."	spanish from_4000_english 4000_essential_english_words_1_book reviewed
 "<img src=""11_0210.jpg"" />
-eventualmente
-e-ben-tual-MEN-te"	"English: eventually
-Pronunciation: e-ben-tual-MEN-te
-Spanish meaning: Al final o en un momento posterior.
+finalmente
+fi-nal-MEN-te"	"English: eventually
+Pronunciation: fi-nal-MEN-te
+Spanish meaning: Finalmente significa al final o en un momento posterior.
 Spanish example: Finalmente, se mudará a Londres para buscar un nuevo trabajo.
 Example in English: He will eventually move to London to find a new job.
-Meaning in English: When something happens at a later time or in the end, it happens eventually."	spanish from_4000_english 4000_essential_english_words_1_book reviewed
+Meaning in English: When something happens at a later time or in the end, it happens eventually.
+Notes: Avoids the false-friend risk of eventualmente."	spanish from_4000_english 4000_essential_english_words_1_book reviewed
 "<img src=""11_0211.jpg"" />
 el hecho
 el E-ço"	"English: fact
@@ -6687,16 +6692,17 @@ Spanish example: Tuve la suerte de conseguir un asiento.
 Example in English: I was fortunate to get a seat.
 Meaning in English: If you are fortunate, you are lucky."	spanish from_4000_english 4000_essential_english_words_1_book reviewed
 "<img src=""15_0289.jpg"" />
-suceder
-su-se-DER"	"English: happen
-Pronunciation: su-se-DER
-Spanish meaning: Ocurrir, a veces por casualidad.
-Spanish example: Me pasé encontrando hoy a nuevos amigos en la escuela.
+dar la casualidad
+DAR la ka-sua-li-DAD"	"English: happen
+Pronunciation: DAR la ka-sua-li-DAD
+Spanish meaning: Dar la casualidad significa ocurrir por azar.
+Spanish example: Dio la casualidad de que conocí nuevos amigos en la escuela hoy.
 Example in English: I happened to meet some new friends at school today.
 Meaning in English: If someone happens to do something, he or she does it by chance.
 Grammar:
 Part of speech: verb
-Forms: infinitive: suceder; -er pattern: yo -o; tú -es; él/ella -e; nosotros -emos; ellos -en; check irregular or stem-changing forms separately"	spanish from_4000_english 4000_essential_english_words_1_book reviewed
+Forms: infinitive: dar; -ar pattern: yo -o; tú -as; él/ella -a; nosotros -amos; ellos -an; check irregular or stem-changing forms separately
+Notes: Source example uses the by-chance sense of happen."	spanish from_4000_english 4000_essential_english_words_1_book reviewed
 "<img src=""15_0290.jpg"" />
 la longitud
 la lon-hi-TUD"	"English: length
@@ -6964,19 +6970,19 @@ Spanish example: No me gustan las manzanas verdes.
 Example in English: I don’t like green apples.
 Meaning in English: Green is the color of growing grass or leaves."	spanish from_4000_english 4000_essential_english_words_1_book reviewed
 "<img src=""16_0312.jpg"" />
-el hogar
-el o-GAR"	"English: home
-Pronunciation: el o-GAR
-Spanish meaning: Lugar donde vive una persona.
-Spanish example: La familia gusta de estar en casa los fines de semana.
+la casa
+la KA-sa"	"English: home
+Pronunciation: la KA-sa
+Spanish meaning: La casa es el lugar donde vive una persona o familia.
+Spanish example: A la familia le gusta quedarse en casa los fines de semana.
 Example in English: The family likes to stay at home on the weekends.
 Meaning in English: A person’s home is the place where that person lives.
 Grammar:
 Part of speech: noun
-Article: el
-Gender: masculine
+Article: la
+Gender: feminine
 Number: singular
-Forms: singular: el hogar; plural: los hogares"	spanish from_4000_english 4000_essential_english_words_1_book reviewed
+Forms: singular: la casa; plural: las casas"	spanish from_4000_english 4000_essential_english_words_1_book reviewed
 "<img src=""16_0313.jpg"" />
 enero
 e-NE-ro"	"English: January
@@ -7614,8 +7620,8 @@ Forms: infinitive: explorar; -ar pattern: yo -o; tú -as; él/ella -a; nosotros 
 feliz
 fe-li-S"	"English: glad
 Pronunciation: fe-li-S
-Spanish meaning: Sentirse contento o satisfecho.
-Spanish example: Me alegra que hayas venido a mi fiesta.
+Spanish meaning: Estar feliz significa sentirse contento o satisfecho.
+Spanish example: Estoy feliz de que hayas venido a mi fiesta.
 Example in English: I am glad you came to my party.
 Meaning in English: If you are glad, you are happy."	spanish from_4000_english 4000_essential_english_words_1_book reviewed
 "<img src=""19_0369.jpg"" />
@@ -14536,7 +14542,7 @@ Forms: singular: la pelota; plural: las pelotas"	spanish from_4000_english 4000_
 el fondo
 el FON-do"	"English: bottom
 Pronunciation: el FON-do
-Spanish meaning: El fondo es la parte, punto o nivel más bajo de algo.
+Spanish meaning: El fondo es la parte más baja de algo, como una piscina.
 Spanish example: Sarah es tan alta que sus pies pueden tocar el fondo de la piscina.
 Example in English: Sarah is so tall that her feet can touch the bottom of the swimming pool.
 Meaning in English: The bottom is the lowest part, point, or level of something.
@@ -14546,7 +14552,7 @@ Article: el
 Gender: masculine
 Number: singular
 Forms: singular: el fondo; plural: los fondos
-Notes: Sense: deepest/lowest point or bottom of a container/place."	spanish from_4000_english 4000_essential_english_words_2_book reviewed
+Notes: Source sense is lowest point."	spanish from_4000_english 4000_essential_english_words_2_book reviewed
 "<img src=""19_0963.jpg"" />
 la empresa
 la em-PRE-sa"	"English: company
