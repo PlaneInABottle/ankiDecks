@@ -587,7 +587,7 @@ class TestAnkiAutomation(unittest.TestCase):
         notes_by_pair = {(row["english"], row["spanish"]): row["notes"] for row in rows}
         self.assertIn("color", notes_by_pair[("navy", "azul marino")])
         self.assertIn("military", notes_by_pair[("navy", "armada")])
-        self.assertIn("lower part", notes_by_pair[("bottom", "parte inferior")])
+        self.assertIn("lower part", notes_by_pair[("bottom", "la parte inferior")])
         self.assertIn("lowest point", notes_by_pair[("bottom", "fondo")])
 
     def test_spanish_examples_track_source_examples_for_known_rows(self):
@@ -1287,6 +1287,35 @@ class TestAnkiAutomation(unittest.TestCase):
         self.assertIn("soft substance", spread["English Meaning"])
         self.assertIn("untar mantequilla", spread["Spanish Example"])
 
+    def test_spanish_active_examples_use_selected_target_sense(self):
+        """Test active Spanish 4000 fixes do not drift back to mismatched examples."""
+        path = Path("generated/spanish_full/english_spanish_review.tsv")
+        with path.open(encoding="utf-8", newline="") as handle:
+            rows = {
+                row["English"]: row
+                for row in csv.DictReader((line for line in handle if not line.startswith("#")), delimiter="\t")
+            }
+
+        expected = {
+            "enjoy": ("disfrutar", "disfruta"),
+            "issue": ("el tema", "temas importantes"),
+            "fashionable": ("de moda", "muy de moda"),
+            "often": ("a menudo", "a menudo"),
+            "single": ("solo", "sola llave"),
+            "tear": ("rasgar", "rasgar papel"),
+            "eventually": ("finalmente", "Finalmente"),
+            "happen": ("dar la casualidad", "Dio la casualidad"),
+            "home": ("la casa", "en casa"),
+            "chemical": ("el producto químico", "productos químicos"),
+            "laugh": ("la risa", "risa llenó"),
+        }
+        for english, (spanish, example_fragment) in expected.items():
+            self.assertEqual(spanish, rows[english]["Spanish"])
+            self.assertIn(example_fragment, rows[english]["Spanish Example"])
+        self.assertEqual("", rows["often"]["Spanish Article"])
+        self.assertEqual("", rows["fashionable"]["Spanish Article"])
+        self.assertEqual("", rows["happen"]["Spanish Article"])
+
     def test_spanish_glossary_no_repeated_definition_pairs(self):
         """Test Spanish reviewed meanings avoid obvious repeated-word definitions."""
         paths = [
@@ -1434,10 +1463,10 @@ class TestAnkiAutomation(unittest.TestCase):
             "terrible": "korkunç",
             "photograph": "fotoğraf",
             "shape": "şekil",
-            "suppose": "varsaymak",
+            "suppose": "sanmak",
             "instead": "yerine",
             "none": "hiçbiri",
-            "issue": "sorun",
+            "issue": "mesele",
             "patient": "sabırlı",
             "calm": "sakin",
             "alien": "uzaylı",
@@ -1455,6 +1484,21 @@ class TestAnkiAutomation(unittest.TestCase):
                 3,
                 f"{english} has a definition-shaped cue: {rows[english]['TurkishCue']}",
             )
+
+    def test_active_english_turkish_production_cues_are_unique(self):
+        """Test active English production fronts are not ambiguous duplicate Turkish cues."""
+        path = Path("generated/english_4000/english_turkish_production.tsv")
+        if not path.exists():
+            self.skipTest("English Turkish production TSV is not generated")
+
+        cues = defaultdict(list)
+        with path.open(encoding="utf-8", newline="") as handle:
+            for row in csv.DictReader(handle, delimiter="\t"):
+                if int(row["Order"]) <= 400:
+                    cues[row["TurkishCue"].strip().lower()].append(row["English"])
+
+        duplicates = {cue: words for cue, words in cues.items() if len(words) > 1}
+        self.assertEqual({}, duplicates)
 
     def test_english_turkish_cues_disambiguate_contextless_extra_words(self):
         """Test contextless Extra rows use source-specific cues for ambiguous vocabulary."""
