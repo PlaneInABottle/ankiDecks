@@ -19,7 +19,8 @@ SPANISH_MODEL = "Spanish Recognition"
 SPANISH_ROOT = "Spanish 4000 Words"
 ENGLISH_ROOT = "4000 Essential English Words"
 ENGLISH_MODELS = ("4000 EEW", "4000 EEW Extra")
-ACTIVE_LIMIT = 400
+SPANISH_ACTIVE_LIMIT = 400
+ENGLISH_ACTIVE_LIMIT = 99999
 BATCH_SIZE = 25
 SOURCE_SUBDECK_NAMES = ["1.Book", "2.Book", "3.Book", "4.Book", "5.Book", "6.Book", "Extra"]
 SPANISH_REVIEW_PATH = Path("generated/spanish_full/english_spanish_review.tsv")
@@ -908,7 +909,9 @@ def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description="Sync 4000 vocabulary production cards to Anki.")
     parser.add_argument("--source", default="4000 Essential English Words.txt")
     parser.add_argument("--turkish-cues", default="generated/english_4000/english_turkish_production.tsv")
-    parser.add_argument("--active-limit", type=int, default=ACTIVE_LIMIT)
+    parser.add_argument("--active-limit", type=int, help="Set the same active word limit for both English and Spanish.")
+    parser.add_argument("--spanish-active-limit", type=int, default=SPANISH_ACTIVE_LIMIT)
+    parser.add_argument("--english-active-limit", type=int, default=ENGLISH_ACTIVE_LIMIT)
     parser.add_argument("--spanish-only", action="store_true")
     parser.add_argument("--english-only", action="store_true")
     parser.add_argument("--cleanup-old-decks-only", action="store_true")
@@ -926,13 +929,18 @@ def main() -> int:
     source_rows = spanish_deck.parse_source_deck(args.source)
     order_map = difficulty_order(source_rows)
     ensure_models()
-    result: Dict[str, object] = {"active_limit": args.active_limit}
+    spanish_active_limit = args.active_limit if args.active_limit is not None else args.spanish_active_limit
+    english_active_limit = args.active_limit if args.active_limit is not None else args.english_active_limit
+    result: Dict[str, object] = {
+        "spanish_active_limit": spanish_active_limit,
+        "english_active_limit": english_active_limit,
+    }
     if not args.english_only:
         if args.sync_spanish_content:
             result["spanish_content"] = sync_spanish_content(Path(args.spanish_review), source_rows)
-        result["spanish"] = sync_spanish(order_map, args.active_limit)
+        result["spanish"] = sync_spanish(order_map, spanish_active_limit)
     if not args.spanish_only:
-        result["english"] = sync_english(order_map, load_turkish_cues(Path(args.turkish_cues)), args.active_limit)
+        result["english"] = sync_english(order_map, load_turkish_cues(Path(args.turkish_cues)), english_active_limit)
     result["deleted_empty_source_decks"] = cleanup_empty_source_decks()
     print(json.dumps(result, ensure_ascii=False, indent=2))
     return 0
