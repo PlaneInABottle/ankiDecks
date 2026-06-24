@@ -510,6 +510,22 @@ class TestAnkiAutomation(unittest.TestCase):
             self.assertTrue(card["AudioContributor"])
             self.assertTrue(card["AudioLicense"])
 
+    def test_spanish_audio_dictation_source_ids_are_word_cloze(self):
+        """Test former dictation cards ask for one heard word, not a whole sentence."""
+        cards = [
+            card for card in spanish_core_learning.get_cards()
+            if card["SourceID"].startswith("tatoeba_dictation::")
+        ]
+        self.assertGreaterEqual(len(cards), 40)
+        for card in cards:
+            self.assertEqual(card["CardType"], "audio_cloze")
+            self.assertEqual(card["PromptMode"], "type_exact")
+            self.assertIn("[sound:tatoeba_spa_", card["Front"])
+            self.assertIn("_____", card["Front"])
+            self.assertNotIn("Type the full Spanish sentence", card["Front"])
+            self.assertNotIn("Full dictation", card["Formula"])
+            self.assertNotRegex(card["Answer"], r"\s")
+
     def test_spanish_tatoeba_sentence_roles_do_not_overlap(self):
         """Test one source sentence is not reused across text, audio, and dictation modes."""
         sentence_roles = defaultdict(set)
@@ -1251,6 +1267,25 @@ class TestAnkiAutomation(unittest.TestCase):
             text = path.read_text(encoding="utf-8")
             for pattern in bad_patterns:
                 self.assertNotIn(pattern, text, f"{path} contains known bad artifact: {pattern}")
+
+    def test_spanish_marked_sense_fixes_stay_aligned(self):
+        """Test marked Spanish 4000 rows teach the example sense consistently."""
+        path = Path("generated/spanish_full/english_spanish_review.tsv")
+        with path.open(encoding="utf-8", newline="") as handle:
+            rows = {
+                row["English"]: row
+                for row in csv.DictReader((line for line in handle if not line.startswith("#")), delimiter="\t")
+            }
+
+        shake = rows["shake"]
+        self.assertEqual(shake["Spanish"], "dar la mano")
+        self.assertIn("shake hands", shake["English Meaning"])
+        self.assertIn("da la mano", shake["Spanish Example"])
+
+        spread = rows["spread"]
+        self.assertEqual(spread["Spanish"], "untar")
+        self.assertIn("soft substance", spread["English Meaning"])
+        self.assertIn("untar mantequilla", spread["Spanish Example"])
 
     def test_spanish_glossary_no_repeated_definition_pairs(self):
         """Test Spanish reviewed meanings avoid obvious repeated-word definitions."""
