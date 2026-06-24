@@ -1301,6 +1301,7 @@ class TestAnkiAutomation(unittest.TestCase):
             "issue": ("el tema", "temas importantes"),
             "fashionable": ("de moda", "muy de moda"),
             "often": ("a menudo", "a menudo"),
+            "still": ("aún", "Aún siguen"),
             "single": ("solo", "sola llave"),
             "tear": ("rasgar", "rasgar papel"),
             "eventually": ("finalmente", "Finalmente"),
@@ -1308,6 +1309,15 @@ class TestAnkiAutomation(unittest.TestCase):
             "home": ("la casa", "en casa"),
             "chemical": ("el producto químico", "productos químicos"),
             "laugh": ("la risa", "risa llenó"),
+            "exercise": ("hacer ejercicio", "hacer ejercicio"),
+            "busy": ("ocupado", "está ocupado"),
+            "border": ("el borde", "un borde verde"),
+            "satisfy": ("satisfacer", "satisfará"),
+            "lead": ("guiar", "guiaré"),
+            "perform": ("interpretar", "interpretará"),
+            "motion": ("el gesto", "un gesto"),
+            "period": ("la época", "una época"),
+            "range": ("la gama", "una gama"),
         }
         for english, (spanish, example_fragment) in expected.items():
             self.assertEqual(spanish, rows[english]["Spanish"])
@@ -1315,6 +1325,7 @@ class TestAnkiAutomation(unittest.TestCase):
         self.assertEqual("", rows["often"]["Spanish Article"])
         self.assertEqual("", rows["fashionable"]["Spanish Article"])
         self.assertEqual("", rows["happen"]["Spanish Article"])
+        self.assertEqual("", rows["still"]["Spanish Article"])
 
     def test_spanish_glossary_no_repeated_definition_pairs(self):
         """Test Spanish reviewed meanings avoid obvious repeated-word definitions."""
