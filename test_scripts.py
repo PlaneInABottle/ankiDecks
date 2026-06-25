@@ -858,6 +858,23 @@ class TestAnkiAutomation(unittest.TestCase):
             self.assertGreaterEqual(len(blanks), 2, card["SourceID"])
             self.assertGreaterEqual(len(cues), 2, card["SourceID"])
 
+    def test_english_function_cues_do_not_repeat_exact_answer(self):
+        """Test grammar/function-word cards use pattern cues instead of leaking answers."""
+        protected_ids = {
+            "grammar::b2_sentence_control::noun_clauses::033::typed_contrast",
+            "grammar::b2_verb_patterns::modal_verbs::040::typed_contrast",
+            "grammar::b2_verb_patterns::modal_verbs::042::typed_contrast",
+            "grammar::b2_verb_patterns::causatives::047::typed_contrast",
+        }
+        cards = {
+            card["SourceID"]: card
+            for card in english_mastery.get_cards(card_type="typed_contrast")
+        }
+        for source_id in protected_ids:
+            card = cards[source_id]
+            self.assertIn("Pattern cue", card["Front"], source_id)
+            self.assertNotIn("Target cue", card["Front"], source_id)
+
     def test_no_trailing_periods_except_dictation(self):
         """Test no trailing periods in Answer/TypeAnswer except for dictation cards."""
         for card in spanish_core_learning.get_cards():
