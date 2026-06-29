@@ -879,11 +879,39 @@ class TestAnkiAutomation(unittest.TestCase):
 
     def test_english_sentence_mining_rejects_wrong_used_to_sense(self):
         """Test used-to mining rejects purpose/use senses like 'garlic is used to improve'."""
-        self.assertFalse(
-            english_mastery._valid_sentence_mining_row(
-                {"eng_id": "35858", "text": "Garlic is used to improve the taste of food.", "target": "is used to"}
-            )
-        )
+        rejected = [
+            {"eng_id": "35858", "text": "Garlic is used to improve the taste of food.", "target": "is used to"},
+            {"eng_id": "24040", "text": "Home life was being screened from foreign eyes.", "target": "was being"},
+            {"eng_id": "39314", "text": "While the demonstration was being made, the president was taking notes.", "target": "was being"},
+            {"eng_id": "246200", "text": "It is provided that the applicants must be woman.", "target": "provided that"},
+            {"eng_id": "17878", "text": "By the time you get out of jail, she'll probably have gotten married.", "target": "by the time"},
+            {"eng_id": "29672", "text": "Meanwhile, the foolish uncle was sitting in the living room.", "target": "meanwhile"},
+            {"eng_id": "264574", "text": "She obviously thought she was a good woman, but...", "target": "obviously"},
+            {"eng_id": "2164985", "text": "Meanwhile I can make myself understood.", "target": "meanwhile"},
+        ]
+        for row in rejected:
+            self.assertFalse(english_mastery._valid_sentence_mining_row(row), row["eng_id"])
+
+    def test_english_audio_rejects_low_value_had_card(self):
+        """Test low-value listening cloze rows are filtered from cached audio selection."""
+        self.assertIn("2037", english_mastery.REJECT_AUDIO_SENTENCE_IDS)
+
+    def test_english_lexical_cues_keep_process_and_timing(self):
+        """Test cue lemmatization does not damage process/timing into proces/tim."""
+        self.assertEqual(english_mastery._lexical_cue_from_chunk("the process"), "process")
+        self.assertEqual(english_mastery._lexical_cue_from_chunk("Timing"), "timing")
+
+    def test_spanish_self_grade_production_prompts_are_clear(self):
+        """Test self-graded Spanish production prompts explain that the answer is a model."""
+        cards = [
+            card for card in spanish_core_learning.get_cards()
+            if card["CardType"] == "typed_production" and card["PromptMode"] == "self_grade"
+        ]
+        self.assertGreater(len(cards), 0)
+        for card in cards:
+            self.assertIn("Write any valid Spanish sentence or chunk", card["Front"])
+            self.assertIn("Model answer", card["Front"])
+            self.assertNotIn("Model target", card["Front"])
 
     def test_no_trailing_periods_except_dictation(self):
         """Test no trailing periods in Answer/TypeAnswer except for dictation cards."""

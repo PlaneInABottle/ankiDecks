@@ -1843,13 +1843,13 @@ def _build_choose_only_grammar_cards():
                     ],
                 ),
                 (
-                    "Choose: Please _____ the revised timeline by tomorrow.<br>A) assure<br>B) ensure",
-                    "B) Please ensure the revised timeline by tomorrow.",
+                    "Choose: Please _____ that the revised timeline is sent by tomorrow.<br>A) assure<br>B) ensure",
+                    "B) Please ensure that the revised timeline is sent by tomorrow.",
                     "Formal register",
-                    "ensure that + action",
-                    "ensure is common in formal request register.",
+                    "ensure that + clause",
+                    "ensure that is common in formal request register.",
                     [
-                        "Please ensure the file is complete.",
+                        "Please ensure that the file is complete.",
                         "Please provide all details.",
                     ],
                 ),

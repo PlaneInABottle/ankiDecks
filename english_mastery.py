@@ -20,8 +20,35 @@ TATOEBA_LICENSE = "Tatoeba sentence text/audio metadata from public export."
 TATOEBA_ATTRIBUTION = "Source: Tatoeba.org English sentence ID {eng_id}."
 INACCESSIBLE_AUDIO_SENTENCE_IDS = {"1294", "1305", "1355", "1361", "1380", "1394", "1419", "2053", "2206", "2228", "22447"}
 REJECT_SENTENCE_MINING_IDS = {
+    # Low-value "had" possession examples; they do not train the B2 tense/grammar target.
+    "1369",
+    "1928",
+    "1933",
+    # Duplicate/less natural "get used to" examples; keep the cleaner travel-abroad example.
+    "21852",
+    "21891",
     # "is used to improve" means "is utilized to improve", not "is accustomed to".
     "35858",
+    # Low-value/unnatural passive context: "Home life was being screened from foreign eyes."
+    "24040",
+    # Awkward passive context: "the demonstration was being made."
+    "39314",
+    # Ungrammatical/unnatural source sentence: "applicants must be woman."
+    "246200",
+    # Distracting story context for a simple by-the-time card.
+    "17878",
+    # Distracting/low-value source sentence for a connector card.
+    "29672",
+    # Incomplete source sentence ending in "but..."
+    "264574",
+    # "Meanwhile I can make myself understood" is not a useful same-time contrast card.
+    "2164985",
+    # Distracting/low-value source sentence for a connector card.
+    "3464550",
+}
+REJECT_AUDIO_SENTENCE_IDS = {
+    # Too little learning value: tests only simple possession "had".
+    "2037",
 }
 
 FIELDS = [
@@ -417,6 +444,8 @@ CONTENT_LEMMAS = {
     "tested": "test",
     "building": "build",
     "maintaining": "maintain",
+    "process": "process",
+    "timing": "timing",
 }
 
 FUNCTION_WORDS = {
@@ -526,7 +555,7 @@ def _lemma_for_cue(word):
         if stem.endswith(("at", "iz", "iv", "ur")):
             return stem + "e"
         return stem
-    if lowered.endswith("s") and len(lowered) > 3:
+    if lowered.endswith("s") and len(lowered) > 3 and not lowered.endswith(("ss", "us", "is")):
         return lowered[:-1]
     return lowered
 
@@ -736,6 +765,7 @@ def _load_english_audio_sentences():
                 row
                 for row in csv.DictReader(handle, delimiter="\t")
                 if row["eng_id"] not in INACCESSIBLE_AUDIO_SENTENCE_IDS
+                and row["eng_id"] not in REJECT_AUDIO_SENTENCE_IDS
             ]
     sentence_path = TATOEBA_DIR / "eng_sentences.tsv.bz2"
     audio = _load_audio_metadata()
@@ -748,7 +778,13 @@ def _load_english_audio_sentences():
             if len(row) < 3:
                 continue
             sent_id, lang, text = row[0], row[1], row[2]
-            if lang != "eng" or sent_id not in audio or sent_id in INACCESSIBLE_AUDIO_SENTENCE_IDS or not _is_clean_english_sentence(text):
+            if (
+                lang != "eng"
+                or sent_id not in audio
+                or sent_id in INACCESSIBLE_AUDIO_SENTENCE_IDS
+                or sent_id in REJECT_AUDIO_SENTENCE_IDS
+                or not _is_clean_english_sentence(text)
+            ):
                 continue
             for target, pattern in target_patterns:
                 if target_counts[target] >= 3 or sent_id in used:
@@ -772,6 +808,7 @@ def _load_english_audio_sentences():
                 and sent_id in audio
                 and sent_id not in used
                 and sent_id not in INACCESSIBLE_AUDIO_SENTENCE_IDS
+                and sent_id not in REJECT_AUDIO_SENTENCE_IDS
                 and _is_clean_english_sentence(text)
             ):
                 selected.append({"eng_id": sent_id, "text": text, "target": text, "audio_id": audio[sent_id], "kind": "dictation"})
