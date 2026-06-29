@@ -1312,11 +1312,11 @@ def _build_choose_only_grammar_cards():
                     ],
                 ),
                 (
-                    "Choose: I wonder _____ we should ship now.<br>A) whether<br>B) if what",
-                    "A) I wonder whether we should ship now.",
+                    "Choose: I wonder _____ or not we should ship now.<br>A) whether<br>B) if what",
+                    "A) I wonder whether or not we should ship now.",
                     "Noun clauses",
                     "whether/if as noun clause introducers",
-                    "whether and if introduce noun clauses in statements.",
+                    "Use whether before or not in yes/no noun clauses.",
                     [
                         "I wonder whether we should continue.",
                         "I wonder if we should pause.",
@@ -1338,10 +1338,10 @@ def _build_choose_only_grammar_cards():
                     ],
                 ),
                 (
-                    "Choose: They decided _____ another run.<br>A) to do<br>B) doing",
+                    "Choose: They decided _____ another run.<br>Cue: do<br>A) to do<br>B) doing",
                     "A) They decided to do another run.",
                     "Gerund vs infinitive",
-                    "verb-specific verb patterns",
+                    "decide + to + infinitive",
                     "decide is commonly followed by to + infinitive.",
                     [
                         "They decided to deploy.",
@@ -1388,7 +1388,7 @@ def _build_choose_only_grammar_cards():
                     "A) They are getting used to writing their own documentation.",
                     "Used to patterns",
                     "get used to + gerund",
-                    "get used to shows a process of adaptation.",
+                    "Use get used to for the process of becoming accustomed.",
                     [
                         "She is getting used to the new tool.",
                         "They are getting used to remote work.",
@@ -1401,7 +1401,7 @@ def _build_choose_only_grammar_cards():
                     "A) You mustn't call customer support on Sundays.",
                     "Modal verbs",
                     "mustn't = prohibition",
-                    "must for prohibition with mustn't.",
+                    "Use this modal for prohibition: the action is not allowed.",
                     [
                         "You must submit the form.",
                         "You mustn't exceed limits.",
@@ -1482,7 +1482,7 @@ def _build_choose_only_grammar_cards():
                     "A) She got her team trained in this framework.",
                     "Causatives",
                     "get + object + past participle",
-                    "get works as an alternative to have.",
+                    "Use get + object + past participle as a causative pattern.",
                     [
                         "He got the server fixed.",
                         "They got the contract reviewed.",
@@ -1696,7 +1696,7 @@ def _build_choose_only_grammar_cards():
                     "A) The design is clear; however, the release was delayed by tests.",
                     "Sentence connectors",
                     "however for contrast",
-                    "however marks contrast between two independent clauses.",
+                    "Use a contrast connector between two independent clauses.",
                     [
                         "The plan is solid; however, timing is tight.",
                         "They wanted speed; however, accuracy suffered.",

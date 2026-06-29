@@ -581,7 +581,11 @@ def _explicit_base_cue(front):
 def _mask_answer_terms(text, answer):
     masked = text
     variants = [answer]
-    variants.extend(re.findall(r"[A-Za-z']+", answer))
+    variants.extend(
+        word
+        for word in re.findall(r"[A-Za-z']+", answer)
+        if word.lower() not in FUNCTION_WORDS
+    )
     for variant in sorted(set(variants), key=len, reverse=True):
         if len(variant) < 2:
             continue
@@ -628,9 +632,6 @@ def _grammar_cues(original_front, prompt, answer, topic, formula, reason):
     base = _explicit_base_cue(original_front) or _lexical_cue_from_chunk(answer)
     if base:
         cues.append(("Base", base))
-    trigger = _trigger_cue_from_prompt(prompt)
-    if trigger:
-        cues.append(("Trigger", trigger))
     return cues
 
 
