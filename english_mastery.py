@@ -19,6 +19,10 @@ MODEL_NAME = "English Mastery"
 TATOEBA_LICENSE = "Tatoeba sentence text/audio metadata from public export."
 TATOEBA_ATTRIBUTION = "Source: Tatoeba.org English sentence ID {eng_id}."
 INACCESSIBLE_AUDIO_SENTENCE_IDS = {"1294", "1305", "1355", "1361", "1380", "1394", "1419", "2053", "2206", "2228", "22447"}
+REJECT_SENTENCE_MINING_IDS = {
+    # "is used to improve" means "is utilized to improve", not "is accustomed to".
+    "35858",
+}
 
 FIELDS = [
     "SourceID",
@@ -239,6 +243,10 @@ def _front_label(text):
 
 def _front_cue(label, text):
     return f'<span class="front-cue">{_front_label(label)}: {html.escape(text)}</span>'
+
+
+def _front_cue_lines(cues):
+    return "<br>".join(_front_cue(label, text) for label, text in cues if text)
 
 
 def _strip_trailing_period(text, keep_for_dictation=False):
@@ -536,6 +544,67 @@ def _prompt_with_required_cue(prompt, chunk, topic="", formula=""):
     return f"{prompt}<br><br>{_front_cue(cue_label, cue)}"
 
 
+def _explicit_base_cue(front):
+    match = re.search(r"<br>Cue:\s*([^<]+)", front, flags=re.I)
+    return match.group(1).strip() if match else ""
+
+
+def _mask_answer_terms(text, answer):
+    masked = text
+    variants = [answer]
+    variants.extend(re.findall(r"[A-Za-z']+", answer))
+    for variant in sorted(set(variants), key=len, reverse=True):
+        if len(variant) < 2:
+            continue
+        masked = re.sub(rf"\b{re.escape(variant)}\b", "_____", masked, flags=re.I)
+    masked = re.sub(r"\buse\s+_____\s+for\s+", "", masked, flags=re.I)
+    masked = re.sub(r"\b_____\s+(?:is|are|was|were)\s+used\s+for\s+", "used for ", masked, flags=re.I)
+    masked = re.sub(r"\bwith\s+_____\s+as\s+", "with ", masked, flags=re.I)
+    masked = re.sub(r"\s+", " ", masked).strip(" .;:")
+    return masked
+
+
+def _function_cue(topic, formula, reason, answer):
+    reason_text = _mask_answer_terms(_strip_html(reason), answer)
+    if reason_text and "_____" not in reason_text and 8 <= len(reason_text) <= 120:
+        return reason_text
+    formula_text = _mask_answer_terms(_strip_html(formula), answer)
+    if formula_text and "_____" not in formula_text and len(formula_text) <= 80:
+        return formula_text
+    return topic.strip()
+
+
+def _trigger_cue_from_prompt(prompt):
+    front_text = re.sub(r"<br\s*/?>", "\n", prompt, flags=re.I)
+    front_text = _strip_html(front_text)
+    lines = [line.strip() for line in front_text.splitlines() if line.strip()]
+    lines = [line for line in lines if line.lower() not in {"type the correct/natural english form", "then"}]
+    text = " ".join(lines)
+    parts = re.split(r"_{3,}", text, maxsplit=1)
+    if len(parts) != 2:
+        return ""
+    before_words = re.findall(r"[A-Za-z']+", parts[0])[-3:]
+    after_words = re.findall(r"[A-Za-z']+", parts[1])[:3]
+    if not before_words and not after_words:
+        return ""
+    before = " ".join(before_words)
+    after = " ".join(after_words)
+    if before and after:
+        return f"{before} ... {after}"
+    return before or f"... {after}"
+
+
+def _grammar_cues(original_front, prompt, answer, topic, formula, reason):
+    cues = [("Function", _function_cue(topic, formula, reason, answer))]
+    base = _explicit_base_cue(original_front) or _lexical_cue_from_chunk(answer)
+    if base:
+        cues.append(("Base", base))
+    trigger = _trigger_cue_from_prompt(prompt)
+    if trigger:
+        cues.append(("Trigger", trigger))
+    return cues
+
+
 def _grammar_formula(back):
     match = re.search(r"<b>Formula</b><br>(.*?)(?:<br><br><b>|$)", back, re.S)
     return match.group(1).strip() if match else ""
@@ -602,7 +671,13 @@ def _grammar_cards():
             prompt_base = _front_instruction("Type the correct/natural English form") + "<br>" + _front_without_choices(front)
             missing_answer = _missing_chunk_from_front_answer(prompt_base, answer)
             answer_for_card = missing_answer or answer
-            prompt = _prompt_with_required_cue(prompt_base, answer_for_card, topic, formula)
+            prompt = (
+                _front_instruction("Type the correct/natural English form")
+                + "<br>"
+                + _front_cue_lines(_grammar_cues(front, prompt_base, answer_for_card, topic, formula, reason))
+                + "<br><br>"
+                + _front_without_choices(front)
+            )
             prompt_mode = "type_exact" if len(answer_for_card.split()) <= 5 else "type_compare"
             if answer_for_card != answer:
                 reason = f"{reason}<br><br>Full sentence: {html.escape(answer)}"
@@ -713,6 +788,19 @@ def _audio_url(eng_id):
     return f"https://audio.tatoeba.org/sentences/eng/{eng_id}.mp3"
 
 
+def _valid_sentence_mining_row(row):
+    sent_id = str(row.get("eng_id", ""))
+    if sent_id in REJECT_SENTENCE_MINING_IDS:
+        return False
+    target = row.get("target", "")
+    text = row.get("text", "")
+    if target == "is used to":
+        match = re.search(r"\bis used to\s+([A-Za-z']+)", text, flags=re.I)
+        if match and not match.group(1).lower().endswith("ing"):
+            return False
+    return True
+
+
 def _load_sentence_mining_sentences():
     """Mine Tatoeba English sentences for grammar pattern cloze cards."""
     cache_path = TATOEBA_DIR / "selected_eng_mining_sentences.tsv"
@@ -720,6 +808,7 @@ def _load_sentence_mining_sentences():
     if cache_path.exists():
         with cache_path.open(encoding="utf-8", newline="") as handle:
             rows = list(csv.DictReader(handle, delimiter="\t"))
+        rows = [row for row in rows if _valid_sentence_mining_row(row)]
         if not any(row["eng_id"] in reserved_audio_ids for row in rows):
             return rows
     sentence_path = TATOEBA_DIR / "eng_sentences.tsv.bz2"
@@ -739,16 +828,18 @@ def _load_sentence_mining_sentences():
                 key = (level, target)
                 if target_counts[key] >= SENTENCE_MINING_PER_TARGET:
                     continue
-                if pattern.search(text):
+                candidate = {
+                    "eng_id": sent_id,
+                    "text": text,
+                    "target": target,
+                    "level": level,
+                    "audio_id": audio.get(sent_id, ""),
+                    "has_audio": sent_id in audio and sent_id not in INACCESSIBLE_AUDIO_SENTENCE_IDS,
+                }
+                if pattern.search(text) and _valid_sentence_mining_row(candidate):
                     has_audio = sent_id in audio and sent_id not in INACCESSIBLE_AUDIO_SENTENCE_IDS
-                    selected.append({
-                        "eng_id": sent_id,
-                        "text": text,
-                        "target": target,
-                        "level": level,
-                        "audio_id": audio.get(sent_id, ""),
-                        "has_audio": has_audio,
-                    })
+                    candidate["has_audio"] = has_audio
+                    selected.append(candidate)
                     target_counts[key] += 1
                     used.add(sent_id)
                     break

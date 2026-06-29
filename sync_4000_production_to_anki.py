@@ -20,6 +20,7 @@ SPANISH_ROOT = "Spanish 4000 Words"
 ENGLISH_ROOT = "4000 Essential English Words"
 ENGLISH_MODELS = ("4000 EEW", "4000 EEW Extra")
 SPANISH_ACTIVE_LIMIT = 400
+SPANISH_CONTEXT_ACTIVE_LIMIT = 75
 ENGLISH_ACTIVE_LIMIT = 99999
 BATCH_SIZE = 25
 SOURCE_SUBDECK_NAMES = ["1.Book", "2.Book", "3.Book", "4.Book", "5.Book", "6.Book", "Extra"]
@@ -687,13 +688,14 @@ def cleanup_empty_source_decks() -> List[str]:
     return deleted
 
 
-def sync_spanish(order_map: Dict[str, int], active_limit: int) -> Dict[str, int]:
+def sync_spanish(order_map: Dict[str, int], active_limit: int, context_active_limit: int) -> Dict[str, int]:
     notes = get_notes(f'note:"{SPANISH_MODEL}"')
     updates: List[Tuple[int, Dict[str, str]]] = []
     note_orders: Dict[int, int] = {}
     updated = 0
     recognition_suspended = 0
     production_suspended = 0
+    context_suspended = 0
     for note in notes:
         fields = note["fields"]
         key = source_id_from_spanish_note(fields)
@@ -702,7 +704,7 @@ def sync_spanish(order_map: Dict[str, int], active_limit: int) -> Dict[str, int]
         level = level_for_order(order)
         cue = spanish_production_cue(fields)
         answer = strip_html(fields.get("Spanish", {}).get("value", ""))
-        context_enabled = "yes" if order <= active_limit else ""
+        context_enabled = "yes" if order <= context_active_limit else ""
         updates.append(
             (
                 note["noteId"],
@@ -739,14 +741,16 @@ def sync_spanish(order_map: Dict[str, int], active_limit: int) -> Dict[str, int]
             (active_cards if production_active else suspended_cards).append(cards[1])
             production_suspended += 0 if production_active else 1
         if 2 in cards:
-            context_active = order <= active_limit
+            context_active = order <= context_active_limit
             deck_cards.setdefault(deck_name, []).append(cards[2])
             (active_cards if context_active else suspended_cards).append(cards[2])
+            context_suspended += 0 if context_active else 1
     apply_card_plan(deck_cards, active_cards, suspended_cards)
     return {
         "updated_notes": updated,
         "recognition_suspended": recognition_suspended,
         "production_suspended": production_suspended,
+        "context_suspended": context_suspended,
     }
 
 
@@ -911,6 +915,7 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--turkish-cues", default="generated/english_4000/english_turkish_production.tsv")
     parser.add_argument("--active-limit", type=int, help="Set the same active word limit for both English and Spanish.")
     parser.add_argument("--spanish-active-limit", type=int, default=SPANISH_ACTIVE_LIMIT)
+    parser.add_argument("--spanish-context-active-limit", type=int, default=SPANISH_CONTEXT_ACTIVE_LIMIT)
     parser.add_argument("--english-active-limit", type=int, default=ENGLISH_ACTIVE_LIMIT)
     parser.add_argument("--spanish-only", action="store_true")
     parser.add_argument("--english-only", action="store_true")
@@ -930,15 +935,17 @@ def main() -> int:
     order_map = difficulty_order(source_rows)
     ensure_models()
     spanish_active_limit = args.active_limit if args.active_limit is not None else args.spanish_active_limit
+    spanish_context_active_limit = args.active_limit if args.active_limit is not None else args.spanish_context_active_limit
     english_active_limit = args.active_limit if args.active_limit is not None else args.english_active_limit
     result: Dict[str, object] = {
         "spanish_active_limit": spanish_active_limit,
+        "spanish_context_active_limit": spanish_context_active_limit,
         "english_active_limit": english_active_limit,
     }
     if not args.english_only:
         if args.sync_spanish_content:
             result["spanish_content"] = sync_spanish_content(Path(args.spanish_review), source_rows)
-        result["spanish"] = sync_spanish(order_map, spanish_active_limit)
+        result["spanish"] = sync_spanish(order_map, spanish_active_limit, spanish_context_active_limit)
     if not args.spanish_only:
         result["english"] = sync_english(order_map, load_turkish_cues(Path(args.turkish_cues)), english_active_limit)
     result["deleted_empty_source_decks"] = cleanup_empty_source_decks()

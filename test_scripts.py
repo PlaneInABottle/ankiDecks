@@ -796,9 +796,11 @@ class TestAnkiAutomation(unittest.TestCase):
         """Test typed_contrast answers are missing chunks that reconstruct the full sentence."""
         contrast_cards = english_mastery.get_cards(card_type="typed_contrast")
         for card in contrast_cards:
-            front = re.sub(r"<br><br><span class=\"front-cue\">.*$", "", card["Front"])
+            front = re.sub(r"<br\s*/?>", "\n", card["Front"])
             front = re.sub(r"<[^>]+>", "", front)
-            front = re.sub(r"(?i)^type the correct/natural english form\s*", "", front).strip()
+            front_lines = [line.strip() for line in front.splitlines() if "_____" in line]
+            self.assertEqual(1, len(front_lines), f"Expected one sentence blank line in {card['SourceID']}: {front}")
+            front = front_lines[0]
             answer = card["Answer"]
             parts = re.split(r"_{3,}", front, maxsplit=1)
             if len(parts) != 2:
@@ -823,13 +825,13 @@ class TestAnkiAutomation(unittest.TestCase):
             )
 
     def test_english_contrast_lexical_cues_when_needed(self):
-        """Test semantically ambiguous grammar cloze cards include lexical target cues."""
+        """Test semantically ambiguous grammar cloze cards include function/base/trigger cues."""
         contrast_cards = english_mastery.get_cards(card_type="typed_contrast")
         grammar_contrasts = [card for card in contrast_cards if card["SourceID"].startswith("grammar::")]
         self.assertTrue(grammar_contrasts)
         for card in grammar_contrasts:
             self.assertTrue(
-                "Target cue" in card["Front"] or "Pattern cue" in card["Front"],
+                "Function" in card["Front"] and "Trigger" in card["Front"],
                 f"Grammar contrast has no cue: {card['SourceID']}",
             )
         reviewed = [
@@ -837,14 +839,14 @@ class TestAnkiAutomation(unittest.TestCase):
             if "We _____ three versions already this week" in card["Front"]
         ]
         self.assertEqual(len(reviewed), 1)
-        self.assertIn("Target cue", reviewed[0]["Front"])
+        self.assertIn("Base", reviewed[0]["Front"])
         self.assertIn("review", reviewed[0]["Front"])
         london = [
             card for card in contrast_cards
             if "I _____ in London since 2018" in card["Front"]
         ]
         self.assertEqual(len(london), 1)
-        self.assertIn("Target cue", london[0]["Front"])
+        self.assertIn("Base", london[0]["Front"])
         self.assertIn("live", london[0]["Front"])
         self.assertNotIn("i / live", london[0]["Front"].lower())
 
@@ -859,7 +861,7 @@ class TestAnkiAutomation(unittest.TestCase):
             self.assertGreaterEqual(len(cues), 2, card["SourceID"])
 
     def test_english_function_cues_do_not_repeat_exact_answer(self):
-        """Test grammar/function-word cards use pattern cues instead of leaking answers."""
+        """Test grammar/function-word cards use function cues instead of leaking answers."""
         protected_ids = {
             "grammar::b2_sentence_control::noun_clauses::033::typed_contrast",
             "grammar::b2_verb_patterns::modal_verbs::040::typed_contrast",
@@ -872,8 +874,16 @@ class TestAnkiAutomation(unittest.TestCase):
         }
         for source_id in protected_ids:
             card = cards[source_id]
-            self.assertIn("Pattern cue", card["Front"], source_id)
+            self.assertIn("Function", card["Front"], source_id)
             self.assertNotIn("Target cue", card["Front"], source_id)
+
+    def test_english_sentence_mining_rejects_wrong_used_to_sense(self):
+        """Test used-to mining rejects purpose/use senses like 'garlic is used to improve'."""
+        self.assertFalse(
+            english_mastery._valid_sentence_mining_row(
+                {"eng_id": "35858", "text": "Garlic is used to improve the taste of food.", "target": "is used to"}
+            )
+        )
 
     def test_no_trailing_periods_except_dictation(self):
         """Test no trailing periods in Answer/TypeAnswer except for dictation cards."""
@@ -1436,6 +1446,14 @@ class TestAnkiAutomation(unittest.TestCase):
         self.assertNotIn("{{Image}}", sync_4000_production_to_anki.SPANISH_CONTEXT_PRODUCTION_FRONT)
         self.assertIn("{{type:ProductionAnswer}}", sync_4000_production_to_anki.SPANISH_CONTEXT_PRODUCTION_FRONT)
 
+    def test_spanish_context_production_has_lower_active_limit(self):
+        """Test Spanish-only context production is gated later than easier 4000 cards."""
+        self.assertLess(
+            sync_4000_production_to_anki.SPANISH_CONTEXT_ACTIVE_LIMIT,
+            sync_4000_production_to_anki.SPANISH_ACTIVE_LIMIT,
+        )
+        self.assertEqual(75, sync_4000_production_to_anki.SPANISH_CONTEXT_ACTIVE_LIMIT)
+
     def test_spanish_core_back_prioritizes_pattern_before_support_note(self):
         """Test Spanish Core back shows formula/examples before explanatory support text."""
         template = sync_spanish_core_to_anki.BACK_TEMPLATE
@@ -1530,6 +1548,33 @@ class TestAnkiAutomation(unittest.TestCase):
                 3,
                 f"{english} has a definition-shaped cue: {rows[english]['TurkishCue']}",
             )
+
+    def test_marked_english_turkish_cues_are_disambiguated(self):
+        """Test marked English 4000 cues include only necessary context for ambiguous words."""
+        path = Path("generated/english_4000/english_turkish_production.tsv")
+        if not path.exists():
+            self.skipTest("English Turkish production TSV is not generated")
+
+        expected = {
+            "shake": "sallamak; tokalaşmak bağlamı",
+            "profit": "kâr / kazanç",
+            "dull": "sıkıcı / heyecansız",
+            "former": "önceki / artık olmayan",
+            "loan": "borç / kredi",
+            "practical": "kullanışlı / yararlı / pratik",
+            "available": "mevcut / müsait / kullanılabilir",
+            "specific": "spesifik / belirli",
+            "precise": "kesin / net",
+            "explicit": "açık / net",
+            "enroll": "kaydolmak",
+        }
+        rows = {}
+        with path.open(encoding="utf-8", newline="") as handle:
+            for row in csv.DictReader(handle, delimiter="\t"):
+                rows.setdefault(row["English"].lower(), row)
+
+        for english, cue in expected.items():
+            self.assertEqual(cue, rows[english]["TurkishCue"].strip().lower())
 
     def test_active_english_turkish_production_cues_are_unique(self):
         """Test active English production fronts are not ambiguous duplicate Turkish cues."""
