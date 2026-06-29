@@ -825,15 +825,16 @@ class TestAnkiAutomation(unittest.TestCase):
             )
 
     def test_english_contrast_lexical_cues_when_needed(self):
-        """Test semantically ambiguous grammar cloze cards include function/base/trigger cues."""
+        """Test semantically ambiguous grammar cloze cards include useful function/base cues."""
         contrast_cards = english_mastery.get_cards(card_type="typed_contrast")
         grammar_contrasts = [card for card in contrast_cards if card["SourceID"].startswith("grammar::")]
         self.assertTrue(grammar_contrasts)
         for card in grammar_contrasts:
             self.assertTrue(
-                "Function" in card["Front"] and "Trigger" in card["Front"],
+                "Function" in card["Front"],
                 f"Grammar contrast has no cue: {card['SourceID']}",
             )
+            self.assertNotIn("Trigger", card["Front"], card["SourceID"])
         reviewed = [
             card for card in contrast_cards
             if "We _____ three versions already this week" in card["Front"]
@@ -848,6 +849,14 @@ class TestAnkiAutomation(unittest.TestCase):
         self.assertEqual(len(london), 1)
         self.assertIn("Base", london[0]["Front"])
         self.assertIn("live", london[0]["Front"])
+        decided = [
+            card for card in contrast_cards
+            if "They decided _____ another run" in card["Front"]
+        ]
+        self.assertEqual(len(decided), 1)
+        self.assertIn("decide is commonly followed by to + infinitive", decided[0]["Front"])
+        self.assertIn("Base", decided[0]["Front"])
+        self.assertIn("do", decided[0]["Front"])
         self.assertNotIn("i / live", london[0]["Front"].lower())
 
     def test_english_interleaved_contrasts_are_cued(self):
@@ -1740,6 +1749,7 @@ class TestAnkiAutomation(unittest.TestCase):
             "Cue: check",
             "Cue: lock",
             "Cue: avoid",
+            "Cue: do",
         ]
         for marker in expected:
             self.assertIn(marker, fronts)
