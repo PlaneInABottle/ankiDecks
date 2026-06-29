@@ -363,10 +363,10 @@ def _topic_cards(topic):
                 "typed_production",
                 "self_grade",
                 (
-                    f"{_front_instruction('Produce a Spanish sentence or chunk using this grammar pattern')}<br>"
+                    f"{_front_instruction('Write any valid Spanish sentence or chunk using this pattern')}<br>"
                     f"<span class=\"topic-label\">{topic_name}</span><br>"
                     f"{topic['formula']}<br><br>"
-                    f"{_front_instruction(f'Model target {index}: type your own answer, then compare')}"
+                    f"{_front_instruction(f'Model answer {index}: compare grammar, word order, accents')}"
                 ),
                 example,
                 topic["use"],
