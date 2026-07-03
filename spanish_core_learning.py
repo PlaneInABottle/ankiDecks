@@ -180,6 +180,182 @@ def _plain_front_text(text):
     return re.sub(r"\s+", " ", plain).strip()
 
 
+SPANISH_TOPIC_FALLBACKS = {
+    "noun gender": "Learn nouns with their article. Gender controls articles and adjective endings.",
+    "plural nouns": "Choose plural endings from the final sound of the singular noun.",
+    "adjective agreement": "Adjectives change to match the noun in gender and number.",
+    "subject pronouns": "Choose pronouns by person, number, and formality.",
+    "ser basics": "Use ser for identity, origin, profession, and stable classification.",
+    "negation": "Put no before the conjugated verb.",
+    "yes-no questions": "Spanish can keep statement word order; punctuation and intonation mark the question.",
+    "ser vs estar": "Use ser for identity/category; use estar for location or temporary state.",
+    "regular -ar present": "Remove -ar and add the present ending for the subject.",
+    "regular -er and -ir present": "Remove -er/-ir and add the present ending for the subject.",
+    "articles": "Choose article by definiteness, gender, and number.",
+    "hay": "Use hay for there is / there are; it does not change for singular or plural.",
+    "question words": "Choose the question word by the information requested.",
+    "tener and tener que": "tener means have; tener que + infinitive means have to.",
+    "ir a infinitive": "Use ir + a + infinitive for near future plans.",
+    "possessive adjectives": "Choose possessive adjective by owner and by the noun owned.",
+    "gustar basics": "The liked thing controls gusta/gustan; the person is marked by an indirect object pronoun.",
+    "reflexive verbs": "Use a reflexive pronoun when the subject does the action to itself.",
+    "direct object pronouns": "Use lo/la/los/las to replace the direct object.",
+    "regular preterite": "Use preterite for completed past events.",
+    "irregular preterite": "Use the irregular preterite stem and endings for completed past events.",
+    "imperfect basics": "Use imperfect for background, description, habitual past, or ongoing past state.",
+    "preterite vs imperfect": "Use preterite for completed events and imperfect for background/habit/state.",
+    "comparatives": "Use más/menos ... que for more/less than; tan ... como for as ... as.",
+    "informal commands": "Use tú command forms for direct informal instructions.",
+    "por vs para": "Use por for cause/route/exchange; use para for purpose/deadline/recipient/destination.",
+    "indirect object pronouns": "Use me/te/le/nos/les for the person affected or receiving.",
+    "double object pronouns": "Put indirect object pronoun before direct object pronoun; le/les becomes se before lo/la/los/las.",
+    "present progressive": "Use estar + gerund for actions happening right now.",
+    "present perfect": "Use haber + past participle for experiences or past actions connected to now.",
+    "relative clauses and connectors": "Use connectors to join ideas; choose the connector by relationship.",
+    "location prepositions": "Use location prepositions to state where something is relative to something else.",
+    "ordinal basics": "Ordinal words identify order in a sequence.",
+    "muy vs mucho": "muy modifies adjectives/adverbs; mucho modifies verbs or nouns.",
+    "todo and cada": "todo means all/every as a whole; cada means each individual item.",
+    "obligation variants": "Use tener que/deber/hay que to express obligation with different tone or subject.",
+    "quedar vs quedarse": "quedar often means remain/be located/fit; quedarse means stay or become in a state.",
+    "emotion verbs with prepositions": "Learn emotion verbs with their required prepositions.",
+    "numbers 0 to 20": "Use fixed number forms for counting and basic quantities.",
+    "basic prepositions": "Use prepositions as fixed relation words; learn short chunks.",
+    "basic word order": "Spanish basic word order is subject + verb + complement, but pronouns and emphasis can shift it.",
+    "polite phrases": "Use fixed polite chunks for greetings, requests, and thanks.",
+    "ir present": "Use irregular present forms of ir for movement and near future.",
+    "tener present": "Use irregular present forms of tener for possession and age/obligation chunks.",
+    "hacer present": "Use irregular present forms of hacer for doing/making and weather chunks.",
+    "querer and poder present": "Use stem-changing forms for querer/poder in present tense.",
+    "estar present": "Use estar forms for location, temporary state, and progressive tense.",
+    "adverbs of frequency": "Place frequency adverbs where they naturally modify the verb phrase.",
+    "adjective position basics": "Most descriptive adjectives follow the noun; some common/evaluative adjectives precede it.",
+    "a plus el and de plus el": "Contract a + el to al and de + el to del.",
+    "near future with ir": "Use ir + a + infinitive for plans and near future.",
+    "basic subjunctive triggers": "Use subjunctive after triggers of desire, doubt, emotion, or influence.",
+    "conditional basics": "Use conditional for would statements and polite/hypothetical results.",
+    "aunque indicative vs subjunctive recognition": "Use indicative for known facts; subjunctive for uncertain or hypothetical concession.",
+    "reported speech basics": "Shift tense and person as needed when reporting what someone said.",
+}
+
+
+SPANISH_INTERLEAVED_FORMULAS = {
+    "ser vs estar (identity vs state)": (
+        "Decision rule<br>Use ser for identity/profession/category; use estar for temporary state or condition.<br><br>"
+        "Pattern<br>ser + identity noun/adjective<br>estar + state adjective"
+    ),
+    "ser vs estar (origin vs location)": (
+        "Decision rule<br>Use ser de for origin; use estar en for current location.<br><br>"
+        "Pattern<br>ser + de + origin<br>estar + en + location"
+    ),
+    "present vs present progressive": (
+        "Decision rule<br>Use simple present for habits/general facts; use present progressive for right now.<br><br>"
+        "Pattern<br>habit: present verb<br>right now: estar + gerund"
+    ),
+    "saber vs conocer": (
+        "Decision rule<br>Use saber for facts/skills; use conocer for people, places, and familiarity.<br><br>"
+        "Pattern<br>saber + fact/infinitive<br>conocer + a + person"
+    ),
+    "gustar singular vs plural": (
+        "Decision rule<br>The liked thing controls gusta/gustan.<br><br>"
+        "Pattern<br>singular liked thing: gusta<br>plural liked thing: gustan"
+    ),
+    "preterite vs imperfect (event vs background)": (
+        "Decision rule<br>Use preterite for completed events; use imperfect for background or repeated past habits.<br><br>"
+        "Pattern<br>event: preterite<br>background/habit: imperfect"
+    ),
+    "preterite vs imperfect (action vs state)": (
+        "Decision rule<br>Use preterite for a completed action in sequence; use imperfect for an ongoing state/description.<br><br>"
+        "Pattern<br>action/event: preterite<br>state/background: imperfect"
+    ),
+    "ser vs ir preterite (same forms)": (
+        "Decision rule<br>Use context to decide meaning because fui/fue/etc. can mean went or was.<br><br>"
+        "Pattern<br>movement + destination = ir<br>identity/event description = ser"
+    ),
+    "por vs para (reason vs purpose)": (
+        "Decision rule<br>Use para for purpose/destination/recipient/deadline; use por for reason/cause/route/exchange.<br><br>"
+        "Pattern<br>para + purpose/destination<br>por + reason/cause/path"
+    ),
+    "imperfect vs preterite (description vs event)": (
+        "Decision rule<br>Use imperfect for scene-setting description; use preterite for the interrupting/completed event.<br><br>"
+        "Pattern<br>background: imperfect<br>event: preterite"
+    ),
+    "ser vs estar (characteristic vs result)": (
+        "Decision rule<br>Use ser for defining characteristics; use estar for current condition/result.<br><br>"
+        "Pattern<br>ser + identity/definition<br>estar + temporary/current state"
+    ),
+    "indicative vs subjunctive (fact vs doubt)": (
+        "Decision rule<br>Use indicative after belief/known fact; use subjunctive after doubt, denial, desire, or uncertainty.<br><br>"
+        "Pattern<br>creo que + indicative<br>no creo que + subjunctive"
+    ),
+    "conditional vs imperfect (hypothetical vs past)": (
+        "Decision rule<br>Use conditional for would/hypothetical result; use imperfect for repeated or ongoing past.<br><br>"
+        "Pattern<br>hypothetical result: conditional<br>past habit/background: imperfect"
+    ),
+}
+
+
+SENTENCE_TARGET_FORMULAS = {
+    "hay": "Decision rule<br>Use hay for both there is and there are.<br><br>Pattern<br>hay + noun phrase",
+    "ser": "Decision rule<br>Use ser for identity, origin, profession, and stable classification.<br><br>Pattern<br>subject + ser form + identity/category",
+    "estar": "Decision rule<br>Use estar for location, temporary state, and progressive tense.<br><br>Pattern<br>subject + estar form + location/state",
+    "tener": "Decision rule<br>Use tener for possession, age, and tener que obligation chunks.<br><br>Pattern<br>subject + tener form + noun / que + infinitive",
+    "querer": "Decision rule<br>Use querer for wanting; present forms stem-change except nosotros.<br><br>Pattern<br>quiero/quieres/quiere/queremos/quieren + noun/infinitive",
+    "poder": "Decision rule<br>Use poder for can/be able to; present forms stem-change except nosotros.<br><br>Pattern<br>puedo/puedes/puede/podemos/pueden + infinitive",
+    "ir": "Decision rule<br>Use ir for going; use ir a + infinitive for near future.<br><br>Pattern<br>voy/vas/va/vamos/van + a + infinitive",
+    "gustar": "Decision rule<br>The liked thing controls gusta/gustan; the person is an indirect object pronoun.<br><br>Pattern<br>me/te/le/nos/les + gusta/gustan + liked thing",
+    "preterite": "Decision rule<br>Use preterite for completed past events.<br><br>Pattern<br>completed past action + preterite form",
+    "imperfect": "Decision rule<br>Use imperfect for background, description, repeated past, or ongoing past state.<br><br>Pattern<br>background/habit/state + imperfect form",
+    "por": "Decision rule<br>Use por for reason/cause, route, exchange, or duration.<br><br>Pattern<br>por + cause/path/exchange",
+    "para": "Decision rule<br>Use para for purpose, destination, recipient, or deadline.<br><br>Pattern<br>para + purpose/destination/recipient",
+    "present perfect": "Decision rule<br>Use haber + past participle for experiences or past actions connected to now.<br><br>Pattern<br>he/has/ha/hemos/han + past participle",
+    "subjunctive trigger": "Decision rule<br>Use subjunctive after desire, doubt, emotion, influence, or uncertainty triggers.<br><br>Pattern<br>trigger + que + subjunctive",
+}
+
+
+def _topic_formula(topic):
+    base = SPANISH_TOPIC_FALLBACKS.get(topic["topic"], topic.get("use", "Choose the form from meaning and sentence role."))
+    formula = topic.get("formula", "")
+    parts = [f"Decision rule<br>{html.escape(base)}"]
+    if formula:
+        parts.append(f"Pattern<br>{html.escape(formula)}")
+    trap = topic.get("trap", "")
+    if trap:
+        parts.append(f"Common trap<br>{html.escape(trap)}")
+    return "<br><br>".join(parts)
+
+
+def _sentence_target_formula(target):
+    if target in {"es", "soy", "eres", "son"}:
+        return SENTENCE_TARGET_FORMULAS["ser"]
+    if target in {"estoy", "estás", "está", "estamos", "están"}:
+        return SENTENCE_TARGET_FORMULAS["estar"]
+    if target in {"tengo", "tienes", "tiene", "tenemos", "tengo que", "tienes que"}:
+        return SENTENCE_TARGET_FORMULAS["tener"]
+    if target in {"quiero", "quieres", "quiere"}:
+        return SENTENCE_TARGET_FORMULAS["querer"]
+    if target in {"puedo", "puedes", "puede"}:
+        return SENTENCE_TARGET_FORMULAS["poder"]
+    if target in {"voy", "vas", "va", "vamos", "voy a", "vas a", "va a"}:
+        return SENTENCE_TARGET_FORMULAS["ir"]
+    if target in {"me gusta", "me gustan", "te gusta", "le gusta"}:
+        return SENTENCE_TARGET_FORMULAS["gustar"]
+    if target in {"fui", "fue", "tuve", "hice", "dije", "vi"}:
+        return SENTENCE_TARGET_FORMULAS["preterite"]
+    if target in {"era", "estaba", "tenía"}:
+        return SENTENCE_TARGET_FORMULAS["imperfect"]
+    if target in {"he", "has", "ha", "hemos"}:
+        return SENTENCE_TARGET_FORMULAS["present perfect"]
+    if target in {"quiero que", "espero que"}:
+        return SENTENCE_TARGET_FORMULAS["subjunctive trigger"]
+    if target in SENTENCE_TARGET_FORMULAS:
+        return SENTENCE_TARGET_FORMULAS[target]
+    return (
+        f"Decision rule<br>Use {html.escape(target)} when the sentence context matches its meaning and grammar role.<br><br>"
+        f"Pattern<br>{html.escape(target)}"
+    )
+
+
 def _derive_blank_answer(front, full_answer):
     prompt = _plain_front_text(front)
     if "->" in prompt:
@@ -240,8 +416,6 @@ def _card(
     attribution="",
 ):
     answer = _strip_trailing_period(answer)
-    if card_type == "rule" and formula.strip() == answer:
-        formula = ""
     type_answer = answer if prompt_mode in {"type_exact", "type_compare"} else ""
     return {
         "SourceID": source_id,
@@ -272,6 +446,7 @@ def _topic_cards(topic):
     topic_name = topic["topic"]
     slug = _slug(topic_name)
     examples = _examples_html(topic["examples"])
+    teaching_formula = _topic_formula(topic)
     cards = [
         _card(
             f"{level}::{slug}::rule",
@@ -282,7 +457,7 @@ def _topic_cards(topic):
             f"{_front_instruction('Rule')}<br>{html.escape(topic_name)}",
             topic["formula"],
             f"<b>Use</b><br>{topic['use']}<br><br><b>Common trap</b><br>{topic['trap']}",
-            topic["formula"],
+            teaching_formula,
             examples,
         )
     ]
@@ -301,7 +476,7 @@ def _topic_cards(topic):
             typed_contrast_front,
             typed_answer,
             f"{choose_reason}<br><br>Full sentence: {typed_contrast_answer}",
-            topic["formula"],
+            teaching_formula,
             examples,
         )
     )
@@ -316,7 +491,7 @@ def _topic_cards(topic):
             f"{_front_instruction('Correct the learner error')}<br><span class=\"wrong-spanish\">{wrong}</span>",
             right,
             correction_reason,
-            topic["formula"],
+            teaching_formula,
             examples,
         )
     )
@@ -334,7 +509,7 @@ def _topic_cards(topic):
             prompt,
             answer,
             note,
-            topic["formula"],
+            teaching_formula,
             examples,
         )
     )
@@ -370,7 +545,7 @@ def _topic_cards(topic):
                 ),
                 example,
                 topic["use"],
-                topic["formula"],
+                teaching_formula,
                 examples,
             )
         )
@@ -810,7 +985,7 @@ def _dictation_cards():
                 f"{sound}<br><br>{_front_instruction('Listen first, then type the missing word')}<br>{cloze}",
                 answer,
                 f"Listen first, type only the missing word, then replay and shadow the full sentence once.<br><br>Meaning: {eng_text}",
-                "Audio word cloze; retrieve one word from sound and context.",
+                _sentence_target_formula(target),
                 f"- {spa_text}<br>- {eng_text}",
                 audio=sound,
                 audio_url=_audio_url(spa_id),
@@ -1099,7 +1274,7 @@ def _targeted_recall_cards():
                 f"{_front_instruction('Type the Spanish chunk')}<br>{_front_cue('Pattern', formula)}<br>{front}",
                 answer,
                 back,
-                formula,
+                f"Decision rule<br>{html.escape(back)}<br><br>Pattern<br>{html.escape(formula)}",
                 examples,
             )
         )
@@ -1121,7 +1296,10 @@ def _interleaved_contrast_cards():
                 f"{_front_instruction('Type the correct Spanish form')}<br>{_front_cue('Contrast', topic_name)}<br>{sent1_front}<br><br>{_front_instruction('Then')}<br>{sent2_front}",
                 typed_answer,
                 f"1. {sent1_ans} — {sent1_note}<br>2. {sent2_ans} — {sent2_note}",
-                f"Interleaved contrast: {topic_name}. Choose the right form for each context.",
+                SPANISH_INTERLEAVED_FORMULAS.get(
+                    topic_name,
+                    f"Decision rule<br>Choose the form whose grammar function matches the sentence context.<br><br>Pattern<br>{html.escape(topic_name)}",
+                ),
                 f"- {sent1_ans}<br>- {sent2_ans}",
             )
         )
@@ -1160,7 +1338,7 @@ def _sentence_cards(audio_card_quotas=None):
                     f"{_front_instruction('Complete the Spanish from meaning and context')}<br>{_front_cue('Meaning', eng_text)}<br>{cloze}",
                     target,
                     "Type the missing Spanish word/chunk from the real sentence.",
-                    "Real sentence cloze; retrieve the missing chunk from context.",
+                    _sentence_target_formula(target),
                     f"- {spa_text}<br>- {eng_text}",
                     source=source,
                     attribution=attribution,
@@ -1180,7 +1358,7 @@ def _sentence_cards(audio_card_quotas=None):
                     f"{sound}<br><br>{_front_instruction('Listen first, then complete the chunk')}<br>{cloze}",
                     target,
                     "Listen first, type the missing chunk, then replay and shadow the full sentence once.",
-                    "Audio cloze; retrieve from sound and context.",
+                    _sentence_target_formula(target),
                     f"- {spa_text}<br>- {eng_text}",
                     audio=sound,
                     audio_url=url,

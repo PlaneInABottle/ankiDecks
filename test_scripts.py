@@ -461,6 +461,42 @@ class TestAnkiAutomation(unittest.TestCase):
         self.assertIn("Contrast: ser vs estar", interleaved["Front"])
         self.assertEqual("es | está", interleaved["Answer"])
 
+    def test_spanish_core_formulas_teach_decision_rules(self):
+        """Test Spanish Core formulas teach the grammar decision, not only a label."""
+        cards = spanish_core_learning.get_cards()
+        rule_like = [
+            card for card in cards
+            if card["CardType"] in {
+                "rule",
+                "typed_contrast",
+                "typed_correction",
+                "interleaved_contrast",
+                "typed_cloze",
+                "audio_cloze",
+            }
+        ]
+        self.assertGreaterEqual(len(rule_like), 900)
+        for card in rule_like:
+            self.assertIn("Decision rule", card["Formula"], card["SourceID"])
+            self.assertIn("Pattern", card["Formula"], card["SourceID"])
+            self.assertNotIn("Choose the right form for each context", card["Formula"], card["SourceID"])
+            self.assertNotIn("retrieve from sound and context", card["Formula"], card["SourceID"])
+            self.assertNotIn("retrieve the missing chunk from context", card["Formula"], card["SourceID"])
+
+        por_para = next(
+            card for card in cards
+            if card["SourceID"] == "interleaved::a2_2_natural_spanish::por_vs_para_reason_vs_purpose::1"
+        )
+        self.assertIn("para for purpose", por_para["Formula"])
+        self.assertIn("por for reason", por_para["Formula"])
+
+        subjunctive = next(
+            card for card in cards
+            if card["SourceID"] == "interleaved::b1_bridge::indicative_vs_subjunctive_fact_vs_doubt::1"
+        )
+        self.assertIn("indicative after belief", subjunctive["Formula"])
+        self.assertIn("subjunctive after doubt", subjunctive["Formula"])
+
     def test_spanish_open_ended_production_is_self_graded(self):
         """Test open-ended own-sentence production is not falsely exact-scored."""
         for card in spanish_core_learning.get_cards(card_type="typed_production"):
@@ -869,6 +905,43 @@ class TestAnkiAutomation(unittest.TestCase):
             self.assertGreaterEqual(len(blanks), 2, card["SourceID"])
             self.assertGreaterEqual(len(cues), 2, card["SourceID"])
 
+    def test_english_interleaved_formulas_teach_decision_rules(self):
+        """Test paired contrast backs teach how to choose, not just the answer label."""
+        cards = {
+            card["SourceID"]: card
+            for card in english_mastery.get_cards(card_type="interleaved_contrast")
+        }
+
+        conditional = cards["interleaved::b2_sentence_control::second_vs_third_conditional::1"]
+        self.assertIn("Decision rule", conditional["Formula"])
+        self.assertIn("would + base verb", conditional["Formula"])
+        self.assertIn("would have + past participle", conditional["Formula"])
+        self.assertIn("had had", conditional["Formula"])
+
+        past_perfect = cards["interleaved::b2_tense_system::past_perfect_vs_past_simple::1"]
+        self.assertIn("Decision rule", past_perfect["Formula"])
+        self.assertIn("had + past participle", past_perfect["Formula"])
+        self.assertIn("by the time", past_perfect["Formula"])
+
+    def test_english_grammar_formulas_teach_decision_rules(self):
+        """Test generated grammar cards include rule-learning formulas."""
+        cards = [
+            card for card in english_mastery.get_cards()
+            if card["SourceID"].startswith(("grammar::", "grammar_rule::"))
+            and card["CardType"] in {"typed_contrast", "rule"}
+        ]
+        self.assertGreaterEqual(len(cards), 120)
+        for card in cards:
+            self.assertIn("Decision rule", card["Formula"], card["SourceID"])
+            self.assertIn("Pattern", card["Formula"], card["SourceID"])
+
+        causative = next(
+            card for card in cards
+            if card["SourceID"] == "grammar::b2_verb_patterns::causatives::047::typed_contrast"
+        )
+        self.assertIn("arranges", causative["Formula"])
+        self.assertIn("did not necessarily train them herself", causative["Formula"])
+
     def test_english_function_cues_do_not_repeat_exact_answer(self):
         """Test grammar/function-word cards use function cues instead of leaking answers."""
         protected_ids = {
@@ -958,6 +1031,26 @@ class TestAnkiAutomation(unittest.TestCase):
             self.assertNotIn("Choose:", card["Front"])
             front_without_blank = card["Front"].lower().replace("_____", "")
             self.assertNotIn(card["Answer"].lower(), front_without_blank)
+
+    def test_english_sentence_mining_formulas_explain_target_patterns(self):
+        """Test sentence mining cards include the grammar pattern behind the chunk."""
+        cards = {
+            card["SourceID"]: card
+            for card in english_mastery.get_cards(card_type="typed_cloze")
+        }
+
+        if_i_had = cards["tatoeba_eng_mining::b2_sentence_control::30443::if_i_had"]
+        self.assertIn("Full sentence", if_i_had["Back"])
+        self.assertIn("had + past participle", if_i_had["Formula"])
+        self.assertIn("had had", if_i_had["Formula"])
+
+        was_being = cards["tatoeba_eng_mining::b2_sentence_control::40170::was_being"]
+        self.assertIn("past continuous passive", was_being["Formula"])
+        self.assertIn("was/were being + past participle", was_being["Formula"])
+        for card in cards.values():
+            self.assertIn("Decision rule", card["Formula"], card["SourceID"])
+            self.assertIn("Pattern", card["Formula"], card["SourceID"])
+            self.assertNotIn("Use the target chunk because", card["Formula"], card["SourceID"])
 
     def test_spanish_parser_extracts_rows(self):
         """Test TSV parser fields for the new Spanish duplicate workflow."""
