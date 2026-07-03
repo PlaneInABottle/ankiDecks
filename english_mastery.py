@@ -656,6 +656,184 @@ def _grammar_reason(back):
     return _strip_html(reason)
 
 
+GRAMMAR_TOPIC_FORMULAS = {
+    "present perfect vs past simple": (
+        "Decision rule<br>Ask whether the time is connected to now or finished.<br><br>"
+        "Pattern<br>connected to now: have/has + past participle<br>finished past time: past simple<br><br>"
+        "Common trap<br>Words like since, ever, and this week often keep the time connected to now."
+    ),
+    "present perfect continuous": (
+        "Decision rule<br>Use present perfect continuous for an activity that started before now and is still relevant, especially with duration.<br><br>"
+        "Pattern<br>have/has been + -ing<br><br>"
+        "Common trap<br>Use present perfect simple when the result/count matters more than the ongoing activity."
+    ),
+    "past perfect": (
+        "Decision rule<br>Use past perfect for the earlier of two past events.<br><br>"
+        "Pattern<br>had + past participle<br><br>"
+        "Common trap<br>If the events are simply told in order, past simple is usually enough."
+    ),
+    "future forms": (
+        "Decision rule<br>Choose the future form from the evidence: plan, present evidence, schedule, or opinion.<br><br>"
+        "Pattern<br>plan: be going to<br>present evidence: be going to<br>schedule: present simple<br>opinion/prediction: will"
+    ),
+    "narrative tenses": (
+        "Decision rule<br>Use past continuous for background in progress, past simple for the main event, and past perfect for earlier background.<br><br>"
+        "Pattern<br>background: was/were + -ing<br>event: past simple<br>earlier past: had + past participle"
+    ),
+    "conditionals": (
+        "Decision rule<br>Match the condition form to reality and time.<br><br>"
+        "Pattern<br>real future: if + present, will + base<br>unreal now/future: if + past, would + base<br>unreal past: if + had + V3, would have + V3"
+    ),
+    "mixed conditionals": (
+        "Decision rule<br>Use mixed conditional when the if-clause time and result time are different.<br><br>"
+        "Pattern<br>past condition -> present result: if + had + V3, would + base<br>present condition -> past result: if + past, would have + V3"
+    ),
+    "passive voice": (
+        "Decision rule<br>Use passive when the receiver/result is more important than the doer, or the doer is unknown.<br><br>"
+        "Pattern<br>be + past participle<br><br>"
+        "Common trap<br>The tense is carried by be; the main action stays as a past participle."
+    ),
+    "relative clauses": (
+        "Decision rule<br>Choose the relative word from the noun role: person, thing, possession, place, or whole clause.<br><br>"
+        "Pattern<br>person: who/that<br>thing: which/that<br>possession: whose<br>place: where"
+    ),
+    "reported speech": (
+        "Decision rule<br>Reported speech often shifts tense back and changes word order to statement order.<br><br>"
+        "Pattern<br>question report: ask/wonder + if/whether/wh-word + subject + verb<br><br>"
+        "Common trap<br>Do not keep direct-question inversion inside the reported clause."
+    ),
+    "noun clauses": (
+        "Decision rule<br>A noun clause acts like a noun: subject, object, or complement of the sentence.<br><br>"
+        "Pattern<br>wh-word/if/whether + subject + verb<br><br>"
+        "Common trap<br>Use statement word order, not question word order."
+    ),
+    "gerund vs infinitive": (
+        "Decision rule<br>The first verb controls whether the next verb is -ing or to + base verb.<br><br>"
+        "Pattern<br>enjoy/avoid/admit + -ing<br>decide/plan/want + to + base verb<br><br>"
+        "Common trap<br>remember + -ing means remembering a past action; remember + to means remembering to do a future duty."
+    ),
+    "used to patterns": (
+        "Decision rule<br>used to means past habit; be used to means accustomed; get used to means become accustomed.<br><br>"
+        "Pattern<br>used to + base verb<br>be/get used to + noun or -ing<br><br>"
+        "Common trap<br>Do not put a base verb after be/get used to."
+    ),
+    "modal verbs": (
+        "Decision rule<br>Choose the modal from function: ability, permission, possibility, advice, obligation, or prohibition.<br><br>"
+        "Pattern<br>modal + base verb<br><br>"
+        "Common trap<br>mustn't means not allowed; it does not mean don't have to."
+    ),
+    "modal perfect": (
+        "Decision rule<br>Use modal + have + past participle to judge, infer, or imagine a past action.<br><br>"
+        "Pattern<br>should have + V3 = missed advice<br>might have + V3 = past possibility<br>could have + V3 = unrealized possibility"
+    ),
+    "causatives": (
+        "Decision rule<br>Use have/get + object + past participle when someone arranges for another person or process to do the action.<br><br>"
+        "Pattern<br>have/get + object + past participle<br><br>"
+        "Meaning<br>She got her team trained = she arranged/caused the training; she did not necessarily train them herself.<br><br>"
+        "Common trap<br>Use a direct active verb only when the subject personally does the action."
+    ),
+    "articles": (
+        "Decision rule<br>Choose the article from specificity, countability, and pronunciation.<br><br>"
+        "Pattern<br>a/an = one nonspecific countable noun<br>the = specific or context-known<br>zero article = general plural/uncountable/abstract meaning"
+    ),
+    "prepositions": (
+        "Decision rule<br>Many adjective/verb/noun + preposition pairs are fixed collocations; learn them as chunks.<br><br>"
+        "Pattern<br>depend on, responsible for, comparable to<br><br>"
+        "Common trap<br>Translate the whole chunk, not the preposition alone."
+    ),
+    "countable and uncountable nouns": (
+        "Decision rule<br>Check whether the noun is counted as separate units or treated as a mass/abstract idea.<br><br>"
+        "Pattern<br>countable plural: many/fewer + plural noun<br>uncountable: much/less + singular mass noun"
+    ),
+    "comparatives": (
+        "Decision rule<br>Use comparative forms for two-item comparison and superlative forms for extremes in a group.<br><br>"
+        "Pattern<br>comparative + than<br>the + superlative<br>the + comparative, the + comparative"
+    ),
+    "emphasis and inversion": (
+        "Decision rule<br>Use inversion after fronted negative/restrictive expressions and clefting to emphasize one element.<br><br>"
+        "Pattern<br>Only/Never/Rarely + auxiliary + subject + verb<br>It was + focus + that + clause"
+    ),
+    "sentence connectors": (
+        "Decision rule<br>Choose the connector by logical relationship: cause, result, contrast, addition, or concession.<br><br>"
+        "Pattern<br>because + reason<br>therefore + result<br>however + contrast"
+    ),
+    "participle clauses": (
+        "Decision rule<br>Use participle clauses to compress extra information when the subject relationship is clear.<br><br>"
+        "Pattern<br>active/same-time: -ing<br>completed earlier: having + V3<br>passive/result: V3"
+    ),
+    "reduced relative clauses": (
+        "Decision rule<br>Reduce a relative clause only when the noun's role is clear.<br><br>"
+        "Pattern<br>active: noun + -ing phrase<br>passive: noun + V3 phrase<br><br>"
+        "Common trap<br>Keep the full relative clause if the reduced form sounds ambiguous or awkward."
+    ),
+    "hedging": (
+        "Decision rule<br>Use hedging when evidence is limited or you want a cautious professional claim.<br><br>"
+        "Pattern<br>may/could/seem/appear/possibly + claim<br><br>"
+        "Common trap<br>Do not overstate a conclusion stronger than the evidence supports."
+    ),
+    "formal register": (
+        "Decision rule<br>Formal register often prefers precise verbs, full clauses, and inverted conditionals in written contexts.<br><br>"
+        "Pattern<br>ensure that + clause<br>carry out/conduct + noun<br>Should + subject + verb = if this happens"
+    ),
+    "advanced inversion": (
+        "Decision rule<br>Fronted negative or restrictive phrases trigger auxiliary-subject inversion.<br><br>"
+        "Pattern<br>Rarely/Never/Under no circumstances + auxiliary + subject + verb<br><br>"
+        "Common trap<br>The inversion belongs in the first clause after the fronted phrase."
+    ),
+    "subjunctive and mandative structures": (
+        "Decision rule<br>After formal demand/recommend/require structures, use the base verb in the that-clause.<br><br>"
+        "Pattern<br>require/suggest/insist that + subject + base verb<br>It is essential that + subject + base verb"
+    ),
+    "clefting and fronting": (
+        "Decision rule<br>Use clefting/fronting when you want to move focus to one specific element.<br><br>"
+        "Pattern<br>What + clause + be + focus<br>It + be + focus + that + clause<br>The fact that + clause + be + focus"
+    ),
+    "ellipsis and substitution": (
+        "Decision rule<br>Use substitution to avoid repeating a verb phrase or noun phrase when the meaning is already clear.<br><br>"
+        "Pattern<br>do so = repeat the action<br>one/ones = repeat the noun"
+    ),
+    "advanced concession": (
+        "Decision rule<br>Use concession structures to show the main idea remains true despite a difficulty or contrast.<br><br>"
+        "Pattern<br>although + clause<br>adjective + though + clause<br>no matter + wh-word + clause"
+    ),
+    "nominalisation": (
+        "Decision rule<br>Use nominalisation to turn actions or clauses into noun phrases for denser formal style.<br><br>"
+        "Pattern<br>verb -> noun<br>the + noun + to-infinitive<br>due to + noun phrase"
+    ),
+    "parallelism": (
+        "Decision rule<br>Items in a list or paired structure should have the same grammar shape.<br><br>"
+        "Pattern<br>to plan, build, and maintain<br>planning, building, and maintaining<br><br>"
+        "Common trap<br>Do not mix a noun, gerund, and full clause in one list unless there is a reason."
+    ),
+}
+
+
+def _teaching_formula(topic, formula):
+    teaching = GRAMMAR_TOPIC_FORMULAS.get(topic.lower())
+    if not teaching:
+        return formula
+    if formula and formula not in teaching:
+        return f"{teaching}<br><br>Card pattern<br>{html.escape(formula)}"
+    return teaching
+
+
+def _teaching_back(topic, reason, answer):
+    teaching = GRAMMAR_TOPIC_FORMULAS.get(topic.lower())
+    if not teaching:
+        return reason
+    instruction = "Use the decision rule in the Formula section, then explain why this sentence matches it."
+    if "Full sentence:" in reason:
+        before, full_sentence = reason.split("Full sentence:", 1)
+        before = re.sub(r"(?:<br>\s*)+$", "", before.strip())
+        parts = [before.strip(), instruction, f"Full sentence: {full_sentence.strip()}"]
+        return "<br><br>".join(part for part in parts if part)
+    parts = [reason]
+    parts.append(instruction)
+    if answer:
+        parts.append(f"Full sentence: {html.escape(answer)}")
+    return "<br><br>".join(part for part in parts if part)
+
+
 def _grammar_cards():
     cards = []
     seen_topics = set()
@@ -681,8 +859,8 @@ def _grammar_cards():
                     "self_grade",
                     f'{_front_instruction("Rule anchor")}<br>{html.escape(topic)}',
                     formula or topic,
-                    reason,
-                    formula,
+                    _teaching_back(topic, reason, ""),
+                    _teaching_formula(topic, formula),
                     examples,
                     self_grade=self_grade,
                 )
@@ -712,6 +890,7 @@ def _grammar_cards():
             if answer_for_card != answer:
                 reason = f"{reason}<br><br>Full sentence: {html.escape(answer)}"
             answer = answer_for_card
+        display_back = _teaching_back(topic, reason, "" if "Full sentence:" in reason else _extract_answer(item["back"]))
         cards.append(
             _card(
                 f"{source_base}::{card_type}",
@@ -722,8 +901,8 @@ def _grammar_cards():
                 prompt_mode,
                 prompt,
                 answer,
-                reason,
-                formula,
+                display_back,
+                _teaching_formula(topic, formula),
                 examples,
                 self_grade=self_grade,
             )
@@ -913,8 +1092,8 @@ def _sentence_mining_cards():
                 "type_exact",
                 f'{_front_instruction("Complete the English from context")}<br>{_front_cue("Target cue", _target_cue(target))}<br><br>{cloze}',
                 target,
-                "Type the missing chunk from the real sentence.",
-                "Real sentence cloze; retrieve the missing chunk from context.",
+                _sentence_mining_back(target, text),
+                _sentence_mining_formula(target, text),
                 f"- {html.escape(text)}",
                 source=source,
                 attribution=attribution,
@@ -975,6 +1154,413 @@ def _listening_cards():
                 )
             )
     return cards
+
+
+INTERLEAVED_FORMULAS = {
+    "present perfect vs past simple": (
+        "Decision rule<br>"
+        "Use present perfect when the time connects to now; use past simple when the time is finished.<br><br>"
+        "Pattern<br>"
+        "unfinished time: have/has + past participle<br>"
+        "finished time: past simple<br><br>"
+        "Signal words<br>"
+        "since/for/ever/already often point to present perfect; exact finished times like in 2018/yesterday point to past simple."
+    ),
+    "present perfect vs past simple (experience)": (
+        "Decision rule<br>"
+        "Use present perfect for life experience without a finished time; use past simple for a specific past event.<br><br>"
+        "Pattern<br>"
+        "experience: have/has + past participle<br>"
+        "specific past time: did + base verb or past simple<br><br>"
+        "Common trap<br>"
+        "ever asks whether the experience exists at any time in life, not when it happened."
+    ),
+    "past perfect vs past simple": (
+        "Decision rule<br>"
+        "Use past perfect when one past action was already complete before another past time/action.<br>"
+        "Use past simple when events are told as a sequence in the past.<br><br>"
+        "Pattern<br>"
+        "earlier past event: had + past participle<br>"
+        "story sequence: past simple<br><br>"
+        "Signal words<br>"
+        "by the time, already, and before often point to the earlier completed event."
+    ),
+    "present perfect continuous vs present perfect": (
+        "Decision rule<br>"
+        "Use present perfect continuous for an ongoing activity with duration; use present perfect for a completed result/count.<br><br>"
+        "Pattern<br>"
+        "ongoing duration: have/has been + -ing<br>"
+        "completed result/count: have/has + past participle<br><br>"
+        "Common trap<br>"
+        "for two hours focuses on activity duration; three emails focuses on completed output."
+    ),
+    "will vs be going to": (
+        "Decision rule<br>"
+        "Use be going to for predictions based on present evidence; use will for opinion, belief, or spontaneous prediction.<br><br>"
+        "Pattern<br>"
+        "present evidence: am/is/are going to + base verb<br>"
+        "opinion prediction: will + base verb"
+    ),
+    "second vs third conditional": (
+        "Decision rule<br>"
+        "Look at the result clause.<br>"
+        "would + base verb means unreal now/future, so use past simple in the if-clause.<br>"
+        "would have + past participle means unreal past, so use past perfect in the if-clause.<br><br>"
+        "Pattern<br>"
+        "second conditional: if + past simple, would + base verb<br>"
+        "third conditional: if + had + past participle, would have + past participle<br><br>"
+        "Common trap<br>"
+        "had had is normal in third conditional: the first had is the auxiliary, the second had means possessed."
+    ),
+    "first vs second conditional": (
+        "Decision rule<br>"
+        "Use first conditional for a real future possibility; use second conditional for a hypothetical or less real situation.<br><br>"
+        "Pattern<br>"
+        "real future: if + present simple, will + base verb<br>"
+        "hypothetical: if + past simple, would + base verb<br><br>"
+        "Common trap<br>"
+        "The past form in second conditional does not mean past time; it marks distance/unreality."
+    ),
+    "passive vs active": (
+        "Decision rule<br>"
+        "Use passive when the receiver of the action is the focus; use active when the doer is the focus.<br><br>"
+        "Pattern<br>"
+        "passive: be + past participle, optionally by + doer<br>"
+        "active: subject/doer + verb + object"
+    ),
+    "used to vs be used to": (
+        "Decision rule<br>"
+        "used to describes a past habit that is no longer true; be used to means accustomed to something.<br><br>"
+        "Pattern<br>"
+        "past habit: used to + base verb<br>"
+        "accustomed: am/is/are used to + noun or -ing"
+    ),
+    "used to vs get used to": (
+        "Decision rule<br>"
+        "used to describes an old habit; get used to describes the process of becoming accustomed.<br><br>"
+        "Pattern<br>"
+        "past habit: used to + base verb<br>"
+        "becoming accustomed: get/getting/got used to + noun or -ing"
+    ),
+    "had better vs would rather": (
+        "Decision rule<br>"
+        "had better gives strong advice/warning; would rather states preference.<br><br>"
+        "Pattern<br>"
+        "strong advice: had better + base verb<br>"
+        "preference: would rather + base verb"
+    ),
+    "despite vs in spite of": (
+        "Decision rule<br>"
+        "Both mean although something is true. Choose despite without of; choose in spite with of.<br><br>"
+        "Pattern<br>"
+        "despite + noun/-ing<br>"
+        "in spite of + noun/-ing"
+    ),
+    "unless vs if not": (
+        "Decision rule<br>"
+        "unless means if not. Use unless for a compact negative condition; use if not when the negative condition is explicit.<br><br>"
+        "Pattern<br>"
+        "unless + positive clause<br>"
+        "if + subject + do/does/did not + verb"
+    ),
+    "so that vs in order to": (
+        "Decision rule<br>"
+        "Use so that before a full clause with subject + verb; use in order to before an infinitive purpose phrase.<br><br>"
+        "Pattern<br>"
+        "so that + subject + modal/verb<br>"
+        "in order to + base verb"
+    ),
+    "nevertheless vs however": (
+        "Decision rule<br>"
+        "Both show contrast. nevertheless is stronger and means despite that; however is a general contrast marker.<br><br>"
+        "Punctuation<br>"
+        "Both can start a new sentence. After a semicolon, nevertheless/however link two closely related clauses."
+    ),
+    "furthermore vs moreover": (
+        "Decision rule<br>"
+        "Both add information. furthermore adds another supporting point; moreover often adds a stronger or more decisive point.<br><br>"
+        "Use<br>"
+        "Choose based on the force of the second point, not grammar form."
+    ),
+    "not only inversion vs standard": (
+        "Decision rule<br>"
+        "When not only begins the clause, use auxiliary-subject inversion. In normal mid-sentence position, keep standard word order.<br><br>"
+        "Pattern<br>"
+        "fronted: Not only + auxiliary + subject + verb<br>"
+        "standard: subject + not only + verb"
+    ),
+    "it-cleft vs standard": (
+        "Decision rule<br>"
+        "Use an it-cleft to emphasize one focused element; use standard order when no special focus structure is needed.<br><br>"
+        "Pattern<br>"
+        "emphasis: It was/is + focus + that + clause<br>"
+        "standard: subject + verb + object/complement"
+    ),
+    "subjunctive vs indicative (mandative)": (
+        "Decision rule<br>"
+        "After formal verbs like require/insist/recommend that, use the base form for mandative subjunctive. Indicative uses the normal present form.<br><br>"
+        "Pattern<br>"
+        "formal requirement: require that + subject + base verb<br>"
+        "ordinary statement: subject + present verb"
+    ),
+    "parallelism vs broken parallelism": (
+        "Decision rule<br>"
+        "Items in a list should share the same grammar shape. Match the missing item to the earlier items.<br><br>"
+        "Pattern<br>"
+        "to plan, build, and maintain = base verbs<br>"
+        "planning, building, and maintaining = gerunds"
+    ),
+}
+
+
+SENTENCE_MINING_FORMULAS = {
+    "have been": (
+        "Decision rule<br>Use have been when a plural/I/you/we/they subject has a state or activity connected from the past to now.<br><br>"
+        "Pattern<br>subject + have been + complement/-ing/V3<br><br>"
+        "Common trap<br>Use has been with he/she/it or a singular subject."
+    ),
+    "has been": (
+        "Decision rule<br>Use has been when a singular subject has a state or activity connected from the past to now.<br><br>"
+        "Pattern<br>singular subject + has been + complement/-ing/V3<br><br>"
+        "Common trap<br>The time usually still matters now."
+    ),
+    "had": (
+        "Decision rule<br>Use had as the past form of have for possession, experience, or obligation-like chunks.<br><br>"
+        "Pattern<br>subject + had + object/complement"
+    ),
+    "would have": (
+        "Decision rule<br>Use would have + past participle for an unreal past result: something did not happen, but it would have happened under different conditions.<br><br>"
+        "Pattern<br>would have + past participle"
+    ),
+    "should have": (
+        "Decision rule<br>Use should have + past participle for past advice, criticism, or expected action that did not happen.<br><br>"
+        "Pattern<br>should have + past participle"
+    ),
+    "could have": (
+        "Decision rule<br>Use could have + past participle for unrealized past ability or possibility.<br><br>"
+        "Pattern<br>could have + past participle"
+    ),
+    "might have": (
+        "Decision rule<br>Use might have + past participle for uncertain past possibility.<br><br>"
+        "Pattern<br>might have + past participle"
+    ),
+    "used to": (
+        "Decision rule<br>Use used to for a past habit or state that is no longer true.<br><br>"
+        "Pattern<br>used to + base verb<br><br>"
+        "Common trap<br>Do not confuse it with be used to + noun/-ing, which means accustomed."
+    ),
+    "will have": (
+        "Decision rule<br>Use will have + past participle for an action completed before a future reference point.<br><br>"
+        "Pattern<br>will have + past participle"
+    ),
+    "if I were": (
+        "Decision rule<br>Use if I were for a hypothetical present/future condition, especially formal or careful English.<br><br>"
+        "Pattern<br>if + subject + were, would/could + base verb"
+    ),
+    "I would have": (
+        "Decision rule<br>Use would have + past participle for an unreal past result.<br><br>"
+        "Pattern<br>subject + would have + past participle<br><br>"
+        "Common trap<br>The condition may be implied, not always written in the same sentence."
+    ),
+    "was being": (
+        "Decision rule<br>"
+        "was/were being + past participle is past continuous passive.<br>"
+        "Use it when the subject receives an action that was in progress at a past moment.<br><br>"
+        "Pattern<br>"
+        "receiver + was/were being + past participle<br><br>"
+        "Common trap<br>"
+        "being marks continuous passive, not a standalone meaning."
+    ),
+    "were being": (
+        "Decision rule<br>"
+        "was/were being + past participle is past continuous passive.<br>"
+        "Use it when the subject receives an action that was in progress at a past moment.<br><br>"
+        "Pattern<br>"
+        "receiver + was/were being + past participle"
+    ),
+    "has been being": (
+        "Decision rule<br>Use has been being + past participle for rare perfect continuous passive: an action has been in progress and the subject receives it.<br><br>"
+        "Pattern<br>singular receiver + has been being + past participle<br><br>"
+        "Common trap<br>This form is grammatical but uncommon; simpler passive forms are often more natural."
+    ),
+    "is used to": (
+        "Decision rule<br>Use is used to when someone/something is accustomed to a noun or -ing action.<br><br>"
+        "Pattern<br>is used to + noun/-ing<br><br>"
+        "Common trap<br>is used to + base verb usually means utilized in order to, not accustomed."
+    ),
+    "get used to": (
+        "Decision rule<br>Use get used to for the process of becoming accustomed.<br><br>"
+        "Pattern<br>get/getting/got used to + noun/-ing"
+    ),
+    "had better": (
+        "Decision rule<br>Use had better for strong advice, often with an implied warning or bad consequence.<br><br>"
+        "Pattern<br>had better + base verb"
+    ),
+    "would rather": (
+        "Decision rule<br>Use would rather to express preference.<br><br>"
+        "Pattern<br>would rather + base verb"
+    ),
+    "in spite of": (
+        "Decision rule<br>Use in spite of to introduce a concession before a noun phrase or -ing phrase.<br><br>"
+        "Pattern<br>in spite of + noun/-ing"
+    ),
+    "despite": (
+        "Decision rule<br>Use despite to introduce a concession before a noun phrase or -ing phrase.<br><br>"
+        "Pattern<br>despite + noun/-ing<br><br>"
+        "Common trap<br>Do not write despite of."
+    ),
+    "rather than": (
+        "Decision rule<br>Use rather than to choose one option instead of another.<br><br>"
+        "Pattern<br>preferred option + rather than + rejected option"
+    ),
+    "by the time": (
+        "Decision rule<br>Use by the time to mark the deadline/reference point before which another action is complete.<br><br>"
+        "Pattern<br>by the time + clause, earlier/completed event"
+    ),
+    "so that": (
+        "Decision rule<br>Use so that to introduce a purpose/result clause with its own subject and verb.<br><br>"
+        "Pattern<br>so that + subject + modal/verb"
+    ),
+    "in case": (
+        "Decision rule<br>Use in case for precaution: do something now because something might happen later.<br><br>"
+        "Pattern<br>action + in case + possible situation"
+    ),
+    "unless": (
+        "Decision rule<br>Use unless to mean if not.<br><br>"
+        "Pattern<br>unless + positive clause<br><br>"
+        "Common trap<br>Do not add another not unless you really need a double negative meaning."
+    ),
+    "provided that": (
+        "Decision rule<br>Use provided that for a condition meaning only if.<br><br>"
+        "Pattern<br>main clause + provided that + condition"
+    ),
+    "as long as": (
+        "Decision rule<br>Use as long as for a condition meaning only if / provided that.<br><br>"
+        "Pattern<br>main clause + as long as + condition"
+    ),
+    "even if": (
+        "Decision rule<br>Use even if for a hypothetical condition that does not change the main result.<br><br>"
+        "Pattern<br>even if + condition, main clause still true"
+    ),
+    "no matter": (
+        "Decision rule<br>Use no matter to say the result is unchanged across all possibilities.<br><br>"
+        "Pattern<br>no matter + wh-word + clause"
+    ),
+    "nevertheless": (
+        "Decision rule<br>Use nevertheless to introduce a strong contrast meaning despite that.<br><br>"
+        "Pattern<br>previous idea; nevertheless, contrasting result"
+    ),
+    "moreover": (
+        "Decision rule<br>Use moreover to add a further, often stronger, supporting point.<br><br>"
+        "Pattern<br>sentence. Moreover, additional point."
+    ),
+    "furthermore": (
+        "Decision rule<br>Use furthermore to add another supporting point.<br><br>"
+        "Pattern<br>sentence. Furthermore, additional point."
+    ),
+    "consequently": (
+        "Decision rule<br>Use consequently to introduce a result caused by the previous idea.<br><br>"
+        "Pattern<br>cause/context; consequently, result"
+    ),
+    "meanwhile": (
+        "Decision rule<br>Use meanwhile for something happening at the same time, often in another place or thread of events.<br><br>"
+        "Pattern<br>event A. Meanwhile, event B."
+    ),
+    "indeed": (
+        "Decision rule<br>Use indeed to emphasize or confirm that a statement is true.<br><br>"
+        "Pattern<br>indeed + emphasized/confirming statement"
+    ),
+    "obviously": (
+        "Decision rule<br>Use obviously when the speaker presents something as clear or easy to see.<br><br>"
+        "Pattern<br>obviously + statement"
+    ),
+    "fortunately": (
+        "Decision rule<br>Use fortunately to frame the whole statement as a lucky/good outcome.<br><br>"
+        "Pattern<br>fortunately, positive outcome"
+    ),
+    "unfortunately": (
+        "Decision rule<br>Use unfortunately to frame the whole statement as a bad or unlucky outcome.<br><br>"
+        "Pattern<br>unfortunately, negative outcome"
+    ),
+    "not only": (
+        "Decision rule<br>Use not only to introduce the first part of an emphatic addition.<br><br>"
+        "Pattern<br>not only ... but also ...<br><br>"
+        "Common trap<br>If not only starts the clause, use auxiliary-subject inversion."
+    ),
+    "it is": (
+        "Decision rule<br>Use it is/was + focus + that to emphasize one part of the sentence.<br><br>"
+        "Pattern<br>it is/was + focus + that + clause"
+    ),
+    "what is": (
+        "Decision rule<br>Use what-clefting to put the focused information after be.<br><br>"
+        "Pattern<br>what + clause + is/was + focus"
+    ),
+    "the fact that": (
+        "Decision rule<br>Use the fact that to turn a whole clause into a noun phrase.<br><br>"
+        "Pattern<br>the fact that + subject + verb"
+    ),
+    "regardless of": (
+        "Decision rule<br>Use regardless of to mean not affected by something.<br><br>"
+        "Pattern<br>regardless of + noun/-ing"
+    ),
+    "owing to": (
+        "Decision rule<br>Use owing to for a formal cause/reason phrase.<br><br>"
+        "Pattern<br>owing to + noun phrase"
+    ),
+    "apart from": (
+        "Decision rule<br>Use apart from for exception or addition, depending on context.<br><br>"
+        "Pattern<br>apart from + noun/-ing"
+    ),
+    "in light of": (
+        "Decision rule<br>Use in light of to introduce context/evidence that affects a decision or interpretation.<br><br>"
+        "Pattern<br>in light of + noun phrase"
+    ),
+}
+
+
+def _conditional_if_i_had_formula(text):
+    lowered = text.lower()
+    if "would have" in lowered or "could have" in lowered or "should have" in lowered or "might have" in lowered:
+        return (
+            "Decision rule<br>"
+            "The result clause has would/could/should/might have + past participle, so this is an unreal past condition.<br><br>"
+            "Pattern<br>"
+            "if + had + past participle, would/could/should/might have + past participle<br><br>"
+            "Common trap<br>"
+            "If the main verb is have, the if-clause becomes had had: auxiliary had + main verb had."
+        )
+    return (
+        "Decision rule<br>"
+        "The result clause has would/could + base verb, so this is an unreal present/future condition.<br><br>"
+        "Pattern<br>"
+        "if + past simple, would/could + base verb<br><br>"
+        "Common trap<br>"
+        "The past form marks unreality here; it does not mean past time."
+    )
+
+
+def _sentence_mining_formula(target, text):
+    if target == "if I had":
+        return _conditional_if_i_had_formula(text)
+    return SENTENCE_MINING_FORMULAS.get(
+        target,
+        "Decision rule<br>Use the target chunk because the sentence context matches its grammar function.<br><br>"
+        f"Target function<br>{html.escape(_target_cue(target))}",
+    )
+
+
+def _sentence_mining_back(target, text):
+    if target == "if I had":
+        return (
+            f"Full sentence: {html.escape(text)}<br><br>"
+            "Check the result clause first, then choose the if-clause pattern."
+        )
+    if target in {"was being", "were being"}:
+        return (
+            f"Full sentence: {html.escape(text)}<br><br>"
+            "The subject receives the action, and the action was in progress at that past moment."
+        )
+    return "Type the missing chunk from the real sentence."
 
 
 ENGLISH_INTERLEAVED_CONTRASTS = [
@@ -1061,7 +1647,10 @@ def _interleaved_contrast_cards():
                 f'{_front_instruction("Type the correct/natural English form")}<br>{sent1_front}<br>{_front_cue(cue1_label, cue1)}<br><br>{_front_instruction("Then")}<br>{sent2_front}<br>{_front_cue(cue2_label, cue2)}',
                 f"{sent1_chunk} | {sent2_chunk}",
                 f"1. {html.escape(sent1_ans)} — {sent1_note}<br>2. {html.escape(sent2_ans)} — {sent2_note}",
-                f"Interleaved contrast: {topic_name}. Choose the right form for each context.",
+                INTERLEAVED_FORMULAS.get(
+                    topic_name,
+                    f"Decision rule<br>Choose the form whose grammar function matches the sentence context.<br><br>Contrast<br>{html.escape(topic_name)}",
+                ),
                 "",
             )
         )
