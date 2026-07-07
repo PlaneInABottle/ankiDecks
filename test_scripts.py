@@ -1493,6 +1493,17 @@ class TestAnkiAutomation(unittest.TestCase):
             "motion": ("el gesto", "un gesto"),
             "period": ("la época", "una época"),
             "range": ("la gama", "una gama"),
+            "dig": ("cavar", "cava"),
+            "speed": ("conducir rápido", "Conducir rápido"),
+            "citizen": ("el ciudadano", "ciudadano español"),
+            "unique": ("único", "único"),
+            "release": ("liberar", "liberó"),
+            "arrange": ("organizar", "organiza"),
+            "sense": ("percibir", "percibir"),
+            "settle": ("resolver", "Resolvimos"),
+            "demonstrate": ("demostrar", "demostró"),
+            "fail": ("fallar", "falló"),
+            "across": ("cruzar", "Cruzó"),
         }
         for english, (spanish, example_fragment) in expected.items():
             self.assertEqual(spanish, rows[english]["Spanish"])
@@ -1890,6 +1901,12 @@ class TestAnkiAutomation(unittest.TestCase):
             "un tipo es un tipo",
             "significar significa",
             "inclinar algo significa inclinarlo",
+            "un premio es un premio",
+            "algo grande es muy grande",
+            "un sabor es el sabor",
+            "un hilo es un trozo fino de hilo",
+            "muy brillante o inteligente",
+            "muy elegante y agradable",
         }
         bad_rows = []
         with path.open(encoding="utf-8", newline="") as handle:
