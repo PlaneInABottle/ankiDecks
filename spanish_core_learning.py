@@ -133,10 +133,6 @@ def _slug(text):
     return text.strip("_")
 
 
-def _clean_html(text):
-    return str(text).replace("<br>", "\n").replace("<b>", "").replace("</b>", "")
-
-
 def _examples_html(examples):
     return "<br>".join(f"- {example}" for example in examples)
 
