@@ -1706,6 +1706,90 @@ class TestAnkiAutomation(unittest.TestCase):
         for english, cue in expected.items():
             self.assertEqual(cue, rows[english]["TurkishCue"].strip().lower())
 
+    def test_live_reviewed_english_turkish_cues_are_preserved(self):
+        """Test clearer Turkish cues reviewed in Anki are preserved in generated source."""
+        path = Path("generated/english_4000/english_turkish_production.tsv")
+        if not path.exists():
+            self.skipTest("English Turkish production TSV is not generated")
+
+        expected = {
+            "clerk": "mağaza görevlisi / satış görevlisi",
+            "locate": "yerini bulmak / konumunu tespit etmek",
+            "earn": "para kazanmak",
+            "safety": "güvenlik / sağlamlık",
+            "perform": "sahnelemek / icra etmek",
+            "strike": "saldırmak / vurmak",
+            "term": "terim / sözcük",
+            "recognize": "tanımak / hatırlamak",
+            "along": "birlikte / yanında",
+            "attract": "cezbetmek / ilgisini çekmek",
+            "maintain": "sürdürmek / düzenli bakmak",
+            "neither": "hiçbiri / ne o ne bu",
+            "situated": "yer almak / bulunmak",
+            "false": "yanlış / sahte",
+            "figure out": "çözmek / anlamak",
+            "rather": "daha doğrusu / oldukça",
+            "band": "müzik grubu / bant",
+            "barely": "zar zor / anca",
+            "schedule": "program / takvim",
+            "burden": "yük / sorumluluk",
+            "compromise": "ödün vermek / uzlaşmak",
+            "meeting": "toplantı / buluşma",
+            "moderate": "ılımlı / ne az ne fazla",
+            "settle": "uzlaşmak / sonuca erdirmek",
+            "demonstrate": "göstermek / sunmak",
+        }
+        rows = {}
+        with path.open(encoding="utf-8", newline="") as handle:
+            for row in csv.DictReader(handle, delimiter="\t"):
+                rows[row["English"].lower()] = row
+
+        for english, cue in expected.items():
+            self.assertEqual(cue, rows[english]["TurkishCue"].strip().lower())
+
+    def test_english_turkish_cues_fix_high_confidence_wrong_senses(self):
+        """Test Turkish cues do not keep common wrong-sense machine translations."""
+        path = Path("generated/english_4000/english_turkish_production.tsv")
+        if not path.exists():
+            self.skipTest("English Turkish production TSV is not generated")
+
+        expected = {
+            "december": "Aralık ayı",
+            "plate": "tabak",
+            "pole": "direk / sırık",
+            "tip": "uç",
+            "medicine": "ilaç",
+            "mix": "karışım",
+            "populate": "yaşamak / yerleşmek",
+            "dive": "dalmak",
+            "household": "hane / ev halkı",
+            "log": "kütük",
+            "destination": "varış noktası / hedef",
+            "consume": "tüketmek / yiyip içmek",
+            "exhaust": "yormak / bitkin düşürmek",
+            "study": "ders çalışmak / incelemek",
+            "work": "çalışmak / iş yapmak",
+        }
+        forbidden = {
+            "plate": "plaka",
+            "pole": "kutup",
+            "medicine": "tıp",
+            "mix": "karıştır",
+            "populate": "nüfuslu",
+            "dive": "dalış",
+            "household": "ev",
+            "log": "günlük",
+        }
+        rows = {}
+        with path.open(encoding="utf-8", newline="") as handle:
+            for row in csv.DictReader(handle, delimiter="\t"):
+                rows[row["English"].lower()] = row
+
+        for english, cue in expected.items():
+            self.assertEqual(cue.lower(), rows[english]["TurkishCue"].strip().lower())
+        for english, bad_cue in forbidden.items():
+            self.assertNotEqual(bad_cue, rows[english]["TurkishCue"].strip().lower())
+
     def test_active_english_turkish_production_cues_are_unique(self):
         """Test active English production fronts are not ambiguous duplicate Turkish cues."""
         path = Path("generated/english_4000/english_turkish_production.tsv")
