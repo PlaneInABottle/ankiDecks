@@ -1513,6 +1513,39 @@ class TestAnkiAutomation(unittest.TestCase):
         self.assertEqual("", rows["happen"]["Spanish Article"])
         self.assertEqual("", rows["still"]["Spanish Article"])
 
+    def test_spanish_4000_sync_keeps_recognition_suspended(self):
+        """Test Spanish 4000 sync only activates production cards."""
+        fields = {
+            "SourceID": {"value": "4000 Essential English Words::1.Book::::apple"},
+            "English": {"value": "apple"},
+            "Spanish": {"value": "la manzana"},
+            "SpanishPartOfSpeech": {"value": "noun"},
+            "SpanishMeaning": {"value": "Fruta roja."},
+            "SpanishExample": {"value": "La manzana es roja."},
+        }
+        note = {"noteId": 1, "fields": fields, "cards": [101, 102, 103]}
+        order_map = {"4000 Essential English Words::1.Book::::apple": 1}
+        planned = {}
+
+        def fake_apply_card_plan(deck_cards, active_cards, suspended_cards):
+            planned["deck_cards"] = deck_cards
+            planned["active_cards"] = active_cards
+            planned["suspended_cards"] = suspended_cards
+
+        with patch.object(sync_4000_production_to_anki, "get_notes", return_value=[note]), \
+             patch.object(sync_4000_production_to_anki, "update_note_fields_many"), \
+             patch.object(sync_4000_production_to_anki, "card_maps_for_notes", return_value={1: {0: 101, 1: 102, 2: 103}}), \
+             patch.object(sync_4000_production_to_anki, "apply_card_plan", side_effect=fake_apply_card_plan):
+            result = sync_4000_production_to_anki.sync_spanish(order_map, active_limit=400, context_active_limit=75)
+
+        self.assertEqual(result["recognition_suspended"], 1)
+        self.assertEqual(result["production_suspended"], 0)
+        self.assertEqual(result["context_suspended"], 0)
+        self.assertNotIn(101, planned["active_cards"])
+        self.assertIn(101, planned["suspended_cards"])
+        self.assertIn(102, planned["active_cards"])
+        self.assertIn(103, planned["active_cards"])
+
     def test_spanish_glossary_no_repeated_definition_pairs(self):
         """Test Spanish reviewed meanings avoid obvious repeated-word definitions."""
         paths = [

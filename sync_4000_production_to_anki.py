@@ -731,10 +731,9 @@ def sync_spanish(order_map: Dict[str, int], active_limit: int, context_active_li
         cards = note_cards.get(note["noteId"], {})
         deck_name = level_deck(SPANISH_ROOT, order)
         if 0 in cards:
-            recognition_active = order <= active_limit
             deck_cards.setdefault(deck_name, []).append(cards[0])
-            (active_cards if recognition_active else suspended_cards).append(cards[0])
-            recognition_suspended += 0 if recognition_active else 1
+            suspended_cards.append(cards[0])
+            recognition_suspended += 1
         if 1 in cards:
             production_active = order <= active_limit
             deck_cards.setdefault(deck_name, []).append(cards[1])
