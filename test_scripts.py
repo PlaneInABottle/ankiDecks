@@ -1536,15 +1536,16 @@ class TestAnkiAutomation(unittest.TestCase):
              patch.object(sync_4000_production_to_anki, "update_note_fields_many"), \
              patch.object(sync_4000_production_to_anki, "card_maps_for_notes", return_value={1: {0: 101, 1: 102, 2: 103}}), \
              patch.object(sync_4000_production_to_anki, "apply_card_plan", side_effect=fake_apply_card_plan):
-            result = sync_4000_production_to_anki.sync_spanish(order_map, active_limit=400, context_active_limit=75)
+            result = sync_4000_production_to_anki.sync_spanish(order_map, active_limit=400, context_active_limit=0)
 
         self.assertEqual(result["recognition_suspended"], 1)
         self.assertEqual(result["production_suspended"], 0)
-        self.assertEqual(result["context_suspended"], 0)
+        self.assertEqual(result["context_suspended"], 1)
         self.assertNotIn(101, planned["active_cards"])
         self.assertIn(101, planned["suspended_cards"])
         self.assertIn(102, planned["active_cards"])
-        self.assertIn(103, planned["active_cards"])
+        self.assertNotIn(103, planned["active_cards"])
+        self.assertIn(103, planned["suspended_cards"])
 
     def test_spanish_glossary_no_repeated_definition_pairs(self):
         """Test Spanish reviewed meanings avoid obvious repeated-word definitions."""
@@ -1620,10 +1621,10 @@ class TestAnkiAutomation(unittest.TestCase):
         self.assertNotIn("{{Image}}", sync_4000_production_to_anki.SPANISH_CONTEXT_PRODUCTION_FRONT)
         self.assertIn("{{type:ProductionAnswer}}", sync_4000_production_to_anki.SPANISH_CONTEXT_PRODUCTION_FRONT)
 
-    def test_spanish_production_limits_include_full_4000_deck(self):
-        """Test Spanish 4000 production cards are not level-gated by suspension."""
+    def test_spanish_production_limits_keep_context_cards_suspended(self):
+        """Test Spanish 4000 normal production is active while context production is hidden."""
         self.assertGreaterEqual(sync_4000_production_to_anki.SPANISH_ACTIVE_LIMIT, 3871)
-        self.assertGreaterEqual(sync_4000_production_to_anki.SPANISH_CONTEXT_ACTIVE_LIMIT, 400)
+        self.assertEqual(0, sync_4000_production_to_anki.SPANISH_CONTEXT_ACTIVE_LIMIT)
 
     def test_spanish_core_back_prioritizes_pattern_before_support_note(self):
         """Test Spanish Core back shows formula/examples before explanatory support text."""
