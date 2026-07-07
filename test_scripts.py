@@ -1620,13 +1620,10 @@ class TestAnkiAutomation(unittest.TestCase):
         self.assertNotIn("{{Image}}", sync_4000_production_to_anki.SPANISH_CONTEXT_PRODUCTION_FRONT)
         self.assertIn("{{type:ProductionAnswer}}", sync_4000_production_to_anki.SPANISH_CONTEXT_PRODUCTION_FRONT)
 
-    def test_spanish_context_production_has_lower_active_limit(self):
-        """Test Spanish-only context production is gated later than easier 4000 cards."""
-        self.assertLess(
-            sync_4000_production_to_anki.SPANISH_CONTEXT_ACTIVE_LIMIT,
-            sync_4000_production_to_anki.SPANISH_ACTIVE_LIMIT,
-        )
-        self.assertEqual(75, sync_4000_production_to_anki.SPANISH_CONTEXT_ACTIVE_LIMIT)
+    def test_spanish_production_limits_include_full_4000_deck(self):
+        """Test Spanish 4000 production cards are not level-gated by suspension."""
+        self.assertGreaterEqual(sync_4000_production_to_anki.SPANISH_ACTIVE_LIMIT, 3871)
+        self.assertGreaterEqual(sync_4000_production_to_anki.SPANISH_CONTEXT_ACTIVE_LIMIT, 400)
 
     def test_spanish_core_back_prioritizes_pattern_before_support_note(self):
         """Test Spanish Core back shows formula/examples before explanatory support text."""
