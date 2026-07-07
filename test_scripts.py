@@ -1304,21 +1304,17 @@ class TestAnkiAutomation(unittest.TestCase):
             for i in range(10)
         ]
         with tempfile.TemporaryDirectory() as tmpdir:
-            review_path, basic_path = spanish_deck.write_spanish_files(
+            review_path = spanish_deck.write_spanish_files(
                 source_rows,
                 {},
                 output_dir=tmpdir,
                 limit=3,
             )
             self.assertTrue(Path(review_path).exists())
-            self.assertTrue(Path(basic_path).exists())
 
             with open(review_path, encoding="utf-8", newline="") as handle:
                 review_rows = list(csv.reader(handle, delimiter="\t"))
-            with open(basic_path, encoding="utf-8", newline="") as handle:
-                basic_rows = list(csv.reader(handle, delimiter="\t"))
             review_data = [row for row in review_rows if row and not row[0].startswith("#")]
-            basic_data = [row for row in basic_rows if row and not row[0].startswith("#")]
             self.assertEqual(
                 review_data[0],
                 [
@@ -1344,45 +1340,6 @@ class TestAnkiAutomation(unittest.TestCase):
                 ],
             )
             self.assertEqual(len(review_data) - 1, 3)
-            self.assertEqual(len(basic_data) - 1, 3)
-
-    def test_basic_import_tsv_uses_spanish_recognition_format(self):
-        """Test reviewed basic cards put Spanish on front and English/context on back."""
-        source_rows = [
-            {
-                "english_word": "apple",
-                "english_meaning": "An apple is a fruit.",
-                "english_example": "The apple is red.",
-                "image": '<img src="apple.jpg" />',
-                "deck": "4000 Essential English Words::Extra",
-                "card_number": "2_1",
-            }
-        ]
-        glossary = {
-            "apple": {
-                "spanish": "manzana",
-                "spanish_meaning": "fruta",
-                "spanish_example": "La manzana es roja.",
-                "notes": "fruit",
-            }
-        }
-        with tempfile.TemporaryDirectory() as tmpdir:
-            _, basic_path = spanish_deck.write_spanish_files(source_rows, glossary, output_dir=tmpdir)
-            with open(basic_path, encoding="utf-8", newline="") as handle:
-                basic_rows = list(csv.reader(handle, delimiter="\t"))
-            basic_data = [row for row in basic_rows if row and not row[0].startswith("#")]
-            self.assertEqual(len(basic_data), 2)
-            self.assertEqual(basic_data[1][0], '<img src="apple.jpg" />\nla manzana\nla man-SA-na')
-            back = basic_data[1][1]
-            self.assertIn("English: apple", back)
-            self.assertIn("Pronunciation: la man-SA-na", back)
-            self.assertIn("Spanish meaning: fruta", back)
-            self.assertIn("Meaning in English: An apple is a fruit.", back)
-            self.assertIn("Spanish example: La manzana es roja.", back)
-            self.assertIn("Example in English: The apple is red.", back)
-            self.assertNotIn("Part of speech: adjective", back)
-            self.assertNotIn("English source:", back)
-            self.assertIn("Notes: fruit", back)
 
     def test_no_translation_invented_without_glossary(self):
         """Test no Spanish translation is produced when glossary is absent."""
@@ -1394,12 +1351,7 @@ class TestAnkiAutomation(unittest.TestCase):
             self.assertEqual(rows[0]["status"], spanish_deck.STATUS_NEEDS_TRANSLATION)
             self.assertEqual(rows[0]["spanish"], "")
 
-            _, basic_path = spanish_deck.write_spanish_files(source_rows, {}, output_dir=tmpdir)
-            with open(basic_path, encoding="utf-8", newline="") as handle:
-                basic_rows = list(csv.reader(handle, delimiter="\t"))
-            basic_data = [row for row in basic_rows if row and not row[0].startswith("#")]
-            self.assertEqual(len(basic_data), 2)
-            self.assertIn("TODO", basic_data[1][1])
+            spanish_deck.write_spanish_files(source_rows, {}, output_dir=tmpdir)
             review_path = Path(tmpdir) / "english_spanish_review.tsv"
             self.assertTrue(review_path.exists())
             with open(review_path, encoding="utf-8", newline="") as handle:

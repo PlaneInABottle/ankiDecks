@@ -766,37 +766,6 @@ def build_spanish_rows(
     return output_rows
 
 
-def _back_field_for_basic(record: Dict[str, str]) -> str:
-    if record["status"] == STATUS_REVIEWED:
-        parts = [f"English: {record['english']}"]
-        if record.get("pronunciation_hint"):
-            parts.append(f"Pronunciation: {record['pronunciation_hint']}")
-        if record["spanish_meaning"]:
-            parts.append(f"Spanish meaning: {record['spanish_meaning']}")
-        if record["spanish_example"]:
-            parts.append(f"Spanish example: {record['spanish_example']}")
-        if record.get("spanish_example_en"):
-            parts.append(f"Example in English: {record['spanish_example_en']}")
-        if record.get("spanish_meaning_en"):
-            parts.append(f"Meaning in English: {record['spanish_meaning_en']}")
-        grammar_parts = []
-        for label, key in [
-            ("Part of speech", "spanish_part_of_speech"),
-            ("Article", "spanish_article"),
-            ("Gender", "spanish_gender"),
-            ("Number", "spanish_number"),
-            ("Forms", "spanish_forms"),
-        ]:
-            if record.get(key):
-                grammar_parts.append(f"{label}: {record[key]}")
-        if grammar_parts:
-            parts.append("Grammar:\n" + "\n".join(grammar_parts))
-        if record["notes"]:
-            parts.append(f"Notes: {record['notes']}")
-        return "\n".join(parts)
-    return "TODO: Spanish translation needed"
-
-
 def _write_tsv(path: Path, header: List[str], rows: List[Sequence[str]], include_import_headers: bool = False) -> None:
     with path.open("w", encoding="utf-8", newline="") as handle:
         if include_import_headers:
@@ -812,13 +781,8 @@ def write_spanish_files(
     glossary: Dict[str, Dict[str, str]],
     output_dir: str = "generated/spanish",
     limit: int | None = None,
-) -> Tuple[str, str]:
-    """
-    Write review and basic TSV files and return file paths.
-
-    Returns:
-        (review_path, basic_path)
-    """
+) -> str:
+    """Write the reviewed Spanish TSV used by the Anki sync pipeline."""
     merged = build_spanish_rows(source_rows, glossary, limit=limit)
     output_path = Path(output_dir)
     output_path.mkdir(parents=True, exist_ok=True)
@@ -847,25 +811,7 @@ def write_spanish_files(
         ]
         for row in merged
     ]
-    basic_rows = [
-        [
-            "\n".join(
-                value
-                for value in (
-                    row["image"],
-                    row["spanish"] or row["english"],
-                    row["pronunciation_hint"],
-                )
-                if value
-            ),
-            _back_field_for_basic(row),
-            row["tags"],
-        ]
-        for row in merged
-    ]
-
     review_path = output_path / "english_spanish_review.tsv"
-    basic_path = output_path / "english_spanish_basic.tsv"
 
     _write_tsv(
         review_path,
@@ -892,14 +838,8 @@ def write_spanish_files(
         ],
         review_rows,
     )
-    _write_tsv(
-        basic_path,
-        ["Front", "Back", "Tags"],
-        basic_rows,
-        include_import_headers=True,
-    )
 
-    return str(review_path), str(basic_path)
+    return str(review_path)
 
 
 def summarize_rows(rows: Sequence[Dict[str, str]]) -> Dict[str, int]:
@@ -938,7 +878,7 @@ def main(argv: Sequence[str] | None = None) -> int:
         print(f"Pending cards: {summary['pending_count']}")
         return 0
 
-    review_path, basic_path = write_spanish_files(
+    review_path = write_spanish_files(
         source_rows,
         glossary,
         output_dir=args.output_dir,
@@ -946,7 +886,6 @@ def main(argv: Sequence[str] | None = None) -> int:
     )
 
     print(f"Wrote review file: {os.path.abspath(review_path)}")
-    print(f"Wrote basic import file: {os.path.abspath(basic_path)}")
     return 0
 
 

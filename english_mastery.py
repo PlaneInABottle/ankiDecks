@@ -568,11 +568,6 @@ def _cue_for_missing_chunk(chunk, topic="", formula=""):
     return "Pattern cue", pattern
 
 
-def _prompt_with_required_cue(prompt, chunk, topic="", formula=""):
-    cue_label, cue = _cue_for_missing_chunk(chunk, topic, formula)
-    return f"{prompt}<br><br>{_front_cue(cue_label, cue)}"
-
-
 def _explicit_base_cue(front):
     match = re.search(r"<br>Cue:\s*([^<]+)", front, flags=re.I)
     return match.group(1).strip() if match else ""
@@ -605,26 +600,6 @@ def _function_cue(topic, formula, reason, answer):
     if formula_text and "_____" not in formula_text and len(formula_text) <= 80:
         return formula_text
     return topic.strip()
-
-
-def _trigger_cue_from_prompt(prompt):
-    front_text = re.sub(r"<br\s*/?>", "\n", prompt, flags=re.I)
-    front_text = _strip_html(front_text)
-    lines = [line.strip() for line in front_text.splitlines() if line.strip()]
-    lines = [line for line in lines if line.lower() not in {"type the correct/natural english form", "then"}]
-    text = " ".join(lines)
-    parts = re.split(r"_{3,}", text, maxsplit=1)
-    if len(parts) != 2:
-        return ""
-    before_words = re.findall(r"[A-Za-z']+", parts[0])[-3:]
-    after_words = re.findall(r"[A-Za-z']+", parts[1])[:3]
-    if not before_words and not after_words:
-        return ""
-    before = " ".join(before_words)
-    after = " ".join(after_words)
-    if before and after:
-        return f"{before} ... {after}"
-    return before or f"... {after}"
 
 
 def _grammar_cues(original_front, prompt, answer, topic, formula, reason):

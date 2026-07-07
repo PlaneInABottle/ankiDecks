@@ -227,11 +227,6 @@ def load_rows(path):
     return [dict(zip(header, row)) for row in rows[3:]]
 
 
-def find_existing_note(source_id):
-    note_ids = invoke("findNotes", query=f'"SourceID:{source_id}"')
-    return note_ids[0] if note_ids else None
-
-
 def load_existing_notes():
     note_ids = invoke("findNotes", query=f'note:"{MODEL_NAME}"')
     if not note_ids:
