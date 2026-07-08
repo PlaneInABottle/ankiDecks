@@ -1806,6 +1806,7 @@ class TestAnkiAutomation(unittest.TestCase):
             "false": "yanlış / sahte",
             "figure out": "çözmek / anlamak",
             "rather": "daha doğrusu / tercihen",
+            "such": "böyle / radde / bu derece",
             "band": "müzik grubu / bant",
             "barely": "zar zor / anca",
             "schedule": "program / takvim",
