@@ -1443,6 +1443,11 @@ class TestAnkiAutomation(unittest.TestCase):
         self.assertIn("soft substance", spread["English Meaning"])
         self.assertIn("untar mantequilla", spread["Spanish Example"])
 
+        consist = rows["consist"]
+        self.assertEqual(consist["Spanish"], "consistir")
+        self.assertIn("made of those parts", consist["English Meaning"])
+        self.assertIn("estar formado", consist["Spanish Meaning"])
+
     def test_spanish_active_examples_use_selected_target_sense(self):
         """Test active Spanish 4000 fixes do not drift back to mismatched examples."""
         path = Path("generated/spanish_full/english_spanish_review.tsv")
@@ -1836,6 +1841,7 @@ class TestAnkiAutomation(unittest.TestCase):
             "subject": "maruz bırakmak / tabi tutmak",
             "opossum": "keseli sıçan",
             "dna": "DNA",
+            "consist": "parçalardan oluşmak / -den oluşmak",
         }
         forbidden = {
             "plate": "plaka",
