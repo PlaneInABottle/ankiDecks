@@ -1448,6 +1448,16 @@ class TestAnkiAutomation(unittest.TestCase):
         self.assertIn("made of those parts", consist["English Meaning"])
         self.assertIn("estar formado", consist["Spanish Meaning"])
 
+        self.assertEqual(rows["platform"]["Spanish"], "la plataforma")
+        self.assertEqual(rows["equipment"]["Spanish"], "el equipo")
+        self.assertIn("set of things", rows["equipment"]["English Meaning"])
+        self.assertIn("conjunto de herramientas", rows["equipment"]["Spanish Meaning"])
+        self.assertEqual(rows["poor"]["Spanish"], "deficiente")
+        self.assertEqual(rows["destruction"]["Spanish"], "la destrucción")
+        self.assertIn("serious damage", rows["destruction"]["English Meaning"])
+        self.assertIn("comprised of seniors", rows["comprise"]["English Example"])
+        self.assertIn("consta principalmente", rows["comprise"]["Spanish Example"])
+
     def test_spanish_active_examples_use_selected_target_sense(self):
         """Test active Spanish 4000 fixes do not drift back to mismatched examples."""
         path = Path("generated/spanish_full/english_spanish_review.tsv")
@@ -1842,6 +1852,12 @@ class TestAnkiAutomation(unittest.TestCase):
             "opossum": "keseli sıçan",
             "dna": "DNA",
             "consist": "parçalardan oluşmak / -den oluşmak",
+            "comprise": "içermek / -den oluşmak",
+            "poor": "kötü / yetersiz",
+            "destruction": "yıkım / tahribat",
+            "platform": "platform / mecra",
+            "presence": "varlık / bulunma",
+            "equipment": "ekipman / donanım",
         }
         forbidden = {
             "plate": "plaka",
