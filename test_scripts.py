@@ -895,6 +895,18 @@ class TestAnkiAutomation(unittest.TestCase):
         self.assertIn("do", decided[0]["Front"])
         self.assertNotIn("i / live", london[0]["Front"].lower())
 
+    def test_english_contrast_base_cues_do_not_reveal_exact_answer(self):
+        """Test base cues guide retrieval without copying the exact typed answer."""
+        for card in english_mastery.get_cards(card_type="typed_contrast"):
+            if not card["SourceID"].startswith("grammar::"):
+                continue
+            base_match = re.search(r'<span class="front-label">Base</span>:\s*([^<]+)', card["Front"])
+            if not base_match:
+                continue
+            base = re.sub(r"[^a-z0-9']+", " ", html.unescape(base_match.group(1)).lower()).strip()
+            answer = re.sub(r"[^a-z0-9']+", " ", card["Answer"].lower()).strip()
+            self.assertNotEqual(answer, base, card["SourceID"])
+
     def test_english_interleaved_contrasts_are_cued(self):
         """Test paired contrast prompts include a cue for each blanked sentence."""
         cards = english_mastery.get_cards(card_type="interleaved_contrast")
@@ -1262,6 +1274,23 @@ class TestAnkiAutomation(unittest.TestCase):
         self.assertEqual(rows[2]["spanish_gender"], "feminine")
         self.assertEqual(rows[3]["spanish"], "el fútbol americano")
         self.assertIn("plural: los fútboles americanos", rows[3]["spanish_forms"])
+
+    def test_spanish_metadata_handles_phrases_and_acronyms(self):
+        """Test phrase/acronym Spanish rows do not get malformed noun or verb forms."""
+        cases = {
+            "las artes marciales": ("noun", "singular: el arte marcial; plural: las artes marciales"),
+            "el/la director/a": ("noun", "singular: el director / la directora; plural: los directores / las directoras"),
+            "el ADN": ("noun", "invariable acronym: el ADN"),
+            "la artritis": ("noun", "singular: la artritis; plural: las artritis"),
+            "súper": ("adjective/adverb", "invariable: súper"),
+        }
+        for spanish, (part_of_speech, forms) in cases.items():
+            metadata = spanish_deck.infer_spanish_metadata(spanish)
+            self.assertEqual(part_of_speech, metadata["spanish_part_of_speech"], spanish)
+            self.assertEqual(forms, metadata["spanish_forms"], spanish)
+
+        for phrase in ["por despecho", "a diferencia de", "más allá", "por", "no"]:
+            self.assertEqual(phrase, spanish_deck.add_article_to_clear_noun(phrase, phrase, f"{phrase} is a phrase."))
 
     def test_spanish_glossary_disambiguates_duplicate_words_by_context(self):
         """Test duplicate English words can keep different Spanish senses."""
@@ -1802,6 +1831,11 @@ class TestAnkiAutomation(unittest.TestCase):
             "exhaust": "yormak / bitkin düşürmek",
             "study": "ders çalışmak / incelemek",
             "work": "çalışmak / iş yapmak",
+            "site": "yer / alan",
+            "terminal": "ölümcül / son evre",
+            "subject": "maruz bırakmak / tabi tutmak",
+            "opossum": "keseli sıçan",
+            "dna": "DNA",
         }
         forbidden = {
             "plate": "plaka",

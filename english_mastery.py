@@ -448,6 +448,33 @@ CONTENT_LEMMAS = {
     "timing": "timing",
 }
 
+EXACT_ANSWER_BASE_CUES = {
+    "advice": "advise -> noun",
+    "although": "concession connector",
+    "because": "reason connector",
+    "check": "inspect / verify",
+    "ensure": "make sure",
+    "every": "each / all singular",
+    "failure": "fail -> noun",
+    "fewer": "few -> comparative",
+    "important": "importance -> adjective",
+    "information": "inform -> noun",
+    "maintain": "keep / continue",
+    "one": "substitute noun",
+    "only": "contrast focus",
+    "possibly": "possible -> adverb",
+    "recommendation": "recommend -> noun",
+    "reliable": "rely -> adjective",
+    "review": "examine / check",
+    "rich": "wealthy group",
+    "therefore": "result connector",
+    "though": "concession inversion",
+    "what": "focus clause starter",
+    "where": "place relative pronoun",
+    "who": "person relative pronoun",
+    "whose": "possession relative pronoun",
+}
+
 FUNCTION_WORDS = {
     "a",
     "an",
@@ -573,6 +600,10 @@ def _explicit_base_cue(front):
     return match.group(1).strip() if match else ""
 
 
+def _normalized_cue_text(text):
+    return re.sub(r"[^a-z0-9']+", " ", _strip_html(text).lower()).strip()
+
+
 def _mask_answer_terms(text, answer):
     masked = text
     variants = [answer]
@@ -605,6 +636,8 @@ def _function_cue(topic, formula, reason, answer):
 def _grammar_cues(original_front, prompt, answer, topic, formula, reason):
     cues = [("Function", _function_cue(topic, formula, reason, answer))]
     base = _explicit_base_cue(original_front) or _lexical_cue_from_chunk(answer)
+    if base and _normalized_cue_text(base) == _normalized_cue_text(answer):
+        base = EXACT_ANSWER_BASE_CUES.get(_normalized_cue_text(answer), "")
     if base:
         cues.append(("Base", base))
     return cues
