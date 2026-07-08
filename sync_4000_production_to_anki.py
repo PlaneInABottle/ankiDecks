@@ -890,10 +890,9 @@ def sync_english(order_map: Dict[str, int], cue_map: Dict[str, str], active_limi
         cards = note_cards.get(note["noteId"], {})
         deck_name = level_deck(ENGLISH_ROOT, order)
         if 0 in cards:
-            recognition_active = order <= active_limit
             deck_cards.setdefault(deck_name, []).append(cards[0])
-            (active_cards if recognition_active else suspended_cards).append(cards[0])
-            recognition_suspended += 0 if recognition_active else 1
+            suspended_cards.append(cards[0])
+            recognition_suspended += 1
         if 1 in cards:
             production_active = has_cue and order <= active_limit
             deck_cards.setdefault(deck_name, []).append(cards[1])

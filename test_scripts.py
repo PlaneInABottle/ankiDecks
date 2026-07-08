@@ -1499,6 +1499,45 @@ class TestAnkiAutomation(unittest.TestCase):
         self.assertNotIn(103, planned["active_cards"])
         self.assertIn(103, planned["suspended_cards"])
 
+    def test_english_4000_sync_keeps_recognition_suspended(self):
+        """Test English 4000 sync only activates production cards."""
+        fields = {
+            "ProductionSourceID": {"value": "4000 Essential English Words::1.Book::::agree"},
+            "Word": {"value": "agree"},
+        }
+        note = {"noteId": 1, "fields": fields, "cards": [201, 202], "cardsInfoDeckName": "4000 Essential English Words::1.Book"}
+        order_map = {"4000 Essential English Words::1.Book::::agree": 1}
+        cue_map = {"4000 Essential English Words::1.Book::::agree": "aynı fikirde olmak"}
+        planned = {}
+
+        def fake_apply_card_plan(deck_cards, active_cards, suspended_cards):
+            planned["deck_cards"] = deck_cards
+            planned["active_cards"] = active_cards
+            planned["suspended_cards"] = suspended_cards
+
+        def fake_invoke(action, **params):
+            if action == "findNotes":
+                return [1]
+            if action == "notesInfo":
+                return [note]
+            if action == "cardsInfo":
+                return [{"cardId": 201, "deckName": "4000 Essential English Words::1.Book"}]
+            return []
+
+        with patch.object(sync_4000_production_to_anki, "invoke", side_effect=fake_invoke), \
+             patch.object(sync_4000_production_to_anki, "ENGLISH_MODELS", ("4000 EEW",)), \
+             patch.object(sync_4000_production_to_anki, "update_note_fields_many"), \
+             patch.object(sync_4000_production_to_anki, "get_notes", return_value=[note]), \
+             patch.object(sync_4000_production_to_anki, "card_maps_for_notes", return_value={1: {0: 201, 1: 202}}), \
+             patch.object(sync_4000_production_to_anki, "apply_card_plan", side_effect=fake_apply_card_plan):
+            result = sync_4000_production_to_anki.sync_english(order_map, cue_map, active_limit=400)
+
+        self.assertEqual(result["recognition_suspended"], 1)
+        self.assertEqual(result["production_suspended"], 0)
+        self.assertNotIn(201, planned["active_cards"])
+        self.assertIn(201, planned["suspended_cards"])
+        self.assertIn(202, planned["active_cards"])
+
     def test_spanish_glossary_no_repeated_definition_pairs(self):
         """Test Spanish reviewed meanings avoid obvious repeated-word definitions."""
         paths = [
