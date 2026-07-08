@@ -1790,7 +1790,7 @@ class TestAnkiAutomation(unittest.TestCase):
             "situated": "yer almak / bulunmak",
             "false": "yanlış / sahte",
             "figure out": "çözmek / anlamak",
-            "rather": "daha doğrusu / oldukça",
+            "rather": "daha doğrusu / tercihen",
             "band": "müzik grubu / bant",
             "barely": "zar zor / anca",
             "schedule": "program / takvim",
