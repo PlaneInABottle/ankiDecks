@@ -1195,8 +1195,8 @@ def _build_choose_only_grammar_cards():
                     ],
                 ),
                 (
-                    "Choose: I bought two cables; this one is blue and that _____ is red.<br>A) one<br>B) ones",
-                    "A) I bought two cables; this one is blue and that one is red.",
+                    "Choose: I bought two cables; this cable is blue and that _____ is red.<br>A) one<br>B) ones",
+                    "A) I bought two cables; this cable is blue and that one is red.",
                     "Ellipsis and substitution",
                     "one/ones for noun substitution",
                     "Use one for a repeated singular noun.",

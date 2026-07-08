@@ -65,6 +65,20 @@ _NOUN_METADATA_OVERRIDES = {
     },
 }
 _NOUN_PHRASE_METADATA_OVERRIDES = {
+    "el adn": {
+        "spanish_article": "el",
+        "spanish_gender": "masculine",
+        "spanish_number": "singular",
+        "spanish_part_of_speech": "noun",
+        "spanish_forms": "invariable acronym: el ADN",
+    },
+    "el la director a": {
+        "spanish_article": "el/la",
+        "spanish_gender": "masculine/feminine",
+        "spanish_number": "singular",
+        "spanish_part_of_speech": "noun",
+        "spanish_forms": "singular: el director / la directora; plural: los directores / las directoras",
+    },
     "el fútbol": {
         "spanish_article": "el",
         "spanish_gender": "masculine",
@@ -78,6 +92,20 @@ _NOUN_PHRASE_METADATA_OVERRIDES = {
         "spanish_number": "singular",
         "spanish_part_of_speech": "noun",
         "spanish_forms": "singular: el fútbol americano; plural: los fútboles americanos",
+    },
+    "las artes marciales": {
+        "spanish_article": "las",
+        "spanish_gender": "feminine",
+        "spanish_number": "plural",
+        "spanish_part_of_speech": "noun",
+        "spanish_forms": "singular: el arte marcial; plural: las artes marciales",
+    },
+    "súper": {
+        "spanish_article": "",
+        "spanish_gender": "",
+        "spanish_number": "",
+        "spanish_part_of_speech": "adjective/adverb",
+        "spanish_forms": "invariable: súper",
     },
 }
 _ENGLISH_ARTICLE_SKIP = {
@@ -121,9 +149,14 @@ _ENGLISH_ARTICLE_SKIP = {
 }
 _SPANISH_ARTICLE_SKIP = {
     "a menudo",
+    "a diferencia de",
     "aún",
     "de moda",
     "dar la casualidad",
+    "más allá",
+    "no",
+    "por",
+    "por despecho",
 }
 
 
@@ -322,6 +355,9 @@ def infer_spanish_metadata(spanish: str, english: str = "") -> Dict[str, str]:
         "spanish_part_of_speech": "",
         "spanish_forms": "",
     }
+    if normalized_spanish in _NOUN_PHRASE_METADATA_OVERRIDES:
+        metadata.update(_NOUN_PHRASE_METADATA_OVERRIDES[normalized_spanish])
+        return metadata
     if article:
         metadata["spanish_part_of_speech"] = "noun"
         metadata["spanish_gender"] = "feminine" if article in {"la", "las", "una", "unas"} else "masculine"
@@ -337,8 +373,6 @@ def infer_spanish_metadata(spanish: str, english: str = "") -> Dict[str, str]:
         metadata["spanish_forms"] = f"singular: {singular_article} {singular_head}; plural: {plural_article} {plural_head}"
         if head in _NOUN_METADATA_OVERRIDES:
             metadata.update(_NOUN_METADATA_OVERRIDES[head])
-        if normalized_spanish in _NOUN_PHRASE_METADATA_OVERRIDES:
-            metadata.update(_NOUN_PHRASE_METADATA_OVERRIDES[normalized_spanish])
     elif head.endswith(("ar", "er", "ir")):
         metadata["spanish_part_of_speech"] = "verb"
         metadata["spanish_forms"] = _regular_verb_forms(head)
