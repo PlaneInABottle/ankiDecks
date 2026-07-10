@@ -8,6 +8,9 @@ import urllib.request
 from pathlib import Path
 
 
+import anki_protect
+
+
 MODEL_NAME = "Spanish Core Learning"
 IMPORT_PATH = Path("generated/spanish_core/spanish_core_learning.tsv")
 OLD_DECKS = [
@@ -236,7 +239,7 @@ def load_existing_notes():
         fields = note.get("fields", {})
         source_id = fields.get("SourceID", {}).get("value", "")
         if source_id:
-            existing[source_id] = note["noteId"]
+            existing[source_id] = (note["noteId"], note.get("tags", []))
     return existing
 
 
@@ -284,20 +287,28 @@ def sync_media(rows):
     return {"audio_rows": len(audio_rows), "stored": stored, "skipped_existing": skipped}
 
 
-def sync_rows(rows, store_media=True):
+def sync_rows(rows, store_media=True, force=False):
     created = 0
     updated = 0
     moved = 0
+    skipped_locked = 0
     existing_notes = load_existing_notes()
     for deck_name in sorted({row["DeckPath"] for row in rows}):
         invoke("createDeck", deck=deck_name)
     for index, row in enumerate(rows, start=1):
         deck_name = row["DeckPath"]
+        existing = existing_notes.get(row["SourceID"])
+        if existing:
+            note_id, tags = existing
+            if not force and anki_protect.note_is_locked(tags):
+                skipped_locked += 1
+                if index % 100 == 0:
+                    print(f"Synced {index}/{len(rows)} rows...")
+                continue
         if store_media:
             store_audio(row)
         fields = {field: row.get(field, "") for field in FIELDS}
-        note_id = existing_notes.get(row["SourceID"])
-        if note_id:
+        if existing:
             invoke("updateNoteFields", note={"id": note_id, "fields": fields})
             card_ids = invoke("findCards", query=f"nid:{note_id}")
             if card_ids:
@@ -318,7 +329,7 @@ def sync_rows(rows, store_media=True):
             created += 1
         if index % 100 == 0:
             print(f"Synced {index}/{len(rows)} rows...")
-    return {"created": created, "updated": updated, "moved_cards": moved}
+    return {"created": created, "updated": updated, "moved_cards": moved, "skipped_locked": skipped_locked}
 
 
 def prune_stale_notes(valid_source_ids):
@@ -327,6 +338,8 @@ def prune_stale_notes(valid_source_ids):
         return 0
     stale_note_ids = []
     for note in invoke("notesInfo", notes=note_ids):
+        if anki_protect.note_is_locked(note.get("tags", [])):
+            continue
         fields = note.get("fields", {})
         source_id = fields.get("SourceID", {}).get("value", "")
         if source_id and source_id not in valid_source_ids:
@@ -366,6 +379,7 @@ def parse_args(argv=None):
     parser.add_argument("--prune-stale", action="store_true", help="Delete Spanish Core Learning notes missing from the TSV.")
     parser.add_argument("--skip-media", action="store_true", help="Sync notes without storing audio media; sound tags stay on audio cards.")
     parser.add_argument("--media-only", action="store_true", help="Only store audio media from the TSV.")
+    parser.add_argument("--force", action="store_true", help="Overwrite notes even if tagged locked (manual edits).")
     return parser.parse_args(argv)
 
 
@@ -377,7 +391,7 @@ def main(argv=None):
     if args.media_only:
         print(json.dumps({"media": sync_media(rows)}, ensure_ascii=False, indent=2))
         return 0
-    result = sync_rows(rows, store_media=not args.skip_media)
+    result = sync_rows(rows, store_media=not args.skip_media, force=args.force)
     pruned = prune_stale_notes({row["SourceID"] for row in rows}) if args.prune_stale else 0
     pruned_foreign = prune_foreign_core_notes() if args.prune_stale else 0
     deleted = delete_old_decks() if args.delete_old_spanish_grammar else []
