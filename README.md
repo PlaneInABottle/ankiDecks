@@ -89,6 +89,16 @@ Defaults:
 - Files produced:
   - `english_spanish_review.tsv` (English/source context, Spanish, pronunciation, Spanish meaning/example, English mirrors of the Spanish fields, grammar metadata, notes, status, source identity, tags)
 
+### Protect Manual Edits
+If you hand-edit cards directly in Anki, the sync scripts would otherwise overwrite them. Run this while Anki is open to detect notes whose content differs from the source TSV and tag them as `locked`:
+
+```bash
+python3 protect_manual_edits.py          # report only (dry run)
+python3 protect_manual_edits.py --apply  # also tag detected edits as locked
+```
+
+Notes tagged `locked` are skipped by every sync script's content update (and by stale-note pruning), so your manual edits survive. New notes are still created and deck moves still happen. To force an overwrite of locked notes, pass `--force` to any sync script.
+
 ## 🧪 Testing
 Run the unit test suite to verify script logic (uses mocks, no internet/Anki required):
 ```bash

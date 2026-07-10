@@ -14,6 +14,8 @@ from typing import Dict, Iterable, List, Tuple
 
 import spanish_deck
 
+import anki_protect
+
 
 SPANISH_MODEL = "Spanish Recognition"
 SPANISH_ROOT = "Spanish 4000 Words"
@@ -781,14 +783,18 @@ def load_spanish_review_rows(path: Path, source_rows: List[Dict[str, str]]) -> D
     return rows_by_key
 
 
-def sync_spanish_content(review_path: Path, source_rows: List[Dict[str, str]]) -> Dict[str, int]:
+def sync_spanish_content(review_path: Path, source_rows: List[Dict[str, str]], force: bool = False) -> Dict[str, int]:
     review_rows = load_spanish_review_rows(review_path, source_rows)
     if not review_rows:
         return {"updated_notes": 0, "missing_review_rows": 0}
     notes = get_notes(f'note:"{SPANISH_MODEL}"')
     updates: List[Tuple[int, Dict[str, str]]] = []
     missing = 0
+    skipped_locked = 0
     for note in notes:
+        if not force and anki_protect.note_is_locked(note.get("tags", [])):
+            skipped_locked += 1
+            continue
         key = source_id_from_spanish_note(note["fields"])
         row = review_rows.get(key)
         if not row:
@@ -817,7 +823,7 @@ def sync_spanish_content(review_path: Path, source_rows: List[Dict[str, str]]) -
             )
         )
     update_note_fields_many(updates)
-    return {"updated_notes": len(updates), "missing_review_rows": missing}
+    return {"updated_notes": len(updates), "missing_review_rows": missing, "skipped_locked": skipped_locked}
 
 
 def load_turkish_cues(path: Path) -> Dict[str, str]:
@@ -920,6 +926,7 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--cleanup-old-decks-only", action="store_true")
     parser.add_argument("--sync-spanish-content", action="store_true")
     parser.add_argument("--spanish-review", default=str(SPANISH_REVIEW_PATH))
+    parser.add_argument("--force", action="store_true", help="Overwrite notes even if tagged locked (manual edits).")
     return parser.parse_args()
 
 
@@ -942,7 +949,7 @@ def main() -> int:
     }
     if not args.english_only:
         if args.sync_spanish_content:
-            result["spanish_content"] = sync_spanish_content(Path(args.spanish_review), source_rows)
+            result["spanish_content"] = sync_spanish_content(Path(args.spanish_review), source_rows, force=args.force)
         result["spanish"] = sync_spanish(order_map, spanish_active_limit, spanish_context_active_limit)
     if not args.spanish_only:
         result["english"] = sync_english(order_map, load_turkish_cues(Path(args.turkish_cues)), english_active_limit)
