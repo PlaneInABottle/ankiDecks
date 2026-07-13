@@ -18,7 +18,11 @@ TATOEBA_SELECTED_PATH = TATOEBA_DIR / "selected_eng_audio_sentences.tsv"
 MODEL_NAME = "English Mastery"
 TATOEBA_LICENSE = "Tatoeba sentence text/audio metadata from public export."
 TATOEBA_ATTRIBUTION = "Source: Tatoeba.org English sentence ID {eng_id}."
-INACCESSIBLE_AUDIO_SENTENCE_IDS = {"1294", "1305", "1355", "1361", "1380", "1394", "1419", "2053", "2206", "2228", "22447"}
+INACCESSIBLE_AUDIO_SENTENCE_IDS = {
+    "1294", "1305", "1355", "1361", "1380", "1394", "1419", "2053", "2206", "2228", "22447",
+    # Confirmed unavailable during live media verification on 2026-07-13.
+    "26962", "29726", "367526",
+}
 REJECT_SENTENCE_MINING_IDS = {
     # Low-value "had" possession examples; they do not train the B2 tense/grammar target.
     "1369",
@@ -49,6 +53,8 @@ REJECT_SENTENCE_MINING_IDS = {
 REJECT_AUDIO_SENTENCE_IDS = {
     # Too little learning value: tests only simple possession "had".
     "2037",
+    # Unnecessarily disturbing self-harm content for a routine dictation card.
+    "1359",
 }
 
 FIELDS = [

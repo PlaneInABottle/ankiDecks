@@ -9,6 +9,7 @@ import json
 import re
 import time
 import urllib.request
+from collections import defaultdict
 from pathlib import Path
 from typing import Dict, Iterable, List, Tuple
 
@@ -25,6 +26,10 @@ SPANISH_ACTIVE_LIMIT = 99999
 SPANISH_CONTEXT_ACTIVE_LIMIT = 0
 ENGLISH_ACTIVE_LIMIT = 99999
 BATCH_SIZE = 25
+PRODUCTION_FINGERPRINT_FIELD = "ProductionSyncFingerprint"
+SPANISH_CONTENT_LEGACY_NAMESPACE = "spanish_4000_content"
+SPANISH_PRODUCTION_LEGACY_NAMESPACE = "spanish_4000_production"
+ENGLISH_PRODUCTION_LEGACY_NAMESPACE = "english_4000_production"
 SOURCE_SUBDECK_NAMES = ["1.Book", "2.Book", "3.Book", "4.Book", "5.Book", "6.Book", "Extra"]
 SPANISH_REVIEW_PATH = Path("generated/spanish_full/english_spanish_review.tsv")
 
@@ -36,8 +41,45 @@ SPANISH_EXTRA_FIELDS = [
     "ProductionEnabled",
     "SpanishContextCue",
     "SpanishContextProductionEnabled",
+    anki_protect.FINGERPRINT_FIELD,
+    PRODUCTION_FINGERPRINT_FIELD,
+]
+SPANISH_CONTENT_FIELDS = [
+    "Spanish",
+    "PronunciationHint",
+    "English",
+    "SpanishMeaning",
+    "SpanishExample",
+    "EnglishMeaning",
+    "EnglishExample",
+    "Notes",
+    "SpanishMeaningEnglish",
+    "SpanishExampleEnglish",
+    "SpanishArticle",
+    "SpanishGender",
+    "SpanishNumber",
+    "SpanishPartOfSpeech",
+    "SpanishForms",
 ]
 ENGLISH_EXTRA_FIELDS = [
+    "ProductionSourceID",
+    "ProductionCue",
+    "ProductionAnswer",
+    "ProductionOrder",
+    "ProductionLevel",
+    "ProductionEnabled",
+    PRODUCTION_FINGERPRINT_FIELD,
+]
+SPANISH_PRODUCTION_FIELDS = [
+    "SourceOrder",
+    "DifficultyLevel",
+    "ProductionCue",
+    "ProductionAnswer",
+    "ProductionEnabled",
+    "SpanishContextCue",
+    "SpanishContextProductionEnabled",
+]
+ENGLISH_PRODUCTION_FIELDS = [
     "ProductionSourceID",
     "ProductionCue",
     "ProductionAnswer",
@@ -54,6 +96,22 @@ LEVELS = [
     (4, "Level 4 Academic Advanced", 2551, 3350),
     (5, "Level 5 Hard Low Frequency", 3351, 99999),
 ]
+
+IRREGULAR_ENGLISH_FORMS = {
+    "be": {"am", "is", "are", "was", "were", "been", "being"},
+    "child": {"children"},
+    "do": {"does", "did", "done", "doing"},
+    "foot": {"feet"},
+    "get": {"gets", "got", "gotten", "getting"},
+    "go": {"goes", "went", "gone", "going"},
+    "have": {"has", "had", "having"},
+    "man": {"men"},
+    "mouse": {"mice"},
+    "person": {"people"},
+    "take": {"takes", "took", "taken", "taking"},
+    "tooth": {"teeth"},
+    "woman": {"women"},
+}
 
 
 SPANISH_CSS = """
@@ -96,6 +154,14 @@ SPANISH_CSS = """
   font-size: 24px;
   font-weight: 650;
   margin: 10px 0 8px;
+}
+.sense-cue {
+  color: #6b7280;
+  font-size: 14px;
+  font-weight: 450;
+  line-height: 1.4;
+  margin: 8px auto;
+  max-width: 680px;
 }
 .type-note {
   color: #6b7280;
@@ -219,6 +285,15 @@ ENGLISH_PRODUCTION_CSS = """
   font-weight: 650;
   margin: 10px 0 8px;
 }
+.production .sense-cue,
+.production .type-note {
+  color: #6b7280;
+  font-size: 14px;
+  font-weight: 450;
+  line-height: 1.4;
+  margin: 8px auto;
+  max-width: 680px;
+}
 .production .target {
   font-size: 31px;
   font-weight: 700;
@@ -287,10 +362,15 @@ SPANISH_RECOGNITION_BACK = """
 SPANISH_PRODUCTION_FRONT = """
 {{#ProductionCue}}
 <div class="wrap">
-  <span class="cue-label">Type Spanish</span>
+  <span class="cue-label">Produce Spanish</span>
   <div class="production-cue">{{ProductionCue}}</div>
-  <div class="type-note">Include the article for nouns.</div>
-  {{type:ProductionAnswer}}
+  {{#ProductionAnswer}}
+    <div class="type-note">Type the best answer for this sense. Include the article for nouns.</div>
+    {{type:ProductionAnswer}}
+  {{/ProductionAnswer}}
+  {{^ProductionAnswer}}
+    <div class="type-note">Say or type one natural answer, then reveal and self-grade. Valid synonyms count.</div>
+  {{/ProductionAnswer}}
 </div>
 {{/ProductionCue}}
 """
@@ -300,6 +380,7 @@ SPANISH_PRODUCTION_BACK = """
 <div class="wrap">
   {{FrontSide}}
   <div class="target">{{Spanish}}</div>
+  {{^ProductionAnswer}}<div class="type-note">Self-grade by meaning and naturalness, not exact wording.</div>{{/ProductionAnswer}}
   <div class="pron">{{PronunciationHint}}</div>
   {{#Image}}<div class="image">{{Image}}</div>{{/Image}}
   <div class="stack">
@@ -332,8 +413,13 @@ SPANISH_CONTEXT_PRODUCTION_FRONT = """
 <div class="wrap">
   <span class="cue-label">Type Spanish from Spanish context</span>
   <div class="production-cue">{{SpanishContextCue}}</div>
-  <div class="type-note">Use the Spanish context. Include the article for nouns.</div>
-  {{type:ProductionAnswer}}
+  {{#ProductionAnswer}}
+    <div class="type-note">Use the Spanish context. Include the article for nouns.</div>
+    {{type:ProductionAnswer}}
+  {{/ProductionAnswer}}
+  {{^ProductionAnswer}}
+    <div class="type-note">Produce one natural completion, then reveal and self-grade.</div>
+  {{/ProductionAnswer}}
 </div>
 {{/SpanishContextProductionEnabled}}
 """
@@ -373,9 +459,14 @@ SPANISH_CONTEXT_PRODUCTION_BACK = """
 ENGLISH_PRODUCTION_FRONT = """
 {{#ProductionCue}}
 <div class="wrap production">
-  <span class="cue-label">Type English</span>
+  <span class="cue-label">Produce English</span>
   <div class="production-cue">{{ProductionCue}}</div>
-  {{type:ProductionAnswer}}
+  {{#ProductionAnswer}}
+    {{type:ProductionAnswer}}
+  {{/ProductionAnswer}}
+  {{^ProductionAnswer}}
+    <div class="type-note">Say or type one natural answer, then reveal and self-grade. Valid synonyms count.</div>
+  {{/ProductionAnswer}}
 </div>
 {{/ProductionCue}}
 """
@@ -385,6 +476,7 @@ ENGLISH_PRODUCTION_BACK_MAIN = """
 <div class="wrap production">
   {{FrontSide}}
   <div class="target">{{Word}}</div>
+  {{^ProductionAnswer}}<div class="type-note">Self-grade by the source sense and naturalness, not exact wording.</div>{{/ProductionAnswer}}
   {{#IPA}}<div class="pron">{{IPA}}</div>{{/IPA}}
   {{#Sound}}{{Sound}}{{/Sound}}
   {{#Image}}<div class="image">{{Image}}</div>{{/Image}}
@@ -399,6 +491,7 @@ ENGLISH_PRODUCTION_BACK_EXTRA = """
 <div class="wrap production">
   {{FrontSide}}
   <div class="target">{{English}}</div>
+  {{^ProductionAnswer}}<div class="type-note">Self-grade by meaning and naturalness, not exact wording.</div>{{/ProductionAnswer}}
   {{#Am&BrTranscription}}<div class="pron">{{Am&BrTranscription}}</div>{{/Am&BrTranscription}}
   {{#Audio}}{{Audio}}{{/Audio}}
   {{#IMG}}<div class="image">{{IMG}}</div>{{/IMG}}
@@ -557,32 +650,42 @@ def ensure_fields(model_name: str, fields: Iterable[str]) -> None:
             existing.append(field)
 
 
-def ensure_template(model_name: str, name: str, front: str, back: str) -> None:
+def ensure_template(
+    model_name: str, name: str, front: str, back: str, update_existing: bool = False
+) -> None:
     templates = invoke("modelTemplates", modelName=model_name)
     if name not in templates:
         invoke("modelTemplateAdd", modelName=model_name, template={"Name": name, "Front": front, "Back": back})
-        templates = invoke("modelTemplates", modelName=model_name)
+        return
+    if not update_existing:
+        return
     templates[name] = {"Front": front, "Back": back}
     invoke("updateModelTemplates", model={"name": model_name, "templates": templates})
 
 
-def ensure_models() -> None:
+def ensure_models(update_existing: bool = False) -> None:
     ensure_fields(SPANISH_MODEL, SPANISH_EXTRA_FIELDS)
-    invoke("updateModelStyling", model={"name": SPANISH_MODEL, "css": SPANISH_CSS})
-    ensure_template(SPANISH_MODEL, "Recognition", SPANISH_RECOGNITION_FRONT, SPANISH_RECOGNITION_BACK)
-    ensure_template(SPANISH_MODEL, "Production", SPANISH_PRODUCTION_FRONT, SPANISH_PRODUCTION_BACK)
+    if update_existing:
+        invoke("updateModelStyling", model={"name": SPANISH_MODEL, "css": SPANISH_CSS})
+    ensure_template(
+        SPANISH_MODEL, "Recognition", SPANISH_RECOGNITION_FRONT, SPANISH_RECOGNITION_BACK, update_existing
+    )
+    ensure_template(
+        SPANISH_MODEL, "Production", SPANISH_PRODUCTION_FRONT, SPANISH_PRODUCTION_BACK, update_existing
+    )
     ensure_template(
         SPANISH_MODEL,
         "Spanish Context Production",
         SPANISH_CONTEXT_PRODUCTION_FRONT,
         SPANISH_CONTEXT_PRODUCTION_BACK,
+        update_existing,
     )
     for model_name in ENGLISH_MODELS:
         ensure_fields(model_name, ENGLISH_EXTRA_FIELDS)
         try:
             styling = invoke("modelStyling", modelName=model_name)
             css = styling.get("css", "")
-            if ".production .production-cue" not in css:
+            if update_existing and ".production .sense-cue" not in css:
                 invoke("updateModelStyling", model={"name": model_name, "css": css + "\n" + ENGLISH_PRODUCTION_CSS})
         except Exception:
             pass
@@ -591,6 +694,7 @@ def ensure_models() -> None:
             "Production",
             ENGLISH_PRODUCTION_FRONT,
             ENGLISH_PRODUCTION_BACK_EXTRA if model_name.endswith("Extra") else ENGLISH_PRODUCTION_BACK_MAIN,
+            update_existing,
         )
 
 
@@ -601,12 +705,87 @@ def get_notes(query: str) -> List[Dict[str, object]]:
     return invoke("notesInfo", notes=note_ids)
 
 
-def spanish_production_cue(fields: Dict[str, Dict[str, str]]) -> str:
+def spanish_base_production_cue(fields: Dict[str, Dict[str, str]]) -> str:
     english = strip_html(fields.get("English", {}).get("value", ""))
     pos = fields.get("SpanishPartOfSpeech", {}).get("value", "")
     if pos == "noun" and english and not english.lower().startswith(("the ", "a ", "an ")):
         return f"the {english}"
     return english
+
+
+def _mask_english_answer(text: str, answer: str) -> str:
+    """Mask a requested English answer and common inflections in a clue."""
+    plain = strip_html(text)
+    target = strip_html(answer).strip()
+    if not plain or not target:
+        return plain
+
+    tokens = target.split()
+    stem = tokens[-1]
+    lower = stem.lower()
+    forms = {stem, f"{stem}s", f"{stem}ed", f"{stem}ing"}
+    forms.update(IRREGULAR_ENGLISH_FORMS.get(lower, set()))
+    if lower.endswith(("s", "x", "z", "ch", "sh", "o")):
+        forms.add(f"{stem}es")
+    if lower.endswith("e"):
+        forms.update({f"{stem}d", f"{stem[:-1]}ing"})
+    if len(stem) > 1 and lower.endswith("y") and lower[-2] not in "aeiou":
+        forms.update({f"{stem[:-1]}ies", f"{stem[:-1]}ied"})
+    if (
+        len(stem) >= 3
+        and lower[-1] not in "aeiouwxy"
+        and lower[-2] in "aeiou"
+        and lower[-3] not in "aeiou"
+    ):
+        forms.update({f"{stem}{stem[-1]}ed", f"{stem}{stem[-1]}ing"})
+
+    prefix = " ".join(tokens[:-1])
+    variants = {f"{prefix} {form}".strip() for form in forms}
+    masked = plain
+    for variant in sorted(variants, key=len, reverse=True):
+        pattern = rf"(?<![\w']){re.escape(variant)}(?:['’]s)?(?![\w'])"
+        masked = re.sub(pattern, "_____", masked, flags=re.IGNORECASE)
+    return masked
+
+
+def _source_sense_html(label: str, text: str) -> str:
+    plain = " ".join(strip_html(text).split())
+    if not plain:
+        return ""
+    return (
+        f'<div class="sense-cue"><span class="label">{html.escape(label)}</span>'
+        f"{html.escape(plain)}</div>"
+    )
+
+
+def spanish_production_cue(fields: Dict[str, Dict[str, str]]) -> str:
+    """Build an English production cue with enough source context to fix the sense."""
+    primary = spanish_base_production_cue(fields)
+    pos = strip_html(fields.get("SpanishPartOfSpeech", {}).get("value", ""))
+    meaning = fields.get("EnglishMeaning", {}).get("value", "")
+    example = fields.get("EnglishExample", {}).get("value", "")
+    primary_html = html.escape(primary)
+    if pos:
+        primary_html += f' <span class="sense-cue">({html.escape(pos)})</span>'
+    sense = _source_sense_html("Context", meaning or example)
+    return f'<div class="production-primary">{primary_html}</div>{sense}'
+
+
+def english_production_cue(
+    turkish_cue: str,
+    answer: str,
+    reviewed_meaning: str = "",
+    reviewed_example: str = "",
+) -> str:
+    """Build a Turkish cue plus a reviewed, answer-masked sense discriminator."""
+    primary = html.escape(strip_html(turkish_cue))
+    sense_text = _mask_english_answer(reviewed_meaning or reviewed_example, answer)
+    sense = _source_sense_html("Bağlam", sense_text)
+    return f'<div class="production-primary">{primary}</div>{sense}'
+
+
+def _ambiguity_key(value: str) -> str:
+    return " ".join(strip_html(value).lower().split())
 
 
 def spanish_target_variants(spanish: str) -> List[str]:
@@ -690,7 +869,9 @@ def cleanup_empty_source_decks() -> List[str]:
     return deleted
 
 
-def sync_spanish(order_map: Dict[str, int], active_limit: int, context_active_limit: int) -> Dict[str, int]:
+def sync_spanish(
+    order_map: Dict[str, int], active_limit: int, context_active_limit: int, force: bool = False
+) -> Dict[str, int]:
     notes = get_notes(f'note:"{SPANISH_MODEL}"')
     updates: List[Tuple[int, Dict[str, str]]] = []
     note_orders: Dict[int, int] = {}
@@ -698,6 +879,15 @@ def sync_spanish(order_map: Dict[str, int], active_limit: int, context_active_li
     recognition_suspended = 0
     production_suspended = 0
     context_suspended = 0
+    skipped_locked = 0
+    auto_locked = 0
+    answers_by_cue: Dict[str, set[str]] = defaultdict(set)
+    for note in notes:
+        fields = note["fields"]
+        base_cue = _ambiguity_key(spanish_base_production_cue(fields))
+        answer = _ambiguity_key(fields.get("Spanish", {}).get("value", ""))
+        if base_cue and answer:
+            answers_by_cue[base_cue].add(answer)
     for note in notes:
         fields = note["fields"]
         key = source_id_from_spanish_note(fields)
@@ -706,22 +896,58 @@ def sync_spanish(order_map: Dict[str, int], active_limit: int, context_active_li
         level = level_for_order(order)
         cue = spanish_production_cue(fields)
         answer = strip_html(fields.get("Spanish", {}).get("value", ""))
+        base_cue = _ambiguity_key(spanish_base_production_cue(fields))
+        exact_answer = "" if len(answers_by_cue.get(base_cue, set())) > 1 else answer
         context_enabled = "yes" if order <= context_active_limit else ""
-        updates.append(
+        legacy_source_fields = {
+            "SourceOrder": str(order),
+            "DifficultyLevel": level,
+            "ProductionCue": spanish_base_production_cue(fields),
+            "ProductionAnswer": answer,
+            "ProductionEnabled": "yes",
+            "SpanishContextCue": spanish_context_cue(fields),
+            "SpanishContextProductionEnabled": context_enabled,
+        }
+        source_fields = {
+            "SourceOrder": str(order),
+            "DifficultyLevel": level,
+            "ProductionCue": cue,
+            "ProductionAnswer": exact_answer,
+            "ProductionEnabled": "yes",
+            "SpanishContextCue": spanish_context_cue(fields),
+            "SpanishContextProductionEnabled": context_enabled,
+        }
+        preserve_content = not force and anki_protect.note_is_locked(note.get("tags", []))
+        if preserve_content:
+            skipped_locked += 1
+        elif not force and anki_protect.note_has_untracked_edits(
+            fields,
+            source_fields,
+            SPANISH_PRODUCTION_FIELDS,
+            PRODUCTION_FINGERPRINT_FIELD,
             (
-                note["noteId"],
-                {
-                "SourceOrder": str(order),
-                "DifficultyLevel": level,
-                "ProductionCue": cue,
-                "ProductionAnswer": answer,
-                "ProductionEnabled": "yes",
-                "SpanishContextCue": spanish_context_cue(fields),
-                "SpanishContextProductionEnabled": context_enabled,
-                },
+                *anki_protect.legacy_fingerprints(
+                    SPANISH_PRODUCTION_LEGACY_NAMESPACE, key
+                ),
+                anki_protect.content_fingerprint(
+                    legacy_source_fields, SPANISH_PRODUCTION_FIELDS
+                ),
+            ),
+        ):
+            invoke("addTags", notes=[note["noteId"]], tags=anki_protect.LOCKED_TAG)
+            auto_locked += 1
+        else:
+            updates.append(
+                (
+                    note["noteId"],
+                    anki_protect.source_fields_with_fingerprint(
+                        source_fields,
+                        SPANISH_PRODUCTION_FIELDS,
+                        PRODUCTION_FINGERPRINT_FIELD,
+                    ),
+                )
             )
-        )
-        updated += 1
+            updated += 1
     update_note_fields_many(updates)
     notes = get_notes(f'note:"{SPANISH_MODEL}"')
     note_cards = card_maps_for_notes(notes)
@@ -752,6 +978,8 @@ def sync_spanish(order_map: Dict[str, int], active_limit: int, context_active_li
         "recognition_suspended": recognition_suspended,
         "production_suspended": production_suspended,
         "context_suspended": context_suspended,
+        "skipped_locked": skipped_locked,
+        "auto_locked": auto_locked,
     }
 
 
@@ -783,6 +1011,26 @@ def load_spanish_review_rows(path: Path, source_rows: List[Dict[str, str]]) -> D
     return rows_by_key
 
 
+def spanish_content_fields(row: Dict[str, str]) -> Dict[str, str]:
+    return {
+        "Spanish": row.get("Spanish", ""),
+        "PronunciationHint": row.get("Pronunciation Hint", ""),
+        "English": row.get("English", ""),
+        "SpanishMeaning": row.get("Spanish Meaning", ""),
+        "SpanishExample": row.get("Spanish Example", ""),
+        "EnglishMeaning": row.get("English Meaning", ""),
+        "EnglishExample": row.get("English Example", ""),
+        "Notes": row.get("Notes", ""),
+        "SpanishMeaningEnglish": row.get("Spanish Meaning (English)", ""),
+        "SpanishExampleEnglish": row.get("Spanish Example (English)", ""),
+        "SpanishArticle": row.get("Spanish Article", ""),
+        "SpanishGender": row.get("Spanish Gender", ""),
+        "SpanishNumber": row.get("Spanish Number", ""),
+        "SpanishPartOfSpeech": row.get("Spanish Part of Speech", ""),
+        "SpanishForms": row.get("Spanish Forms", ""),
+    }
+
+
 def sync_spanish_content(review_path: Path, source_rows: List[Dict[str, str]], force: bool = False) -> Dict[str, int]:
     review_rows = load_spanish_review_rows(review_path, source_rows)
     if not review_rows:
@@ -791,6 +1039,7 @@ def sync_spanish_content(review_path: Path, source_rows: List[Dict[str, str]], f
     updates: List[Tuple[int, Dict[str, str]]] = []
     missing = 0
     skipped_locked = 0
+    auto_locked = 0
     for note in notes:
         if not force and anki_protect.note_is_locked(note.get("tags", [])):
             skipped_locked += 1
@@ -800,41 +1049,56 @@ def sync_spanish_content(review_path: Path, source_rows: List[Dict[str, str]], f
         if not row:
             missing += 1
             continue
+        source_fields = spanish_content_fields(row)
+        if not force and anki_protect.note_has_untracked_edits(
+            note.get("fields", {}),
+            source_fields,
+            SPANISH_CONTENT_FIELDS,
+            legacy_fingerprints=anki_protect.legacy_fingerprints(
+                SPANISH_CONTENT_LEGACY_NAMESPACE, key
+            ),
+        ):
+            invoke("addTags", notes=[note["noteId"]], tags=anki_protect.LOCKED_TAG)
+            auto_locked += 1
+            continue
         updates.append(
             (
                 note["noteId"],
-                {
-                    "Spanish": row.get("Spanish", ""),
-                    "PronunciationHint": row.get("Pronunciation Hint", ""),
-                    "English": row.get("English", ""),
-                    "SpanishMeaning": row.get("Spanish Meaning", ""),
-                    "SpanishExample": row.get("Spanish Example", ""),
-                    "EnglishMeaning": row.get("English Meaning", ""),
-                    "EnglishExample": row.get("English Example", ""),
-                    "Notes": row.get("Notes", ""),
-                    "SpanishMeaningEnglish": row.get("Spanish Meaning (English)", ""),
-                    "SpanishExampleEnglish": row.get("Spanish Example (English)", ""),
-                    "SpanishArticle": row.get("Spanish Article", ""),
-                    "SpanishGender": row.get("Spanish Gender", ""),
-                    "SpanishNumber": row.get("Spanish Number", ""),
-                    "SpanishPartOfSpeech": row.get("Spanish Part of Speech", ""),
-                    "SpanishForms": row.get("Spanish Forms", ""),
-                },
+                anki_protect.source_fields_with_fingerprint(source_fields, SPANISH_CONTENT_FIELDS),
             )
         )
     update_note_fields_many(updates)
-    return {"updated_notes": len(updates), "missing_review_rows": missing, "skipped_locked": skipped_locked}
+    return {
+        "updated_notes": len(updates),
+        "missing_review_rows": missing,
+        "skipped_locked": skipped_locked,
+        "auto_locked": auto_locked,
+    }
 
 
-def load_turkish_cues(path: Path) -> Dict[str, str]:
+def load_turkish_rows(path: Path) -> Dict[str, Dict[str, str]]:
     if not path.exists():
         return {}
     with path.open(encoding="utf-8", newline="") as handle:
-        rows = csv.DictReader(handle, delimiter="\t")
-        return {row["SourceID"]: row.get("TurkishCue", "").strip() for row in rows if row.get("TurkishCue", "").strip()}
+        return {row["SourceID"]: row for row in csv.DictReader(handle, delimiter="\t")}
 
 
-def sync_english(order_map: Dict[str, int], cue_map: Dict[str, str], active_limit: int) -> Dict[str, int]:
+def load_turkish_cues(path: Path) -> Dict[str, str]:
+    return {
+        source_id: row.get("TurkishCue", "").strip()
+        for source_id, row in load_turkish_rows(path).items()
+        if row.get("TurkishCue", "").strip()
+    }
+
+
+def sync_english(
+    order_map: Dict[str, int],
+    cue_map: Dict[str, str],
+    active_limit: int,
+    force: bool = False,
+    sense_rows: Dict[str, Dict[str, str]] | None = None,
+) -> Dict[str, int]:
+    sense_rows = sense_rows or {}
     notes: List[Dict[str, object]] = []
     seen_note_ids = set()
     for model_name in ENGLISH_MODELS:
@@ -860,30 +1124,91 @@ def sync_english(order_map: Dict[str, int], cue_map: Dict[str, str], active_limi
     updates: List[Tuple[int, Dict[str, str]]] = []
     note_orders: Dict[int, int] = {}
     note_has_cue: Dict[int, bool] = {}
+    skipped_locked = 0
+    auto_locked = 0
+    answers_by_cue: Dict[str, set[str]] = defaultdict(set)
+    note_answers: Dict[int, str] = {}
+    for note in notes:
+        fields = note.get("fields", {})
+        answer = strip_html(
+            fields.get("Word", fields.get("English", {"value": ""})).get("value", "")
+        )
+        note_answers[note["noteId"]] = answer
+        raw_cue = cue_map.get(source_id_from_english_note(note), "")
+        cue_key = _ambiguity_key(raw_cue)
+        if cue_key and answer:
+            answers_by_cue[cue_key].add(_ambiguity_key(answer))
     for note in notes:
         key = source_id_from_english_note(note)
         order = order_map.get(key, 99999)
-        cue = cue_map.get(key, "")
+        raw_cue = cue_map.get(key, "")
         note_orders[note["noteId"]] = order
-        note_has_cue[note["noteId"]] = bool(cue)
+        note_has_cue[note["noteId"]] = bool(raw_cue)
         fields = note.get("fields", {})
-        answer = strip_html(fields.get("Word", fields.get("English", {"value": ""})).get("value", ""))
-        if not cue:
-            missing_cues += 1
-        updates.append(
-            (
-                note["noteId"],
-                {
-                "ProductionSourceID": key,
-                "ProductionCue": cue,
-                "ProductionAnswer": answer,
-                "ProductionOrder": str(order),
-                "ProductionLevel": level_for_order(order),
-                "ProductionEnabled": "yes" if cue else "",
-                },
+        answer = note_answers.get(note["noteId"], "")
+        sense_row = sense_rows.get(key, {})
+        cue = (
+            english_production_cue(
+                raw_cue,
+                answer,
+                sense_row.get("EnglishMeaning", ""),
+                sense_row.get("EnglishExample", ""),
             )
+            if raw_cue
+            else ""
         )
-        updated += 1
+        cue_key = _ambiguity_key(raw_cue)
+        exact_answer = "" if len(answers_by_cue.get(cue_key, set())) > 1 else answer
+        if not raw_cue:
+            missing_cues += 1
+        legacy_source_fields = {
+            "ProductionSourceID": key,
+            "ProductionCue": raw_cue,
+            "ProductionAnswer": answer,
+            "ProductionOrder": str(order),
+            "ProductionLevel": level_for_order(order),
+            "ProductionEnabled": "yes" if raw_cue else "",
+        }
+        source_fields = {
+            "ProductionSourceID": key,
+            "ProductionCue": cue,
+            "ProductionAnswer": exact_answer,
+            "ProductionOrder": str(order),
+            "ProductionLevel": level_for_order(order),
+            "ProductionEnabled": "yes" if cue else "",
+        }
+        fields = note.get("fields", {})
+        preserve_content = not force and anki_protect.note_is_locked(note.get("tags", []))
+        if preserve_content:
+            skipped_locked += 1
+        elif not force and anki_protect.note_has_untracked_edits(
+            fields,
+            source_fields,
+            ENGLISH_PRODUCTION_FIELDS,
+            PRODUCTION_FINGERPRINT_FIELD,
+            (
+                *anki_protect.legacy_fingerprints(
+                    ENGLISH_PRODUCTION_LEGACY_NAMESPACE, key
+                ),
+                anki_protect.content_fingerprint(
+                    legacy_source_fields, ENGLISH_PRODUCTION_FIELDS
+                ),
+            ),
+        ):
+            invoke("addTags", notes=[note["noteId"]], tags=anki_protect.LOCKED_TAG)
+            auto_locked += 1
+        else:
+            updates.append(
+                (
+                    note["noteId"],
+                    anki_protect.source_fields_with_fingerprint(
+                        source_fields,
+                        ENGLISH_PRODUCTION_FIELDS,
+                        PRODUCTION_FINGERPRINT_FIELD,
+                    ),
+                )
+            )
+            updated += 1
     update_note_fields_many(updates)
     notes = [note for model_name in ENGLISH_MODELS for note in get_notes(f'note:"{model_name}"')]
     note_cards = card_maps_for_notes(notes)
@@ -910,6 +1235,8 @@ def sync_english(order_map: Dict[str, int], cue_map: Dict[str, str], active_limi
         "missing_cues": missing_cues,
         "recognition_suspended": recognition_suspended,
         "production_suspended": production_suspended,
+        "skipped_locked": skipped_locked,
+        "auto_locked": auto_locked,
     }
 
 
@@ -927,6 +1254,7 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--sync-spanish-content", action="store_true")
     parser.add_argument("--spanish-review", default=str(SPANISH_REVIEW_PATH))
     parser.add_argument("--force", action="store_true", help="Overwrite notes even if tagged locked (manual edits).")
+    parser.add_argument("--update-models", action="store_true", help="Replace existing production templates and CSS.")
     return parser.parse_args()
 
 
@@ -938,7 +1266,7 @@ def main() -> int:
         return 0
     source_rows = spanish_deck.parse_source_deck(args.source)
     order_map = difficulty_order(source_rows)
-    ensure_models()
+    ensure_models(update_existing=args.update_models)
     spanish_active_limit = args.active_limit if args.active_limit is not None else args.spanish_active_limit
     spanish_context_active_limit = args.active_limit if args.active_limit is not None else args.spanish_context_active_limit
     english_active_limit = args.active_limit if args.active_limit is not None else args.english_active_limit
@@ -950,9 +1278,22 @@ def main() -> int:
     if not args.english_only:
         if args.sync_spanish_content:
             result["spanish_content"] = sync_spanish_content(Path(args.spanish_review), source_rows, force=args.force)
-        result["spanish"] = sync_spanish(order_map, spanish_active_limit, spanish_context_active_limit)
+        result["spanish"] = sync_spanish(
+            order_map, spanish_active_limit, spanish_context_active_limit, force=args.force
+        )
     if not args.spanish_only:
-        result["english"] = sync_english(order_map, load_turkish_cues(Path(args.turkish_cues)), english_active_limit)
+        turkish_rows = load_turkish_rows(Path(args.turkish_cues))
+        result["english"] = sync_english(
+            order_map,
+            {
+                source_id: row.get("TurkishCue", "").strip()
+                for source_id, row in turkish_rows.items()
+                if row.get("TurkishCue", "").strip()
+            },
+            english_active_limit,
+            force=args.force,
+            sense_rows=turkish_rows,
+        )
     result["deleted_empty_source_decks"] = cleanup_empty_source_decks()
     print(json.dumps(result, ensure_ascii=False, indent=2))
     return 0

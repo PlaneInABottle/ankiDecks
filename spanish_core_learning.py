@@ -37,7 +37,7 @@ INACCESSIBLE_AUDIO_SENTENCE_IDS = {
     "342298",
     "345183",
 }
-REJECT_TATOEBA_SENTENCE_IDS = {"2538", "2738", "2809", "2861", "3041", "330689"}
+REJECT_TATOEBA_SENTENCE_IDS = {"2538", "2565", "2738", "2809", "2861", "3041", "330689"}
 TATOEBA_SPANISH_TEXT_FIXES = {
     "410616": "A mí también me gustan los pasteles.",
 }
@@ -950,7 +950,7 @@ def _audio_word_cloze_target(target):
 
 
 def _dictation_cards():
-    """Audio word cloze cards using the old dictation SourceIDs for stable updates."""
+    """Full-sentence audio dictation using stable existing SourceIDs."""
     pairs = _load_tatoeba_pairs()
     roles = _assign_sentence_roles(pairs)
     cards = []
@@ -963,11 +963,6 @@ def _dictation_cards():
         level = row["level"]
         spa_text = row["spa_text"]
         eng_text = row["eng_text"]
-        target = row["target"]
-        answer, pattern = _audio_word_cloze_target(target)
-        cloze = pattern.sub("_____", spa_text, count=1)
-        if cloze == spa_text:
-            continue
         sound = f"[sound:tatoeba_spa_{spa_id}.mp3]"
         source = f"Tatoeba spa:{spa_id} eng:{row['eng_id']}"
         attribution = TATOEBA_ATTRIBUTION.format(spa_id=spa_id, eng_id=row["eng_id"])
@@ -975,13 +970,13 @@ def _dictation_cards():
             _card(
                 f"tatoeba_dictation::{level}::{spa_id}::{row['eng_id']}",
                 level,
-                "listening word cloze",
-                "audio_cloze",
-                "type_exact",
-                f"{sound}<br><br>{_front_instruction('Listen first, then type the missing word')}<br>{cloze}",
-                answer,
-                f"Listen first, type only the missing word, then replay and shadow the full sentence once.<br><br>Meaning: {eng_text}",
-                _sentence_target_formula(target),
+                "full-sentence listening",
+                "dictation",
+                "type_compare",
+                f"{sound}<br><br>{_front_instruction('Listen without text, then type the full Spanish sentence')}",
+                spa_text,
+                f"Compare wording, accents, and word boundaries; then replay and shadow the full sentence once.<br><br>Meaning: {eng_text}",
+                "Listen → reconstruct the complete sentence → compare → shadow once.",
                 f"- {spa_text}<br>- {eng_text}",
                 audio=sound,
                 audio_url=_audio_url(spa_id),
@@ -1049,21 +1044,32 @@ VERB_PARADIGMS = [
 
 
 def _verb_paradigm_cards():
-    """Systematic verb conjugation grid cards."""
+    """Self-graded Latin American verb grids without monolithic exact typing."""
     cards = []
     for level, verb, tense, paradigm, meaning in VERB_PARADIGMS:
         is_invariable = "|" not in paradigm
-        formula = "invariable" if is_invariable else "yo | tú | él/ella/usted | nosotros | vosotros | ellos/ellas/ustedes"
-        type_note = "Type the invariable form" if is_invariable else "Type all 6 forms separated by |"
+        if is_invariable:
+            answer = paradigm
+            formula = "invariable"
+            type_note = "Recall the invariable form"
+            prompt_mode = "type_exact"
+        else:
+            forms = [part.strip() for part in paradigm.split("|")]
+            # The curriculum targets Latin American Spanish, so omit vosotros
+            # while retaining ustedes in the final plural slot.
+            answer = " | ".join(forms[:4] + forms[5:])
+            formula = "yo | tú | él/ella/usted | nosotros | ellos/ellas/ustedes"
+            type_note = "Recall the 5 Latin American forms aloud, then self-grade"
+            prompt_mode = "self_grade"
         cards.append(
             _card(
                 f"verb_paradigm::{level}::{verb}::{tense}",
                 level,
                 f"verb conjugation: {verb}",
                 "verb_paradigm",
-                "type_compare",
+                prompt_mode,
                 f"{_front_instruction('Conjugate')} <b>{verb}</b> – {tense} tense<br><span class=\"type-note\">{type_note}</span>",
-                paradigm,
+                answer,
                 f"{verb} ({tense}) = {meaning}",
                 formula,
                 "",

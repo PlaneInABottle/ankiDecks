@@ -12,16 +12,8 @@ import anki_protect
 
 
 MODEL_NAME = "Spanish Core Learning"
+LEGACY_FINGERPRINT_NAMESPACE = "spanish_core"
 IMPORT_PATH = Path("generated/spanish_core/spanish_core_learning.tsv")
-OLD_DECKS = [
-    "Spanish Grammar",
-    "Spanish Grammar::A0 Survival",
-    "Spanish Grammar::A1.1 Foundations",
-    "Spanish Grammar::A1.2 Core Sentences",
-    "Spanish Grammar::A2.1 Daily Past",
-    "Spanish Grammar::A2.2 Natural Spanish",
-]
-
 FIELDS = [
     "SourceID",
     "DeckPath",
@@ -44,6 +36,8 @@ FIELDS = [
     "Attribution",
     "Tags",
 ]
+MODEL_FIELDS = [*FIELDS, anki_protect.FINGERPRINT_FIELD]
+CONTENT_FIELDS = anki_protect.content_fields(FIELDS)
 
 CSS = """
 .card {
@@ -197,13 +191,13 @@ def invoke(action, **params):
     raise RuntimeError("collection is not available")
 
 
-def ensure_model():
+def ensure_model(update_existing=False):
     model_names = invoke("modelNames")
     if MODEL_NAME not in model_names:
         invoke(
             "createModel",
             modelName=MODEL_NAME,
-            inOrderFields=FIELDS,
+            inOrderFields=MODEL_FIELDS,
             css=CSS,
             cardTemplates=[
                 {
@@ -215,12 +209,13 @@ def ensure_model():
         )
         return
     existing_fields = invoke("modelFieldNames", modelName=MODEL_NAME)
-    for field in FIELDS:
+    for field in MODEL_FIELDS:
         if field not in existing_fields:
             invoke("modelFieldAdd", modelName=MODEL_NAME, fieldName=field)
             existing_fields.append(field)
-    invoke("updateModelTemplates", model={"name": MODEL_NAME, "templates": {"Spanish Core Card": {"Front": FRONT_TEMPLATE, "Back": BACK_TEMPLATE}}})
-    invoke("updateModelStyling", model={"name": MODEL_NAME, "css": CSS})
+    if update_existing:
+        invoke("updateModelTemplates", model={"name": MODEL_NAME, "templates": {"Spanish Core Card": {"Front": FRONT_TEMPLATE, "Back": BACK_TEMPLATE}}})
+        invoke("updateModelStyling", model={"name": MODEL_NAME, "css": CSS})
 
 
 def load_rows(path):
@@ -239,7 +234,7 @@ def load_existing_notes():
         fields = note.get("fields", {})
         source_id = fields.get("SourceID", {}).get("value", "")
         if source_id:
-            existing[source_id] = (note["noteId"], note.get("tags", []))
+            existing[source_id] = note
     return existing
 
 
@@ -292,29 +287,44 @@ def sync_rows(rows, store_media=True, force=False):
     updated = 0
     moved = 0
     skipped_locked = 0
+    auto_locked = 0
     existing_notes = load_existing_notes()
     for deck_name in sorted({row["DeckPath"] for row in rows}):
         invoke("createDeck", deck=deck_name)
     for index, row in enumerate(rows, start=1):
         deck_name = row["DeckPath"]
         existing = existing_notes.get(row["SourceID"])
+        source_fields = {field: row.get(field, "") for field in FIELDS}
+        preserve_content = False
         if existing:
-            note_id, tags = existing
+            note_id = existing["noteId"]
+            tags = existing.get("tags", [])
             if not force and anki_protect.note_is_locked(tags):
                 skipped_locked += 1
-                if index % 100 == 0:
-                    print(f"Synced {index}/{len(rows)} rows...")
-                continue
-        if store_media:
+                preserve_content = True
+            elif not force and anki_protect.note_has_untracked_edits(
+                existing.get("fields", {}),
+                source_fields,
+                CONTENT_FIELDS,
+                legacy_fingerprints=anki_protect.legacy_fingerprints(
+                    LEGACY_FINGERPRINT_NAMESPACE, row["SourceID"]
+                ),
+            ):
+                invoke("addTags", notes=[note_id], tags=anki_protect.LOCKED_TAG)
+                auto_locked += 1
+                preserve_content = True
+        if store_media and not preserve_content:
             store_audio(row)
-        fields = {field: row.get(field, "") for field in FIELDS}
+            source_fields = {field: row.get(field, "") for field in FIELDS}
+        fields = anki_protect.source_fields_with_fingerprint(source_fields, CONTENT_FIELDS)
         if existing:
-            invoke("updateNoteFields", note={"id": note_id, "fields": fields})
+            if not preserve_content:
+                invoke("updateNoteFields", note={"id": note_id, "fields": fields})
+                updated += 1
             card_ids = invoke("findCards", query=f"nid:{note_id}")
             if card_ids:
                 invoke("changeDeck", cards=card_ids, deck=deck_name)
                 moved += len(card_ids)
-            updated += 1
         else:
             invoke(
                 "addNote",
@@ -329,7 +339,13 @@ def sync_rows(rows, store_media=True, force=False):
             created += 1
         if index % 100 == 0:
             print(f"Synced {index}/{len(rows)} rows...")
-    return {"created": created, "updated": updated, "moved_cards": moved, "skipped_locked": skipped_locked}
+    return {
+        "created": created,
+        "updated": updated,
+        "moved_cards": moved,
+        "skipped_locked": skipped_locked,
+        "auto_locked": auto_locked,
+    }
 
 
 def prune_stale_notes(valid_source_ids):
@@ -342,43 +358,27 @@ def prune_stale_notes(valid_source_ids):
             continue
         fields = note.get("fields", {})
         source_id = fields.get("SourceID", {}).get("value", "")
-        if source_id and source_id not in valid_source_ids:
-            stale_note_ids.append(note["noteId"])
+        if not source_id or source_id in valid_source_ids:
+            continue
+        stored = fields.get(anki_protect.FINGERPRINT_FIELD, {}).get("value", "")
+        if not stored:
+            continue
+        if anki_protect.content_fingerprint(fields, CONTENT_FIELDS) != stored:
+            invoke("addTags", notes=[note["noteId"]], tags=anki_protect.LOCKED_TAG)
+            continue
+        stale_note_ids.append(note["noteId"])
     if stale_note_ids:
         invoke("deleteNotes", notes=stale_note_ids)
     return len(stale_note_ids)
-
-
-def prune_foreign_core_notes():
-    card_ids = invoke("findCards", query=f'deck:"{MODEL_NAME}"')
-    if not card_ids:
-        return 0
-    note_ids = sorted({card["note"] for card in invoke("cardsInfo", cards=card_ids)})
-    stale_note_ids = [
-        note["noteId"]
-        for note in invoke("notesInfo", notes=note_ids)
-        if note.get("modelName") != MODEL_NAME
-    ]
-    if stale_note_ids:
-        invoke("deleteNotes", notes=stale_note_ids)
-    return len(stale_note_ids)
-
-
-def delete_old_decks():
-    deck_names = set(invoke("deckNames"))
-    existing = [deck for deck in OLD_DECKS if deck in deck_names]
-    if existing:
-        invoke("deleteDecks", decks=existing, cardsToo=True)
-    return existing
 
 
 def parse_args(argv=None):
     parser = argparse.ArgumentParser(description="Sync Spanish Core Learning deck to Anki.")
     parser.add_argument("--path", default=str(IMPORT_PATH))
-    parser.add_argument("--delete-old-spanish-grammar", action="store_true")
     parser.add_argument("--prune-stale", action="store_true", help="Delete Spanish Core Learning notes missing from the TSV.")
     parser.add_argument("--skip-media", action="store_true", help="Sync notes without storing audio media; sound tags stay on audio cards.")
     parser.add_argument("--media-only", action="store_true", help="Only store audio media from the TSV.")
+    parser.add_argument("--update-model", action="store_true", help="Replace the existing note template and CSS.")
     parser.add_argument("--force", action="store_true", help="Overwrite notes even if tagged locked (manual edits).")
     return parser.parse_args(argv)
 
@@ -386,22 +386,18 @@ def parse_args(argv=None):
 def main(argv=None):
     args = parse_args(argv)
     invoke("version")
-    ensure_model()
+    ensure_model(update_existing=args.update_model)
     rows = load_rows(args.path)
     if args.media_only:
         print(json.dumps({"media": sync_media(rows)}, ensure_ascii=False, indent=2))
         return 0
     result = sync_rows(rows, store_media=not args.skip_media, force=args.force)
     pruned = prune_stale_notes({row["SourceID"] for row in rows}) if args.prune_stale else 0
-    pruned_foreign = prune_foreign_core_notes() if args.prune_stale else 0
-    deleted = delete_old_decks() if args.delete_old_spanish_grammar else []
     print(
         json.dumps(
             {
                 "synced": result,
                 "pruned_stale_notes": pruned,
-                "pruned_foreign_core_notes": pruned_foreign,
-                "deleted_decks": deleted,
                 "rows": len(rows),
             },
             ensure_ascii=False,

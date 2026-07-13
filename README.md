@@ -34,21 +34,14 @@ PEXELS_API_KEY=your_api_key_here
 ## 📖 Usage
 
 ### Add or Update a Word
-The primary script. It will fetch data, generate media, and create/update the card in your **`My English Words`** deck.
-```bash
-python3 add_word_to_anki.py [word]
-```
-- If the word exists, it will ask if you want to **update** it (useful for fixing missing examples or IPA).
-- If data is missing from the dictionary, it will prompt you for manual entry during the review phase.
-
-### Dynamic Add/Update Tool
-A more flexible version that allows you to specify the deck and prefix via arguments.
+This tool fetches data, generates media, and creates or explicitly updates a card. It defaults to **`My English Words`** and also accepts a custom deck, model, and media prefix.
 ```bash
 python3 anki_tools.py [word] --deck "My English Words" --prefix "user_"
 ```
 - `--deck`: Target deck name (defaults to "My English Words").
 - `--model`: Note type name (defaults to "4000 EEW").
 - `--prefix`: Prefix for media filenames (defaults to "user_").
+- When a word already exists, blank update prompts keep the current live Anki values. Only entered fields are replaced, and an edited note is tagged `locked` automatically.
 
 ### Check for Duplicates
 Reliably checks if a word exists in the original 4000 txt file OR your active Anki collection.
@@ -89,15 +82,50 @@ Defaults:
 - Files produced:
   - `english_spanish_review.tsv` (English/source context, Spanish, pronunciation, Spanish meaning/example, English mirrors of the Spanish fields, grammar metadata, notes, status, source identity, tags)
 
+The durable reviewed source is `generated/spanish_reviewed_glossary_full.tsv`. Regenerate the active full review file with:
+
+```bash
+python3 spanish_deck.py \
+  --glossary generated/spanish_reviewed_glossary_full.tsv \
+  --output-dir generated/spanish_full
+```
+
+### Production Decks
+
+Generate the Turkish cues and the structured Spanish/English decks before syncing:
+
+```bash
+python3 generate_english_turkish_cues.py
+python3 spanish_core_learning.py
+python3 english_mastery.py
+```
+
+The 4000-word production fronts include a short reviewed context cue with the answer and common inflections masked. Exact typing is retained for uniquely constrained prompts; duplicate Turkish/English cues with multiple valid answers are self-graded so correct synonyms are not marked wrong.
+
+With Anki open, apply content and template updates safely:
+
+```bash
+python3 protect_manual_edits.py --apply
+python3 sync_4000_production_to_anki.py --sync-spanish-content --update-models
+python3 sync_spanish_core_to_anki.py --update-model
+python3 sync_english_mastery_to_anki.py --update-model
+```
+
+These commands update existing note IDs in place. Do not add `--force` unless intentionally replacing protected manual edits.
+
 ### Protect Manual Edits
-If you hand-edit cards directly in Anki, the sync scripts would otherwise overwrite them. Run this while Anki is open to detect notes whose content differs from the source TSV and tag them as `locked`:
+Bulk sync scripts automatically preserve manual edits. Each synced note records a hidden `SyncFingerprint`; if its live content later differs from the last script-written version, the next sync tags it `locked` and skips content updates. On the first fingerprint-aware sync, hashes in `generated/legacy_sync_fingerprints.json` recognize changed rows from the previous generated release without storing card text. Unrecognized differences are still locked instead of overwritten.
+
+To audit or lock existing edits proactively while Anki is open:
 
 ```bash
 python3 protect_manual_edits.py          # report only (dry run)
 python3 protect_manual_edits.py --apply  # also tag detected edits as locked
 ```
 
-Notes tagged `locked` are skipped by every sync script's content update (and by stale-note pruning), so your manual edits survive. New notes are still created and deck moves still happen. To force an overwrite of locked notes, pass `--force` to any sync script.
+Notes tagged `locked` are skipped by every sync script's content update and by stale-note pruning, so manual edits survive. New notes are still created and deck moves still happen. Stale pruning also refuses to delete legacy notes without a fingerprint. To intentionally overwrite locked or changed notes, pass `--force` to the relevant sync script.
+
+Existing note templates and CSS are also preserved by default. Use `--update-model` on the English Mastery or Spanish Core sync, or `--update-models` on the 4000 production sync, only when you intentionally want to replace model presentation.
 
 ## 🧪 Testing
 Run the unit test suite to verify script logic (uses mocks, no internet/Anki required):
@@ -106,13 +134,13 @@ python3 test_scripts.py
 ```
 
 ## 📁 File Structure
-- `add_word_to_anki.py`: Standard automation logic.
-- `anki_tools.py`: Fully dynamic CLI version.
+- `anki_tools.py`: Add or explicitly update individual vocabulary notes without replacing untouched live fields.
+- `anki_protect.py`: Shared fingerprint and locked-tag protection used by all bulk syncs.
+- `protect_manual_edits.py`: Report or proactively lock live notes that differ from their generated source.
 - `check_word.py`: Synchronized duplicate checker.
 - `grammar_levels.py`: Level-based English grammar seed generator.
 - `spanish_deck.py`: Safe English-to-Spanish review/import generator.
 - `get_pexels_image.py`: Standalone image downloader.
-- `reorganize_decks.py`: Utility to move cards between decks.
 - `4000 Essential English Words.txt`: Base vocabulary reference.
 
 ## 🔄 Syncing to Phone

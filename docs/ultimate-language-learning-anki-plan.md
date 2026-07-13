@@ -24,17 +24,19 @@ Important source ideas already checked:
 
 ## Deck Architecture
 
-### Keep Passive Vocabulary Separate
+### Keep Broad Vocabulary Production Separate
 
-Keep `Spanish 4000 Words` as the passive recognition deck.
+Keep `Spanish 4000 Words` as the broad vocabulary-production deck, separate from the structured core curriculum. Recognition cards remain suspended; production cards are active by learner choice.
 
 Purpose:
 
-- Build broad Spanish word recognition.
+- Build broad Spanish word retrieval.
 - Preserve the original 4000 English word ordering.
 - Use image, Spanish word, pronunciation hint, English, Spanish meaning/example, and English mirror fields.
+- Add source-definition context to production fronts so duplicate English words are sense-specific.
+- Self-grade prompts whose source cue still permits multiple valid answers.
 
-Do not convert all 4,000 words into production cards immediately. That would create too many difficult reviews for an A0 learner.
+All available vocabulary is configured for production. Control workload through Anki new-card limits rather than changing the learning direction or deleting cards.
 
 ### Build Active Spanish Separately
 
@@ -56,22 +58,24 @@ Current implementation:
 - Replaces the old `Spanish Grammar` deck.
 - Uses a custom note type: `Spanish Core Learning`.
 - Uses stable `SourceID` values, so notes can be updated in place.
-- Contains 1,255 notes/cards after production/listening rebalance.
+- Contains 1,414 notes/cards after production/listening rebalance.
 - Live Anki subdeck counts:
-  - A0 Survival: 120
-  - A1.1 Foundations: 358
-  - A1.2 Core Sentences: 239
-  - A2.1 Daily Past: 268
-  - A2.2 Natural Spanish: 214
-  - B1 Bridge: 56
+  - A0 Survival: 126
+  - A1.1 Foundations: 401
+  - A1.2 Core Sentences: 230
+  - A2.1 Daily Past: 314
+  - A2.2 Natural Spanish: 244
+  - B1 Bridge: 99
 - Current card families:
   - rule: 89
-  - typed contrast: 89
+  - typed contrast: 149
   - typed correction: 89
-  - typed production: 267
-  - mini pattern: 51
-  - typed cloze from sourced sentences: 433
-  - audio cloze from sourced sentences: 237
+  - typed production: 320
+  - verb paradigm: 49
+  - interleaved contrast: 13
+  - typed cloze from sourced sentences: 415
+  - audio cloze from sourced sentences: 240
+  - full-sentence audio dictation: 50
 - No A/B multiple-choice recognition cards remain in this active core deck.
 
 ## Target Size
@@ -80,16 +84,16 @@ The current cleaned active deck is a strong A0-A2 starting path, but it is not t
 
 Recommended targets:
 
-- Passive vocabulary: 3,000-4,000 recognition cards, already covered by `Spanish 4000 Words`.
+- Broad production vocabulary: 3,871 cards, already covered by `Spanish 4000 Words`.
 - Active A0-A2 core: about 1,000-1,500 cards.
 - Initial listening deck: 150-250 cards.
 - Later B1 bridge: expand only after A0-A2 reviews are stable.
 
 Practical phase targets:
 
-- Phase 1: 1,058 Spanish Core cards. Done.
-- Phase 2: expand short dictation / listen-then-produce if reviews are stable.
-- Phase 3: 1,200-1,500 total active cards after several weeks of review data.
+- Phase 1: structured A0-A2 grammar and production core. Done.
+- Phase 2: 50 audio-only full-sentence dictation cards. Done.
+- Phase 3: expand B1 and spontaneous speaking only after review data is stable.
 
 ## Card Mix By Level
 
@@ -104,7 +108,7 @@ Recommended mix:
 - 10-20% typed production
 - 10-15% rule / mini pattern anchors
 
-Avoid long sentence production at A0. Use passive recognition in `Spanish 4000 Words`, not in the active core deck.
+Avoid long unsupported sentence production at A0. Use short, sense-constrained vocabulary production and guided sentence patterns.
 
 ### A1
 
@@ -388,17 +392,19 @@ If reviews become heavy, reduce new cards before deleting content.
 
 ### Current Spanish Core Coverage
 
-`Spanish Core Learning` now contains 1,255 active cards:
+`Spanish Core Learning` now contains 1,414 active cards:
 
-- 433 typed sentence cloze cards from sourced Tatoeba Spanish-English sentence pairs.
-- 237 Spanish audio cloze cards with verified Tatoeba audio.
+- 415 typed sentence cloze cards from sourced Tatoeba Spanish-English sentence pairs.
+- 240 Spanish audio cloze cards with verified Tatoeba audio.
+- 50 audio-only full-sentence dictation cards.
 - 89 rule anchors.
-- 89 typed contrast cards.
+- 149 typed contrast cards.
 - 89 typed correction cards.
-- 267 typed production cards.
-- 51 mini-pattern cards.
+- 320 typed production cards.
+- 49 self-graded Latin American verb-paradigm cards.
+- 13 interleaved contrast cards.
 
-English meaning cues were removed from fronts. Cards should rely on Spanish context, audio, and typed retrieval.
+Card fronts use only the minimum cue appropriate to the task: meaning/context for controlled production, or audio alone for full dictation.
 
 ### Next Step 1: Expand Spanish Core Beyond A2
 
@@ -447,16 +453,18 @@ Rules:
 
 `English Mastery` replaces the old separate `English Grammar Maintenance` and `English Natural Phrases` decks.
 
-It contains 972 active cards:
+It contains 1,100 active cards:
 
 - 360 natural phrase cloze cards.
 - 300 natural phrase production cards.
 - 33 rule anchors.
 - 99 typed grammar contrast cards.
-- 120 English audio cloze cards.
-- 60 English dictation cards.
+- 20 interleaved contrast cards.
+- 123 sourced typed cloze cards.
+- 106 English audio cloze cards.
+- 59 English dictation cards.
 
-The deck is intended for B2-C2 maintenance and advancement, not beginner English. It should train phrase retrieval, grammar contrast, listening accuracy, and more natural production while the original `4000 Essential English Words` deck remains unchanged.
+The deck is intended for B2-C2 maintenance and advancement, not beginner English. It trains phrase retrieval, grammar contrast, listening accuracy, and more natural production. The separate `4000 Essential English Words` notes also have active Turkish-to-English production cards with source-sense disambiguation.
 
 ### Next Step 4: Review
 
@@ -476,7 +484,7 @@ Then manually sample:
 ## What Not To Do
 
 - Do not make all cards multiple choice.
-- Do not make every 4000 vocabulary word a production card immediately.
+- Do not activate more new production cards per day than the review workload can support.
 - Do not import huge AnkiWeb decks directly into the active study queue.
 - Do not use AI-generated translations without source/mirror review.
 - Do not use audio as passive decoration only.

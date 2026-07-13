@@ -251,7 +251,10 @@ def _stress_index(word: str, syllables: Sequence[str]) -> int:
 
 
 def _turkish_upper(value: str) -> str:
-    return value.upper()
+    # Python's default Unicode uppercasing follows language-neutral rules,
+    # turning ``i`` into ``I``.  In Turkish-readable pronunciation hints that
+    # changes the vowel: stressed /i/ must be shown as dotted ``İ``.
+    return value.translate(str.maketrans({"i": "İ", "ı": "I"})).upper()
 
 
 def _sound_out_syllable(syllable: str) -> str:
@@ -396,6 +399,11 @@ def _english_definition_marks_noun(english: str, english_meaning: str) -> bool:
         return False
     if re.match(rf"^(a|an|the)\s+{re.escape(word)}\s+is\b", meaning):
         return True
+    # Function words are commonly defined as "X is used to ...".  That shape
+    # does not make them nouns and must not trigger an invented Spanish article
+    # such as "el además".
+    if meaning.startswith(f"{word} is used "):
+        return False
     if meaning.startswith(f"{word} is "):
         return True
     return False
@@ -447,6 +455,20 @@ def _pluralize_spanish_noun(noun: str) -> str:
         return noun + "s"
     if noun.endswith("z"):
         return noun[:-1] + "ces"
+    accent_exceptions = {
+        "carácter": "caracteres",
+        "espécimen": "especímenes",
+        "examen": "exámenes",
+        "imagen": "imágenes",
+        "joven": "jóvenes",
+        "margen": "márgenes",
+        "origen": "orígenes",
+        "régimen": "regímenes",
+        "resumen": "resúmenes",
+        "volumen": "volúmenes",
+    }
+    if noun in accent_exceptions:
+        return accent_exceptions[noun]
     stem = noun.translate(str.maketrans({"á": "a", "é": "e", "í": "i", "ó": "o", "ú": "u"}))
     return stem + "es"
 
