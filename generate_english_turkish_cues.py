@@ -17,6 +17,7 @@ import spanish_deck
 
 
 OUTPUT_PATH = Path("generated/english_4000/english_turkish_production.tsv")
+REVIEWED_ENGLISH_PATH = Path("generated/spanish_full/english_spanish_review.tsv")
 CACHE_PATH = Path("generated/english_4000/mymemory_cache.json")
 GOOGLE_CACHE_PATH = Path("generated/english_4000/google_translate_cache.json")
 MYMEMORY_URL = "https://api.mymemory.translated.net/get"
@@ -45,7 +46,7 @@ SOURCE_SPECIFIC_TURKISH_OVERRIDES = {
     ("4000 Essential English Words::1.Book", "", "found"): "kurmak",
     ("4000 Essential English Words::1.Book", "", "direct"): "doğrudan",
     ("4000 Essential English Words::1.Book", "", "sheet"): "sayfa",
-    ("4000 Essential English Words::1.Book", "", "across"): "karşısına",
+    ("4000 Essential English Words::1.Book", "", "across"): "karşıya geçmek",
     ("4000 Essential English Words::1.Book", "", "happen"): "tesadüfen / denk gelmek",
     ("4000 Essential English Words::1.Book", "", "bother"): "zahmet etmek",
     ("4000 Essential English Words::1.Book", "", "fashionable"): "modaya uygun",
@@ -103,7 +104,7 @@ SOURCE_SPECIFIC_TURKISH_OVERRIDES = {
     ("4000 Essential English Words::1.Book", "", "situated"): "yer almak / bulunmak",
     ("4000 Essential English Words::1.Book", "", "false"): "yanlış / sahte",
     ("4000 Essential English Words::1.Book", "", "figure out"): "çözmek / anlamak",
-    ("4000 Essential English Words::1.Book", "", "rather"): "daha doğrusu / oldukça",
+    ("4000 Essential English Words::1.Book", "", "rather"): "daha doğrusu / tercihen",
     ("4000 Essential English Words::1.Book", "", "band"): "müzik grubu / bant",
     ("4000 Essential English Words::1.Book", "", "barely"): "zar zor / anca",
     ("4000 Essential English Words::1.Book", "", "schedule"): "program / takvim",
@@ -150,6 +151,23 @@ SOURCE_SPECIFIC_TURKISH_OVERRIDES = {
     ("4000 Essential English Words::1.Book", "", "range"): "aralık / yelpaze",
     ("4000 Essential English Words::1.Book", "", "scene"): "sahne / bölüm",
     ("4000 Essential English Words::1.Book", "", "stage"): "sahne / platform",
+    # High-confidence sense corrections from the source definitions/examples.
+    ("4000 Essential English Words::1.Book", "", "season"): "mevsim",
+    ("4000 Essential English Words::1.Book", "", "worth"): "değerinde olmak",
+    ("4000 Essential English Words::1.Book", "", "lead"): "yol göstermek / önden götürmek",
+    ("4000 Essential English Words::2.Book", "", "firm"): "sert / sıkı",
+    ("4000 Essential English Words::3.Book", "", "shortly"): "birazdan / yakında",
+    ("4000 Essential English Words::3.Book", "", "volume"): "miktar / yoğunluk",
+    ("4000 Essential English Words::4.Book", "", "tool"): "araç",
+    ("4000 Essential English Words::4.Book", "", "case"): "durum / örnek",
+    ("4000 Essential English Words::4.Book", "", "quote"): "alıntı / fiyat teklifi",
+    ("4000 Essential English Words::4.Book", "", "inhale"): "içine çekmek / solumak",
+    ("4000 Essential English Words::5.Book", "", "compliance"): "kurallara uyma / itaat",
+    ("4000 Essential English Words::5.Book", "", "sentence"): "ceza / hüküm",
+    ("4000 Essential English Words::5.Book", "", "linger"): "uzun süre kalmak / sürmek",
+    ("4000 Essential English Words::6.Book", "", "faculty"): "yeti / yetenek",
+    ("4000 Essential English Words::6.Book", "", "soundly"): "kesin biçimde / açık farkla",
+    ("4000 Essential English Words::6.Book", "", "humor"): "ruh hâli",
 }
 
 
@@ -238,6 +256,27 @@ def load_existing(path: Path) -> Dict[str, Dict[str, str]]:
         return {}
     with path.open(encoding="utf-8", newline="") as handle:
         return {row["SourceID"]: row for row in csv.DictReader(handle, delimiter="\t")}
+
+
+def load_reviewed_english(path: Path) -> Dict[str, Dict[str, str]]:
+    """Load the human-reviewed English definition/example for production clues."""
+    if not path.exists():
+        return {}
+    reviewed = {}
+    with path.open(encoding="utf-8", newline="") as handle:
+        for row in csv.DictReader(handle, delimiter="\t"):
+            sid = "::".join(
+                [
+                    row.get("Source Deck", ""),
+                    row.get("Source Card", ""),
+                    strip_html(row.get("English", "")).lower(),
+                ]
+            )
+            reviewed[sid] = {
+                "EnglishMeaning": strip_html(row.get("English Meaning", "")),
+                "EnglishExample": strip_html(row.get("English Example", "")),
+            }
+    return reviewed
 
 
 def load_cache(path: Path) -> Dict[str, str]:
@@ -373,7 +412,9 @@ def build_rows(
     cache_path: Path | None = None,
     provider: str = "google",
     refresh: bool = False,
+    reviewed_english: Dict[str, Dict[str, str]] | None = None,
 ) -> List[Dict[str, str]]:
+    reviewed_english = reviewed_english or {}
     rows: List[Dict[str, str]] = []
     order_map = difficulty_order(source_rows)
     texts_to_translate = []
@@ -393,6 +434,7 @@ def build_rows(
         sid = source_id(row)
         order = order_map.get(sid, index)
         previous = existing.get(sid, {})
+        reviewed = reviewed_english.get(sid, {})
         source_text = cue_source(row)
         turkish_cue = "" if refresh else previous.get("TurkishCue", "").strip()
         status = "" if refresh else previous.get("Status", "").strip()
@@ -413,8 +455,10 @@ def build_rows(
                 "SourceDeck": row.get("deck", ""),
                 "SourceCard": row.get("card_number", ""),
                 "English": strip_html(row.get("english_word", "")),
-                "EnglishMeaning": strip_html(row.get("english_meaning", "")),
-                "EnglishExample": strip_html(row.get("english_example", "")),
+                "EnglishMeaning": reviewed.get("EnglishMeaning")
+                or strip_html(row.get("english_meaning", "")),
+                "EnglishExample": reviewed.get("EnglishExample")
+                or strip_html(row.get("english_example", "")),
                 "CueSource": source_text,
                 "TurkishCue": source_specific_override(row) or polish_cue_for_row(row, turkish_cue),
                 "Status": status,
@@ -452,6 +496,7 @@ def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description="Generate Turkish cue TSV for English 4000 production cards.")
     parser.add_argument("--source", default="4000 Essential English Words.txt")
     parser.add_argument("--output", default=str(OUTPUT_PATH))
+    parser.add_argument("--reviewed-english", default=str(REVIEWED_ENGLISH_PATH))
     parser.add_argument("--cache", help="Translation cache path. Defaults to provider-specific cache.")
     parser.add_argument("--provider", choices=["google", "mymemory"], default="google")
     parser.add_argument("--refresh", action="store_true", help="Regenerate existing cues instead of preserving them.")
@@ -465,6 +510,7 @@ def main() -> int:
     output = Path(args.output)
     cache_path = Path(args.cache) if args.cache else (GOOGLE_CACHE_PATH if args.provider == "google" else CACHE_PATH)
     existing = load_existing(output)
+    reviewed_english = load_reviewed_english(Path(args.reviewed_english))
     cache = load_cache(cache_path)
     rows = build_rows(
         source_rows,
@@ -475,6 +521,7 @@ def main() -> int:
         cache_path,
         provider=args.provider,
         refresh=args.refresh,
+        reviewed_english=reviewed_english,
     )
     write_rows(output, rows)
     save_cache(cache_path, cache)

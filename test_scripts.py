@@ -15,6 +15,7 @@ from collections import Counter, defaultdict
 
 import check_word
 import get_pexels_image
+import anki_protect
 import anki_tools
 import grammar_levels
 import spanish_grammar_levels
@@ -39,6 +40,226 @@ def _template_stem(text):
 
 
 class TestAnkiAutomation(unittest.TestCase):
+
+    def test_fingerprint_distinguishes_source_updates_from_manual_edits(self):
+        """Tracked source drift is safe, but live drift is protected."""
+        field_names = ["Front", "Back"]
+        old_source = {"Front": "old front", "Back": "old back"}
+        new_source = {"Front": "new front", "Back": "new back"}
+        tracked_live = {
+            "Front": {"value": "old front"},
+            "Back": {"value": "old back"},
+            anki_protect.FINGERPRINT_FIELD: {
+                "value": anki_protect.content_fingerprint(old_source, field_names)
+            },
+        }
+
+        self.assertFalse(
+            anki_protect.note_has_untracked_edits(tracked_live, new_source, field_names)
+        )
+        tracked_live["Front"]["value"] = "my edited front"
+        self.assertTrue(
+            anki_protect.note_has_untracked_edits(tracked_live, new_source, field_names)
+        )
+
+    def test_legacy_note_is_only_safe_when_it_matches_source(self):
+        """Unfingerprinted notes are never overwritten when their content differs."""
+        field_names = ["Front", "Back"]
+        source = {"Front": "front", "Back": "back"}
+        matching = {"Front": {"value": "front"}, "Back": {"value": "back"}}
+        edited = {"Front": {"value": "my front"}, "Back": {"value": "back"}}
+
+        self.assertFalse(anki_protect.note_has_untracked_edits(matching, source, field_names))
+        self.assertTrue(anki_protect.note_has_untracked_edits(edited, source, field_names))
+
+    def test_legacy_generated_fingerprint_allows_first_safe_source_update(self):
+        """A known prior generated version migrates, while a manual variant locks."""
+        field_names = ["Front", "Back"]
+        old_source = {"Front": "old front", "Back": "old back"}
+        new_source = {"Front": "new front", "Back": "new back"}
+        old_fingerprint = anki_protect.content_fingerprint(old_source, field_names)
+        generated_live = {
+            "Front": {"value": "old front"},
+            "Back": {"value": "old back"},
+        }
+        manual_live = {
+            "Front": {"value": "my old front"},
+            "Back": {"value": "old back"},
+        }
+
+        self.assertFalse(
+            anki_protect.note_has_untracked_edits(
+                generated_live,
+                new_source,
+                field_names,
+                legacy_fingerprints=(old_fingerprint,),
+            )
+        )
+        self.assertTrue(
+            anki_protect.note_has_untracked_edits(
+                manual_live,
+                new_source,
+                field_names,
+                legacy_fingerprints=(old_fingerprint,),
+            )
+        )
+
+    def test_legacy_manifest_covers_changed_generated_content(self):
+        anki_protect.load_legacy_fingerprints.cache_clear()
+        namespaces = anki_protect.load_legacy_fingerprints()
+
+        self.assertGreater(len(namespaces["spanish_core"]), 0)
+        self.assertGreater(len(namespaces["english_mastery"]), 0)
+        self.assertGreater(len(namespaces["spanish_4000_content"]), 1000)
+        self.assertGreater(len(namespaces["spanish_4000_production"]), 0)
+        self.assertGreater(len(namespaces["english_4000_production"]), 0)
+        for entries in namespaces.values():
+            for fingerprint in entries.values():
+                self.assertRegex(fingerprint, r"^[0-9a-f]{64}$")
+
+    def test_spanish_core_sync_auto_locks_legacy_manual_edit(self):
+        """Bulk sync locks and preserves a differing legacy note while still moving it."""
+        row = {field: "" for field in sync_spanish_core_to_anki.FIELDS}
+        row.update({"SourceID": "core::1", "DeckPath": "Spanish Core::A1", "Front": "source", "Tags": "core"})
+        live_fields = {
+            field: {"value": value}
+            for field, value in row.items()
+        }
+        live_fields["Front"] = {"value": "my edited front"}
+        note = {"noteId": 42, "fields": live_fields, "tags": []}
+
+        def fake_invoke(action, **params):
+            if action == "findCards":
+                return [420]
+            return None
+
+        with patch.object(sync_spanish_core_to_anki, "load_existing_notes", return_value={"core::1": note}), \
+             patch.object(sync_spanish_core_to_anki, "invoke", side_effect=fake_invoke) as mock_invoke:
+            result = sync_spanish_core_to_anki.sync_rows([row], store_media=False)
+
+        self.assertEqual(result["auto_locked"], 1)
+        self.assertEqual(result["updated"], 0)
+        self.assertIn(
+            unittest.mock.call("addTags", notes=[42], tags=anki_protect.LOCKED_TAG),
+            mock_invoke.call_args_list,
+        )
+        self.assertNotIn("updateNoteFields", [call.args[0] for call in mock_invoke.call_args_list])
+        self.assertIn("changeDeck", [call.args[0] for call in mock_invoke.call_args_list])
+
+    def test_stale_legacy_note_is_not_pruned_without_fingerprint(self):
+        """Pruning cannot prove a legacy note is unedited, so it leaves it alone."""
+        note = {
+            "noteId": 42,
+            "tags": [],
+            "fields": {"SourceID": {"value": "removed::1"}, "Front": {"value": "front"}},
+        }
+
+        def fake_invoke(action, **params):
+            if action == "findNotes":
+                return [42]
+            if action == "notesInfo":
+                return [note]
+            return None
+
+        with patch.object(sync_spanish_core_to_anki, "invoke", side_effect=fake_invoke) as mock_invoke:
+            pruned = sync_spanish_core_to_anki.prune_stale_notes(set())
+
+        self.assertEqual(pruned, 0)
+        self.assertNotIn("deleteNotes", [call.args[0] for call in mock_invoke.call_args_list])
+
+    def test_word_update_with_blank_prompts_keeps_live_fields(self):
+        """Blank prompts do not replace a live card with fetched suggestions."""
+        current = {
+            "Meaning": "my meaning",
+            "Example": "My <b>apple</b> example",
+            "IPA": "/mine/",
+        }
+        fetched = {"meaning": "fetched meaning", "example": "Fetched apple example", "ipa": "/fetched/"}
+
+        with patch("sys.argv", ["anki_tools.py", "apple"]), \
+             patch.object(anki_tools, "find_note_id", return_value=42), \
+             patch.object(anki_tools, "get_note_fields", return_value=current), \
+             patch.object(anki_tools, "get_word_data", return_value=fetched), \
+             patch("builtins.input", side_effect=["y", "", "", ""]), \
+             patch.object(anki_tools, "generate_audio_base64") as mock_audio, \
+             patch.object(anki_tools, "invoke") as mock_invoke:
+            anki_tools.main()
+
+        mock_audio.assert_not_called()
+        self.assertNotIn("updateNoteFields", [call.args[0] for call in mock_invoke.call_args_list])
+
+    def test_word_update_rolls_back_only_text_whose_audio_failed(self):
+        """Changed text and its audio update as one pair, without stale sound."""
+        current = {
+            "Meaning": "old meaning",
+            "Example": "Old <b>apple</b> example",
+            "IPA": "/old/",
+        }
+        fetched = {"meaning": "fetched", "example": "Fetched apple", "ipa": "/fetched/"}
+
+        with patch("sys.argv", ["anki_tools.py", "apple"]), \
+             patch.object(anki_tools, "find_note_id", return_value=42), \
+             patch.object(anki_tools, "get_note_fields", return_value=current), \
+             patch.object(anki_tools, "get_word_data", return_value=fetched), \
+             patch("builtins.input", side_effect=["y", "new meaning", "New apple example", ""]), \
+             patch.object(
+                 anki_tools,
+                 "generate_audio_base64",
+                 side_effect=[None, "ZXhhbXBsZS1hdWRpbw=="],
+             ), \
+             patch.object(anki_tools, "invoke") as mock_invoke:
+            anki_tools.main()
+
+        update_calls = [
+            call for call in mock_invoke.call_args_list if call.args[0] == "updateNoteFields"
+        ]
+        self.assertEqual(1, len(update_calls))
+        updated_fields = update_calls[0].kwargs["note"]["fields"]
+        self.assertNotIn("Meaning", updated_fields)
+        self.assertNotIn("Sound_Meaning", updated_fields)
+        self.assertEqual("New <b>apple</b> example", updated_fields["Example"])
+        self.assertEqual("[sound:user_apple_example.mp3]", updated_fields["Sound_Example"])
+
+    def test_existing_model_presentation_is_preserved_by_default(self):
+        """Adding sync metadata does not replace an existing template or CSS."""
+        def fake_invoke(action, **params):
+            if action == "modelNames":
+                return [sync_spanish_core_to_anki.MODEL_NAME]
+            if action == "modelFieldNames":
+                return list(sync_spanish_core_to_anki.MODEL_FIELDS)
+            return None
+
+        with patch.object(sync_spanish_core_to_anki, "invoke", side_effect=fake_invoke) as mock_invoke:
+            sync_spanish_core_to_anki.ensure_model()
+
+        actions = [call.args[0] for call in mock_invoke.call_args_list]
+        self.assertNotIn("updateModelTemplates", actions)
+        self.assertNotIn("updateModelStyling", actions)
+
+    def test_production_sync_auto_locks_manual_cue_edit(self):
+        """Derived production fields receive the same overwrite protection."""
+        fields = {
+            "SourceID": {"value": "4000 Essential English Words::1.Book::::apple"},
+            "English": {"value": "apple"},
+            "Spanish": {"value": "la manzana"},
+            "SpanishPartOfSpeech": {"value": "noun"},
+            "ProductionCue": {"value": "my custom cue"},
+        }
+        note = {"noteId": 7, "fields": fields, "cards": [], "tags": []}
+        order_map = {"4000 Essential English Words::1.Book::::apple": 1}
+
+        with patch.object(sync_4000_production_to_anki, "get_notes", return_value=[note]), \
+             patch.object(sync_4000_production_to_anki, "update_note_fields_many") as mock_update, \
+             patch.object(sync_4000_production_to_anki, "card_maps_for_notes", return_value={}), \
+             patch.object(sync_4000_production_to_anki, "apply_card_plan"), \
+             patch.object(sync_4000_production_to_anki, "invoke") as mock_invoke:
+            result = sync_4000_production_to_anki.sync_spanish(
+                order_map, active_limit=400, context_active_limit=0
+            )
+
+        self.assertEqual(result["auto_locked"], 1)
+        mock_update.assert_called_once_with([])
+        mock_invoke.assert_called_once_with("addTags", notes=[7], tags=anki_protect.LOCKED_TAG)
 
     def test_check_word_load_vocabulary(self):
         """Test that the duplicate checker correctly identifies words from a mock file."""
@@ -547,21 +768,20 @@ class TestAnkiAutomation(unittest.TestCase):
             self.assertTrue(card["AudioContributor"])
             self.assertTrue(card["AudioLicense"])
 
-    def test_spanish_audio_dictation_source_ids_are_word_cloze(self):
-        """Test former dictation cards ask for one heard word, not a whole sentence."""
+    def test_spanish_audio_dictation_is_full_sentence_listening(self):
+        """Test dictation cards reconstruct a whole sentence without written context."""
         cards = [
             card for card in spanish_core_learning.get_cards()
             if card["SourceID"].startswith("tatoeba_dictation::")
         ]
         self.assertGreaterEqual(len(cards), 40)
         for card in cards:
-            self.assertEqual(card["CardType"], "audio_cloze")
-            self.assertEqual(card["PromptMode"], "type_exact")
+            self.assertEqual(card["CardType"], "dictation")
+            self.assertEqual(card["PromptMode"], "type_compare")
             self.assertIn("[sound:tatoeba_spa_", card["Front"])
-            self.assertIn("_____", card["Front"])
-            self.assertNotIn("Type the full Spanish sentence", card["Front"])
-            self.assertNotIn("Full dictation", card["Formula"])
-            self.assertNotRegex(card["Answer"], r"\s")
+            self.assertNotIn("_____", card["Front"])
+            self.assertIn("type the full Spanish sentence", card["Front"])
+            self.assertRegex(card["Answer"], r"\s")
 
     def test_spanish_tatoeba_sentence_roles_do_not_overlap(self):
         """Test one source sentence is not reused across text, audio, and dictation modes."""
@@ -589,23 +809,32 @@ class TestAnkiAutomation(unittest.TestCase):
         """Test readable Latin American Spanish pronunciation hints."""
         examples = {
             "año": "A-nyo",
-            "mochila": "mo-ÇI-la",
+            "mochila": "mo-Çİ-la",
             "cinturón": "sin-tu-RON",
             "queso": "KE-so",
             "guitarra": "gi-TAR-ra",
             "llave": "YA-be",
-            "jardín": "har-DIN",
-            "círculo": "SIR-ku-lo",
+            "jardín": "har-DİN",
+            "círculo": "SİR-ku-lo",
             "el cinturón": "el sin-tu-RON",
         }
         for word, expected in examples.items():
-            self.assertEqual(spanish_deck.spanish_pronunciation_hint(word), expected)
-            self.assertNotIn("İ", spanish_deck.spanish_pronunciation_hint(word))
+            hint = spanish_deck.spanish_pronunciation_hint(word)
+            self.assertEqual(hint, expected)
+            self.assertNotIn("I", hint)
 
     def test_spanish_metadata_uses_conservative_forms(self):
         """Test inferred Spanish grammar does not invent risky forms."""
         noun = spanish_deck.infer_spanish_metadata("el cinturón")
         self.assertEqual(noun["spanish_forms"], "singular: el cinturón; plural: los cinturones")
+        self.assertIn(
+            "plural: los volúmenes",
+            spanish_deck.infer_spanish_metadata("el volumen")["spanish_forms"],
+        )
+        self.assertIn(
+            "plural: las imágenes",
+            spanish_deck.infer_spanish_metadata("la imagen")["spanish_forms"],
+        )
 
         verb = spanish_deck.infer_spanish_metadata("aprobar")
         self.assertIn("-ar pattern", verb["spanish_forms"])
@@ -624,7 +853,7 @@ class TestAnkiAutomation(unittest.TestCase):
         notes_by_pair = {(row["english"], row["spanish"]): row["notes"] for row in rows}
         self.assertIn("color", notes_by_pair[("navy", "azul marino")])
         self.assertIn("military", notes_by_pair[("navy", "armada")])
-        self.assertIn("lower part", notes_by_pair[("bottom", "la parte inferior")])
+        self.assertIn("body part", notes_by_pair[("bottom", "el trasero")])
         self.assertIn("lowest point", notes_by_pair[("bottom", "fondo")])
 
     def test_spanish_examples_track_source_examples_for_known_rows(self):
@@ -1532,7 +1761,9 @@ class TestAnkiAutomation(unittest.TestCase):
              patch.object(sync_4000_production_to_anki, "update_note_fields_many"), \
              patch.object(sync_4000_production_to_anki, "card_maps_for_notes", return_value={1: {0: 101, 1: 102, 2: 103}}), \
              patch.object(sync_4000_production_to_anki, "apply_card_plan", side_effect=fake_apply_card_plan):
-            result = sync_4000_production_to_anki.sync_spanish(order_map, active_limit=400, context_active_limit=0)
+            result = sync_4000_production_to_anki.sync_spanish(
+                order_map, active_limit=400, context_active_limit=0, force=True
+            )
 
         self.assertEqual(result["recognition_suspended"], 1)
         self.assertEqual(result["production_suspended"], 0)
@@ -1574,13 +1805,63 @@ class TestAnkiAutomation(unittest.TestCase):
              patch.object(sync_4000_production_to_anki, "get_notes", return_value=[note]), \
              patch.object(sync_4000_production_to_anki, "card_maps_for_notes", return_value={1: {0: 201, 1: 202}}), \
              patch.object(sync_4000_production_to_anki, "apply_card_plan", side_effect=fake_apply_card_plan):
-            result = sync_4000_production_to_anki.sync_english(order_map, cue_map, active_limit=400)
+            result = sync_4000_production_to_anki.sync_english(
+                order_map, cue_map, active_limit=400, force=True
+            )
 
         self.assertEqual(result["recognition_suspended"], 1)
         self.assertEqual(result["production_suspended"], 0)
         self.assertNotIn(201, planned["active_cards"])
         self.assertIn(201, planned["suspended_cards"])
         self.assertIn(202, planned["active_cards"])
+
+    def test_english_4000_legacy_generated_cue_migrates_without_locking(self):
+        """The old plain production cue is recognized as generated on first sync."""
+        key = "4000 Essential English Words::1.Book::::agree"
+        level = sync_4000_production_to_anki.level_for_order(1)
+        fields = {
+            "Word": {"value": "agree"},
+            "ProductionSourceID": {"value": key},
+            "ProductionCue": {"value": "aynı fikirde olmak"},
+            "ProductionAnswer": {"value": "agree"},
+            "ProductionOrder": {"value": "1"},
+            "ProductionLevel": {"value": level},
+            "ProductionEnabled": {"value": "yes"},
+        }
+        note = {
+            "noteId": 1,
+            "fields": fields,
+            "cards": [201, 202],
+            "cardsInfoDeckName": "4000 Essential English Words::1.Book",
+            "tags": [],
+        }
+
+        def fake_invoke(action, **params):
+            if action == "findNotes":
+                return [1]
+            if action == "notesInfo":
+                return [note]
+            if action == "cardsInfo":
+                return [{"cardId": 201, "deckName": note["cardsInfoDeckName"]}]
+            return []
+
+        with patch.object(sync_4000_production_to_anki, "invoke", side_effect=fake_invoke) as mock_invoke, \
+             patch.object(sync_4000_production_to_anki, "ENGLISH_MODELS", ("4000 EEW",)), \
+             patch.object(sync_4000_production_to_anki, "update_note_fields_many") as mock_update, \
+             patch.object(sync_4000_production_to_anki, "get_notes", return_value=[note]), \
+             patch.object(sync_4000_production_to_anki, "card_maps_for_notes", return_value={1: {}}), \
+             patch.object(sync_4000_production_to_anki, "apply_card_plan"):
+            result = sync_4000_production_to_anki.sync_english(
+                {key: 1},
+                {key: "aynı fikirde olmak"},
+                active_limit=400,
+                sense_rows={key: {"EnglishMeaning": "To agree is to have the same opinion."}},
+            )
+
+        self.assertEqual(1, result["updated_notes"])
+        self.assertEqual(0, result["auto_locked"])
+        mock_update.assert_called_once()
+        self.assertNotIn("addTags", [call.args[0] for call in mock_invoke.call_args_list])
 
     def test_spanish_glossary_no_repeated_definition_pairs(self):
         """Test Spanish reviewed meanings avoid obvious repeated-word definitions."""
@@ -1617,15 +1898,80 @@ class TestAnkiAutomation(unittest.TestCase):
         self.assertEqual(order["4000 Essential English Words::Extra::2_1::backpack"], 3)
 
     def test_spanish_production_cue_requires_article_for_nouns(self):
-        """Test noun production cues ask for English article but answer includes Spanish article."""
+        """Test noun production cues include article and source-sense context."""
         fields = {
             "English": {"value": "backpack"},
             "Spanish": {"value": "la mochila"},
             "SpanishPartOfSpeech": {"value": "noun"},
+            "EnglishMeaning": {"value": "A backpack is a bag carried on the back."},
         }
-        self.assertEqual(sync_4000_production_to_anki.spanish_production_cue(fields), "the backpack")
+        cue = sync_4000_production_to_anki.spanish_production_cue(fields)
+        self.assertEqual(sync_4000_production_to_anki.spanish_base_production_cue(fields), "the backpack")
+        self.assertIn("the backpack", cue)
+        self.assertIn("Context", cue)
+        self.assertIn("A backpack is a bag", cue)
         self.assertIn("{{type:ProductionAnswer}}", sync_4000_production_to_anki.SPANISH_PRODUCTION_FRONT)
+        self.assertIn("{{^ProductionAnswer}}", sync_4000_production_to_anki.SPANISH_PRODUCTION_FRONT)
         self.assertNotIn("{{Image}}", sync_4000_production_to_anki.SPANISH_PRODUCTION_FRONT)
+
+    def test_english_production_cue_masks_answer_and_supports_self_grading(self):
+        """Test Turkish prompts disambiguate the source sense without leaking English."""
+        cue = sync_4000_production_to_anki.english_production_cue(
+            "yeti / yetenek",
+            "faculty",
+            "A faculty is a mental or physical ability.",
+            "Her faculties remained sharp.",
+        )
+        self.assertIn("yeti / yetenek", cue)
+        self.assertIn("A _____ is a mental or physical ability.", cue)
+        self.assertNotIn("A faculty is", cue)
+        self.assertIn("Bağlam", cue)
+        self.assertIn("{{^ProductionAnswer}}", sync_4000_production_to_anki.ENGLISH_PRODUCTION_FRONT)
+
+    def test_english_production_cue_masks_inflections_and_uses_neutral_label(self):
+        cases = [
+            ("photograph", "I like taking photographs."),
+            ("happen", "If that happens, call me."),
+            ("comprise", "The collection comprises four books."),
+            ("source", "Sources should be checked."),
+            ("sense", "She senses danger."),
+            ("have", "She has enough time."),
+            ("context", "The context should disambiguate the word."),
+        ]
+        for answer, meaning in cases:
+            with self.subTest(answer=answer):
+                cue = sync_4000_production_to_anki.english_production_cue(
+                    "Türkçe ipucu", answer, meaning
+                )
+                visible = sync_4000_production_to_anki.strip_html(cue).lower()
+                self.assertIn("_____", visible)
+                self.assertNotRegex(visible, rf"\b{re.escape(answer)}(?:s|es)?\b")
+                self.assertNotIn("source sense", visible)
+                self.assertIn("bağlam", visible)
+
+    def test_turkish_cue_source_uses_reviewed_english(self):
+        path = Path("generated/english_4000/english_turkish_production.tsv")
+        rows = sync_4000_production_to_anki.load_turkish_rows(path)
+        consist = next(row for row in rows.values() if row.get("English") == "consist")
+        comprise = next(row for row in rows.values() if row.get("English") == "comprise")
+
+        self.assertEqual(
+            "To consist of things is to be made of those parts or things.",
+            consist["EnglishMeaning"],
+        )
+        self.assertNotIn("certain", consist["EnglishMeaning"])
+        self.assertIn("comprised of seniors", comprise["EnglishExample"])
+
+    def test_spanish_verb_paradigms_are_latin_american_and_self_graded(self):
+        """Test multi-form verb grids omit vosotros and avoid monolithic exact grading."""
+        cards = spanish_core_learning.get_cards(card_type="verb_paradigm")
+        multi_form = [card for card in cards if "|" in card["Answer"]]
+        self.assertTrue(multi_form)
+        for card in multi_form:
+            self.assertEqual("self_grade", card["PromptMode"])
+            self.assertEqual("", card["TypeAnswer"])
+            self.assertNotIn("vosotros", card["Formula"])
+            self.assertEqual(4, card["Answer"].count("|"))
 
     def test_spanish_4000_templates_are_spanish_first_with_english_rescue(self):
         """Test Spanish 4000 backs do not put English beside Spanish learning content."""
@@ -1813,7 +2159,7 @@ class TestAnkiAutomation(unittest.TestCase):
             "battle": "savaş / çatışma",
             "military": "ordu",
             "twist": "bükmek / ekseninde döndürmek",
-            "unless": "... sürece&nbsp;",
+            "unless": "... sürece",
             "confidence": "güven / özgüven",
             "consequence": "sonuç / sonuç olarak",
             "pale": "soluk / solgun",

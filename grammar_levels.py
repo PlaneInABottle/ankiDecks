@@ -736,14 +736,14 @@ def _build_choose_only_grammar_cards():
                     ],
                 ),
                 (
-                    "Choose: Honesty is a key value in _____ profession.<br>A) a<br>B) this",
-                    "A) Honesty is a key value in every profession.",
+                    "Choose: Honesty is _____ important value in every profession.<br>A) a<br>B) an",
+                    "B) Honesty is an important value in every profession.",
                     "Articles",
-                    "zero article (general abstract)",
-                    "General abstract nouns often take zero article.",
+                    "a/an before a singular countable noun",
+                    "Use an before a vowel sound; the following sound, not spelling alone, controls the choice.",
                     [
-                        "Honesty is essential.",
-                        "Life can be unpredictable.",
+                        "Integrity is an important professional value.",
+                        "Trust is a useful foundation for teamwork.",
                     ],
                 ),
                 (
@@ -1311,8 +1311,8 @@ def _build_choose_only_grammar_cards():
                     ],
                 ),
                 (
-                    "Choose: It is not about speed, _____ about reliability.<br>A) only, not<br>B) only but",
-                    "A) It is not about speed, only about reliability.",
+                    "Choose: It is not about speed, _____ about reliability.<br>A) but<br>B) and",
+                    "A) It is not about speed, but about reliability.",
                     "Parallelism",
                     "balanced phrase structure",
                     "Balance coordinated noun phrases for clarity.",
