@@ -9,7 +9,6 @@ import json
 import re
 import time
 import urllib.request
-from collections import defaultdict
 from pathlib import Path
 from typing import Dict, Iterable, List, Tuple
 
@@ -163,11 +162,6 @@ SPANISH_CSS = """
   margin: 8px auto;
   max-width: 680px;
 }
-.type-note {
-  color: #6b7280;
-  font-size: 12px;
-  margin: 6px 0;
-}
 .rescue {
   color: #6b7280;
   font-size: 12px;
@@ -246,8 +240,6 @@ input {
 .nightMode .card .pron,
 .card.nightMode .grammar,
 .nightMode .card .grammar,
-.card.nightMode .type-note,
-.nightMode .card .type-note,
 .card.nightMode .rescue,
 .nightMode .card .rescue { color: #d1d5db; }
 .card.nightMode .label,
@@ -285,8 +277,7 @@ ENGLISH_PRODUCTION_CSS = """
   font-weight: 650;
   margin: 10px 0 8px;
 }
-.production .sense-cue,
-.production .type-note {
+.production .sense-cue {
   color: #6b7280;
   font-size: 14px;
   font-weight: 450;
@@ -365,11 +356,7 @@ SPANISH_PRODUCTION_FRONT = """
   <span class="cue-label">Produce Spanish</span>
   <div class="production-cue">{{ProductionCue}}</div>
   {{#ProductionAnswer}}
-    <div class="type-note">Type the best answer for this sense. Include the article for nouns.</div>
     {{type:ProductionAnswer}}
-  {{/ProductionAnswer}}
-  {{^ProductionAnswer}}
-    <div class="type-note">Say or type one natural answer, then reveal and self-grade. Valid synonyms count.</div>
   {{/ProductionAnswer}}
 </div>
 {{/ProductionCue}}
@@ -380,7 +367,6 @@ SPANISH_PRODUCTION_BACK = """
 <div class="wrap">
   {{FrontSide}}
   <div class="target">{{Spanish}}</div>
-  {{^ProductionAnswer}}<div class="type-note">Self-grade by meaning and naturalness, not exact wording.</div>{{/ProductionAnswer}}
   <div class="pron">{{PronunciationHint}}</div>
   {{#Image}}<div class="image">{{Image}}</div>{{/Image}}
   <div class="stack">
@@ -414,11 +400,7 @@ SPANISH_CONTEXT_PRODUCTION_FRONT = """
   <span class="cue-label">Type Spanish from Spanish context</span>
   <div class="production-cue">{{SpanishContextCue}}</div>
   {{#ProductionAnswer}}
-    <div class="type-note">Use the Spanish context. Include the article for nouns.</div>
     {{type:ProductionAnswer}}
-  {{/ProductionAnswer}}
-  {{^ProductionAnswer}}
-    <div class="type-note">Produce one natural completion, then reveal and self-grade.</div>
   {{/ProductionAnswer}}
 </div>
 {{/SpanishContextProductionEnabled}}
@@ -464,9 +446,6 @@ ENGLISH_PRODUCTION_FRONT = """
   {{#ProductionAnswer}}
     {{type:ProductionAnswer}}
   {{/ProductionAnswer}}
-  {{^ProductionAnswer}}
-    <div class="type-note">Say or type one natural answer, then reveal and self-grade. Valid synonyms count.</div>
-  {{/ProductionAnswer}}
 </div>
 {{/ProductionCue}}
 """
@@ -476,7 +455,6 @@ ENGLISH_PRODUCTION_BACK_MAIN = """
 <div class="wrap production">
   {{FrontSide}}
   <div class="target">{{Word}}</div>
-  {{^ProductionAnswer}}<div class="type-note">Self-grade by the source sense and naturalness, not exact wording.</div>{{/ProductionAnswer}}
   {{#IPA}}<div class="pron">{{IPA}}</div>{{/IPA}}
   {{#Sound}}{{Sound}}{{/Sound}}
   {{#Image}}<div class="image">{{Image}}</div>{{/Image}}
@@ -491,7 +469,6 @@ ENGLISH_PRODUCTION_BACK_EXTRA = """
 <div class="wrap production">
   {{FrontSide}}
   <div class="target">{{English}}</div>
-  {{^ProductionAnswer}}<div class="type-note">Self-grade by meaning and naturalness, not exact wording.</div>{{/ProductionAnswer}}
   {{#Am&BrTranscription}}<div class="pron">{{Am&BrTranscription}}</div>{{/Am&BrTranscription}}
   {{#Audio}}{{Audio}}{{/Audio}}
   {{#IMG}}<div class="image">{{IMG}}</div>{{/IMG}}
@@ -546,6 +523,12 @@ def chunks(values: List[int], size: int = 500) -> Iterable[List[int]]:
 def strip_html(value: str) -> str:
     text = re.sub(r"<[^>]+>", "", value or "")
     return html.unescape(" ".join(text.split()))
+
+
+def missing_production_answer(fields: Dict[str, Dict[str, str]], answer: str) -> Dict[str, str]:
+    """Return a safe additive update that enables typing on a protected note."""
+    current = strip_html(fields.get("ProductionAnswer", {}).get("value", ""))
+    return {"ProductionAnswer": answer} if answer and not current else {}
 
 
 def level_for_order(order: int) -> str:
@@ -784,10 +767,6 @@ def english_production_cue(
     return f'<div class="production-primary">{primary}</div>{sense}'
 
 
-def _ambiguity_key(value: str) -> str:
-    return " ".join(strip_html(value).lower().split())
-
-
 def spanish_target_variants(spanish: str) -> List[str]:
     plain = strip_html(spanish).strip()
     variants = {plain}
@@ -881,13 +860,7 @@ def sync_spanish(
     context_suspended = 0
     skipped_locked = 0
     auto_locked = 0
-    answers_by_cue: Dict[str, set[str]] = defaultdict(set)
-    for note in notes:
-        fields = note["fields"]
-        base_cue = _ambiguity_key(spanish_base_production_cue(fields))
-        answer = _ambiguity_key(fields.get("Spanish", {}).get("value", ""))
-        if base_cue and answer:
-            answers_by_cue[base_cue].add(answer)
+    typing_enabled_locked = 0
     for note in notes:
         fields = note["fields"]
         key = source_id_from_spanish_note(fields)
@@ -896,8 +869,6 @@ def sync_spanish(
         level = level_for_order(order)
         cue = spanish_production_cue(fields)
         answer = strip_html(fields.get("Spanish", {}).get("value", ""))
-        base_cue = _ambiguity_key(spanish_base_production_cue(fields))
-        exact_answer = "" if len(answers_by_cue.get(base_cue, set())) > 1 else answer
         context_enabled = "yes" if order <= context_active_limit else ""
         legacy_source_fields = {
             "SourceOrder": str(order),
@@ -912,7 +883,7 @@ def sync_spanish(
             "SourceOrder": str(order),
             "DifficultyLevel": level,
             "ProductionCue": cue,
-            "ProductionAnswer": exact_answer,
+            "ProductionAnswer": answer,
             "ProductionEnabled": "yes",
             "SpanishContextCue": spanish_context_cue(fields),
             "SpanishContextProductionEnabled": context_enabled,
@@ -920,6 +891,10 @@ def sync_spanish(
         preserve_content = not force and anki_protect.note_is_locked(note.get("tags", []))
         if preserve_content:
             skipped_locked += 1
+            typing_fields = missing_production_answer(fields, answer)
+            if typing_fields:
+                updates.append((note["noteId"], typing_fields))
+                typing_enabled_locked += 1
         elif not force and anki_protect.note_has_untracked_edits(
             fields,
             source_fields,
@@ -936,6 +911,10 @@ def sync_spanish(
         ):
             invoke("addTags", notes=[note["noteId"]], tags=anki_protect.LOCKED_TAG)
             auto_locked += 1
+            typing_fields = missing_production_answer(fields, answer)
+            if typing_fields:
+                updates.append((note["noteId"], typing_fields))
+                typing_enabled_locked += 1
         else:
             updates.append(
                 (
@@ -980,6 +959,7 @@ def sync_spanish(
         "context_suspended": context_suspended,
         "skipped_locked": skipped_locked,
         "auto_locked": auto_locked,
+        "typing_enabled_locked": typing_enabled_locked,
     }
 
 
@@ -1126,18 +1106,7 @@ def sync_english(
     note_has_cue: Dict[int, bool] = {}
     skipped_locked = 0
     auto_locked = 0
-    answers_by_cue: Dict[str, set[str]] = defaultdict(set)
-    note_answers: Dict[int, str] = {}
-    for note in notes:
-        fields = note.get("fields", {})
-        answer = strip_html(
-            fields.get("Word", fields.get("English", {"value": ""})).get("value", "")
-        )
-        note_answers[note["noteId"]] = answer
-        raw_cue = cue_map.get(source_id_from_english_note(note), "")
-        cue_key = _ambiguity_key(raw_cue)
-        if cue_key and answer:
-            answers_by_cue[cue_key].add(_ambiguity_key(answer))
+    typing_enabled_locked = 0
     for note in notes:
         key = source_id_from_english_note(note)
         order = order_map.get(key, 99999)
@@ -1145,7 +1114,9 @@ def sync_english(
         note_orders[note["noteId"]] = order
         note_has_cue[note["noteId"]] = bool(raw_cue)
         fields = note.get("fields", {})
-        answer = note_answers.get(note["noteId"], "")
+        answer = strip_html(
+            fields.get("Word", fields.get("English", {"value": ""})).get("value", "")
+        )
         sense_row = sense_rows.get(key, {})
         cue = (
             english_production_cue(
@@ -1157,8 +1128,6 @@ def sync_english(
             if raw_cue
             else ""
         )
-        cue_key = _ambiguity_key(raw_cue)
-        exact_answer = "" if len(answers_by_cue.get(cue_key, set())) > 1 else answer
         if not raw_cue:
             missing_cues += 1
         legacy_source_fields = {
@@ -1172,7 +1141,7 @@ def sync_english(
         source_fields = {
             "ProductionSourceID": key,
             "ProductionCue": cue,
-            "ProductionAnswer": exact_answer,
+            "ProductionAnswer": answer,
             "ProductionOrder": str(order),
             "ProductionLevel": level_for_order(order),
             "ProductionEnabled": "yes" if cue else "",
@@ -1181,6 +1150,10 @@ def sync_english(
         preserve_content = not force and anki_protect.note_is_locked(note.get("tags", []))
         if preserve_content:
             skipped_locked += 1
+            typing_fields = missing_production_answer(fields, answer)
+            if typing_fields:
+                updates.append((note["noteId"], typing_fields))
+                typing_enabled_locked += 1
         elif not force and anki_protect.note_has_untracked_edits(
             fields,
             source_fields,
@@ -1197,6 +1170,10 @@ def sync_english(
         ):
             invoke("addTags", notes=[note["noteId"]], tags=anki_protect.LOCKED_TAG)
             auto_locked += 1
+            typing_fields = missing_production_answer(fields, answer)
+            if typing_fields:
+                updates.append((note["noteId"], typing_fields))
+                typing_enabled_locked += 1
         else:
             updates.append(
                 (
@@ -1237,6 +1214,7 @@ def sync_english(
         "production_suspended": production_suspended,
         "skipped_locked": skipped_locked,
         "auto_locked": auto_locked,
+        "typing_enabled_locked": typing_enabled_locked,
     }
 
 

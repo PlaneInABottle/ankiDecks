@@ -100,7 +100,7 @@ python3 spanish_core_learning.py
 python3 english_mastery.py
 ```
 
-The 4000-word production fronts include a short reviewed context cue with the answer and common inflections masked. Exact typing is retained for uniquely constrained prompts; duplicate Turkish/English cues with multiple valid answers are self-graded so correct synonyms are not marked wrong.
+The 4000-word production fronts include a short reviewed context cue with the answer and common inflections masked. Every vocabulary production card keeps a typing box for its canonical source-deck answer. When another natural synonym also fits the displayed sense, count it as correct during self-grading even if Anki's exact comparison differs.
 
 With Anki open, apply content and template updates safely:
 

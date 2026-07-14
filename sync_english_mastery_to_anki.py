@@ -33,13 +33,6 @@ CSS = """
   margin: 0 auto;
   padding: 18px 14px;
 }
-.meta {
-  color: #a8a09a;
-  font-size: 13px;
-  letter-spacing: 0;
-  text-transform: uppercase;
-  margin-bottom: 12px;
-}
 .front {
   font-size: 25px;
   font-weight: 650;
@@ -87,11 +80,6 @@ CSS = """
   color: #c8c0b8;
   font-size: 18px;
 }
-.type-note {
-  color: #a8a09a;
-  font-size: 14px;
-  margin-top: 8px;
-}
 .source {
   color: #888078;
   font-size: 12px;
@@ -112,14 +100,9 @@ input {
 
 FRONT_TEMPLATE = """
 <div class="wrap">
-  <div class="meta">{{Level}} · {{CardType}}</div>
   <div class="front">{{Front}}</div>
   {{#TypeAnswer}}
-    <div class="type-note">Type your answer, then compare carefully.</div>
     {{type:TypeAnswer}}
-  {{/TypeAnswer}}
-  {{^TypeAnswer}}
-    <div class="type-note">Recall the answer and rule before showing the back.</div>
   {{/TypeAnswer}}
 </div>
 """

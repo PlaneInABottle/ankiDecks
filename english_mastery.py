@@ -49,6 +49,66 @@ REJECT_SENTENCE_MINING_IDS = {
     "2164985",
     # Distracting/low-value source sentence for a connector card.
     "3464550",
+    # Comma splice and dated duration wording in present-perfect examples.
+    "2197",
+    "15856",
+    # "will have to" is obligation, not future perfect; the remaining example is
+    # epistemic will rather than completion before a future reference point.
+    "1731",
+    "1929",
+    "15943",
+    # These are extraposition/passive reporting patterns, not it-clefts.
+    "1592",
+    "16149",
+    "16361",
+    # The match is inside "should have been", not a present-perfect target.
+    "16375",
+    # These teach be/get used to, not the past-habit marker used to.
+    "2228",
+    "20428",
+    "21402",
+    # Awkward subject coordination does not model the intended not-only pattern.
+    "16730",
+    "17678",
+    "17679",
+    # The contexts express an already-true reason or duration, not "only if".
+    "17705",
+    "19216",
+    "20610",
+    # These are not useful precaution-clause examples.
+    "18365",
+    "18796",
+    # Redundant connector pairing or otherwise unnatural source wording.
+    "1855",
+    "2062",
+    "20779",
+    "26775",
+    "28761",
+    "42993",
+    "44591",
+    "45534",
+    "306495",
+    "2759262",
+    # Result so that, tense mismatch, and a free relative misclassified as a cleft.
+    "22262",
+    "22951",
+    "30103",
+    # Being + adjective is not past continuous passive.
+    "245742",
+    "1893897",
+    # Further reviewed replacements with a different function or weak wording.
+    "16267",  # future possession, not future perfect
+    "22862",  # duration/while, not the conditional sense in the cue
+    "39110",  # ordinary question plus relative clause, not a what-cleft
+    "19364",  # unnecessary comma inside not only ... but also
+    "23506",  # awkward punctuation and coordination
+    "1490778",  # humorous repetition with little transferable learning value
+    "2037",  # simple possession already rejected from the listening set
+    "29913",  # non-idiomatic "get a good sleep"
+    "17712",  # near-duplicate future-perfect example
+    "17865",  # near-duplicate unless example
+    "43921",  # awkwardly punctuated what-cleft example
+    "2833873",  # stacks two addition markers redundantly
 }
 REJECT_AUDIO_SENTENCE_IDS = {
     # Too little learning value: tests only simple possession "had".
@@ -134,7 +194,6 @@ LISTENING_TARGETS = [
 SENTENCE_MINING_TARGETS = [
     ("b2_tense_system", "have been", r"\bhave been\b"),
     ("b2_tense_system", "has been", r"\bhas been\b"),
-    ("b2_tense_system", "had", r"\bhad\b"),
     ("b2_tense_system", "would have", r"\bwould have\b"),
     ("b2_tense_system", "should have", r"\bshould have\b"),
     ("b2_tense_system", "could have", r"\bcould have\b"),
@@ -164,7 +223,6 @@ SENTENCE_MINING_TARGETS = [
     ("c1_precision", "no matter", r"\bno matter\b"),
     ("c1_style", "nevertheless", r"\bnevertheless\b"),
     ("c1_style", "moreover", r"\bmoreover\b"),
-    ("c1_style", "furthermore", r"\bfurthermore\b"),
     ("c1_style", "consequently", r"\bconsequently\b"),
     ("c1_style", "meanwhile", r"\bmeanwhile\b"),
     ("c1_style", "indeed", r"\bindeed\b"),
@@ -184,8 +242,8 @@ SENTENCE_MINING_TARGETS = [
 SENTENCE_MINING_PER_TARGET = 3
 
 TARGET_CUES = {
-    "have been": "perfect auxiliary for duration/state",
-    "has been": "perfect auxiliary for duration/state",
+    "have been": "present-perfect auxiliary with I/you/plural subjects",
+    "has been": "present-perfect auxiliary with a singular subject",
     "had": "base verb idea: have / possess",
     "would have": "unreal past result chunk",
     "should have": "past advice or criticism chunk",
@@ -223,8 +281,8 @@ TARGET_CUES = {
     "obviously": "certainty stance adverb",
     "fortunately": "positive outcome stance adverb",
     "unfortunately": "negative outcome stance adverb",
-    "not only": "emphatic addition opener",
-    "it is": "cleft emphasis opener",
+    "not only": "emphatic addition marker",
+    "it is": "impersonal evaluation before a that-clause",
     "what is": "cleft focus opener",
     "the fact that": "nominal clause opener",
     "regardless of": "concession: not affected by",
@@ -1024,7 +1082,34 @@ def _valid_sentence_mining_row(row):
     if sent_id in REJECT_SENTENCE_MINING_IDS:
         return False
     target = row.get("target", "")
+    level = row.get("level", "")
+    if not any(
+        active_level == level and active_target == target
+        for active_level, active_target, _ in SENTENCE_MINING_TARGETS
+    ):
+        return False
     text = row.get("text", "")
+    lowered = text.lower()
+    if target == "will have" and re.search(r"\bwill have to\b", lowered):
+        return False
+    if target == "have been" and re.search(
+        r"\b(?:should|could|would|might|must) have been\b", lowered
+    ):
+        return False
+    if target == "used to" and re.search(
+        r"\b(?:am|is|are|was|were|be|been|being|get|gets|got|getting) used to\b",
+        lowered,
+    ):
+        return False
+    if target == "not only" and re.match(
+        r"^not only\s+(?!did\b|does\b|do\b|is\b|are\b|was\b|were\b|has\b|have\b|had\b|can\b|could\b|will\b|would\b|should\b|may\b|might\b|must\b)",
+        lowered,
+    ):
+        return False
+    if target == "in case" and re.search(r"\bin case of\b", lowered):
+        return False
+    if target == "so that" and re.search(r",\s*so that\b", lowered):
+        return False
     if target == "is used to":
         match = re.search(r"\bis used to\s+([A-Za-z']+)", text, flags=re.I)
         if match and not match.group(1).lower().endswith("ing"):
@@ -1046,6 +1131,7 @@ def _load_sentence_mining_sentences():
     audio = _load_audio_metadata()
     selected = []
     used = set(reserved_audio_ids)
+    used_texts = set()
     target_counts = {(level, target): 0 for level, target, _ in SENTENCE_MINING_TARGETS}
     target_patterns = [(level, target, re.compile(pattern, re.IGNORECASE)) for level, target, pattern in SENTENCE_MINING_TARGETS]
     with bz2.open(sentence_path, "rt", encoding="utf-8", newline="") as handle:
@@ -1053,7 +1139,13 @@ def _load_sentence_mining_sentences():
             if len(row) < 3:
                 continue
             sent_id, lang, text = row[0], row[1], row[2]
-            if lang != "eng" or not _is_clean_english_sentence(text) or sent_id in used:
+            normalized_text = re.sub(r"\s+", " ", text).strip().casefold()
+            if (
+                lang != "eng"
+                or not _is_clean_english_sentence(text)
+                or sent_id in used
+                or normalized_text in used_texts
+            ):
                 continue
             for level, target, pattern in target_patterns:
                 key = (level, target)
@@ -1073,6 +1165,7 @@ def _load_sentence_mining_sentences():
                     selected.append(candidate)
                     target_counts[key] += 1
                     used.add(sent_id)
+                    used_texts.add(normalized_text)
                     break
     cache_path.parent.mkdir(parents=True, exist_ok=True)
     with cache_path.open("w", encoding="utf-8", newline="") as handle:
@@ -1334,8 +1427,8 @@ SENTENCE_MINING_FORMULAS = {
         "Common trap<br>Use has been with he/she/it or a singular subject."
     ),
     "has been": (
-        "Decision rule<br>Use has been when a singular subject has a state or activity connected from the past to now.<br><br>"
-        "Pattern<br>singular subject + has been + complement/-ing/V3<br><br>"
+        "Decision rule<br>Use has been when a singular subject has a state, event, or activity connected from the past to now.<br><br>"
+        "Pattern<br>singular subject + has been + complement/-ing/V3; there + has been + singular complement<br><br>"
         "Common trap<br>The time usually still matters now."
     ),
     "had": (
@@ -1411,8 +1504,8 @@ SENTENCE_MINING_FORMULAS = {
         "Pattern<br>had better + base verb"
     ),
     "would rather": (
-        "Decision rule<br>Use would rather to express preference.<br><br>"
-        "Pattern<br>would rather + base verb"
+        "Decision rule<br>Use would rather to express preference. Use a past form after a different subject for a present or future preference.<br><br>"
+        "Pattern<br>would rather + base verb<br>would rather + subject + past form"
     ),
     "in spite of": (
         "Decision rule<br>Use in spite of to introduce a concession before a noun phrase or -ing phrase.<br><br>"
@@ -1502,8 +1595,9 @@ SENTENCE_MINING_FORMULAS = {
         "Common trap<br>If not only starts the clause, use auxiliary-subject inversion."
     ),
     "it is": (
-        "Decision rule<br>Use it is/was + focus + that to emphasize one part of the sentence.<br><br>"
-        "Pattern<br>it is/was + focus + that + clause"
+        "Decision rule<br>Use impersonal it + be + an evaluation adjective before a that-clause.<br><br>"
+        "Pattern<br>it is + adjective + that + clause<br><br>"
+        "Common trap<br>This evaluates the whole that-clause; it is not an it-cleft."
     ),
     "what is": (
         "Decision rule<br>Use what-clefting to put the focused information after be.<br><br>"
