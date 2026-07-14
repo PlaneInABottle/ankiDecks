@@ -22,6 +22,7 @@ import spanish_grammar_levels
 import spanish_core_learning
 import spanish_deck
 import sync_spanish_core_to_anki
+import sync_english_mastery_to_anki
 import sync_4000_production_to_anki
 import english_phrases
 import english_mastery
@@ -258,7 +259,8 @@ class TestAnkiAutomation(unittest.TestCase):
             )
 
         self.assertEqual(result["auto_locked"], 1)
-        mock_update.assert_called_once_with([])
+        self.assertEqual(result["typing_enabled_locked"], 1)
+        mock_update.assert_called_once_with([(7, {"ProductionAnswer": "la manzana"})])
         mock_invoke.assert_called_once_with("addTags", notes=[7], tags=anki_protect.LOCKED_TAG)
 
     def test_check_word_load_vocabulary(self):
@@ -1293,6 +1295,47 @@ class TestAnkiAutomation(unittest.TestCase):
             self.assertIn("Pattern", card["Formula"], card["SourceID"])
             self.assertNotIn("Use the target chunk because", card["Formula"], card["SourceID"])
 
+    def test_sentence_mining_rejects_wrong_grammar_function_matches(self):
+        invalid_rows = (
+            {"eng_id": "x1", "target": "will have", "text": "We will have to leave."},
+            {"eng_id": "x2", "target": "have been", "text": "You should have been careful."},
+            {"eng_id": "x3", "target": "used to", "text": "I am used to working late."},
+            {"eng_id": "x4", "target": "used to", "text": "I am getting used to it."},
+            {"eng_id": "x5", "target": "not only", "text": "Not only you but I was there."},
+            {"eng_id": "x6", "target": "in case", "text": "Call me in case of emergency."},
+            {"eng_id": "x7", "target": "so that", "text": "It rained, so that we left."},
+        )
+        for row in invalid_rows:
+            with self.subTest(row=row):
+                self.assertFalse(english_mastery._valid_sentence_mining_row(row))
+
+    def test_reviewed_sentence_mining_excludes_known_misleading_cards(self):
+        source_ids = {card["SourceID"] for card in english_mastery.get_cards()}
+        for eng_id in english_mastery.REJECT_SENTENCE_MINING_IDS:
+            with self.subTest(eng_id=eng_id):
+                self.assertFalse(
+                    any(f"::{eng_id}::" in source_id for source_id in source_ids),
+                    f"Rejected sentence {eng_id} was still generated",
+                )
+
+    def test_sentence_mining_has_no_duplicate_source_sentences(self):
+        rows = english_mastery._load_sentence_mining_sentences()
+        normalized = [re.sub(r"\s+", " ", row["text"]).strip().casefold() for row in rows]
+        self.assertEqual(len(normalized), len(set(normalized)))
+
+    def test_sentence_mining_rules_match_reviewed_target_functions(self):
+        cards = english_mastery.get_cards(card_type="typed_cloze")
+        it_is_cards = [card for card in cards if card["Answer"] == "it is"]
+        self.assertTrue(it_is_cards)
+        for card in it_is_cards:
+            self.assertIn("impersonal evaluation", card["Front"])
+            self.assertIn("not an it-cleft", card["Formula"])
+
+        would_rather = next(
+            card for card in cards if card["SourceID"].endswith("::16827::would_rather")
+        )
+        self.assertIn("subject + past form", would_rather["Formula"])
+
     def test_spanish_parser_extracts_rows(self):
         """Test TSV parser fields for the new Spanish duplicate workflow."""
         with tempfile.TemporaryDirectory() as tmpdir:
@@ -1815,6 +1858,110 @@ class TestAnkiAutomation(unittest.TestCase):
         self.assertIn(201, planned["suspended_cards"])
         self.assertIn(202, planned["active_cards"])
 
+    def test_duplicate_turkish_cues_keep_canonical_typed_answers(self):
+        """Reviewed context disambiguates duplicate L1 cues without removing typing."""
+        lower_key = "4000 Essential English Words::1.Book::::lower"
+        drop_key = "4000 Essential English Words::1.Book::::drop"
+        notes = [
+            {
+                "noteId": 1,
+                "fields": {
+                    "ProductionSourceID": {"value": lower_key},
+                    "Word": {"value": "lower"},
+                },
+                "cards": [],
+                "tags": [],
+            },
+            {
+                "noteId": 2,
+                "fields": {
+                    "ProductionSourceID": {"value": drop_key},
+                    "Word": {"value": "drop"},
+                },
+                "cards": [],
+                "tags": [],
+            },
+        ]
+
+        def fake_invoke(action, **params):
+            if action == "findNotes":
+                return [1, 2]
+            if action == "notesInfo":
+                return notes
+            return []
+
+        with patch.object(sync_4000_production_to_anki, "invoke", side_effect=fake_invoke), \
+             patch.object(sync_4000_production_to_anki, "ENGLISH_MODELS", ("4000 EEW",)), \
+             patch.object(sync_4000_production_to_anki, "update_note_fields_many") as mock_update, \
+             patch.object(sync_4000_production_to_anki, "get_notes", return_value=notes), \
+             patch.object(sync_4000_production_to_anki, "card_maps_for_notes", return_value={}), \
+             patch.object(sync_4000_production_to_anki, "apply_card_plan"):
+            sync_4000_production_to_anki.sync_english(
+                {lower_key: 1, drop_key: 2},
+                {lower_key: "düşürmek", drop_key: "düşürmek"},
+                active_limit=400,
+                force=True,
+                sense_rows={
+                    lower_key: {
+                        "EnglishMeaning": "To lower something is to make it go down."
+                    },
+                    drop_key: {
+                        "EnglishMeaning": "To drop is to let something fall."
+                    },
+                },
+            )
+
+        updates = dict(mock_update.call_args.args[0])
+        self.assertEqual("lower", updates[1]["ProductionAnswer"])
+        self.assertEqual("drop", updates[2]["ProductionAnswer"])
+        self.assertIn(
+            "{{type:ProductionAnswer}}",
+            sync_4000_production_to_anki.ENGLISH_PRODUCTION_FRONT,
+        )
+
+    def test_locked_manual_cue_gets_missing_answer_without_overwrite(self):
+        """Enabling typing on a protected note must not replace its custom cue."""
+        key = "4000 Essential English Words::1.Book::::lower"
+        note = {
+            "noteId": 1,
+            "fields": {
+                "ProductionSourceID": {"value": key},
+                "ProductionCue": {"value": "benim özel ipucum"},
+                "ProductionAnswer": {"value": ""},
+                "Word": {"value": "lower"},
+            },
+            "cards": [],
+            "tags": [anki_protect.LOCKED_TAG],
+        }
+
+        def fake_invoke(action, **params):
+            if action == "findNotes":
+                return [1]
+            if action == "notesInfo":
+                return [note]
+            return []
+
+        with patch.object(sync_4000_production_to_anki, "invoke", side_effect=fake_invoke), \
+             patch.object(sync_4000_production_to_anki, "ENGLISH_MODELS", ("4000 EEW",)), \
+             patch.object(sync_4000_production_to_anki, "update_note_fields_many") as mock_update, \
+             patch.object(sync_4000_production_to_anki, "get_notes", return_value=[note]), \
+             patch.object(sync_4000_production_to_anki, "card_maps_for_notes", return_value={}), \
+             patch.object(sync_4000_production_to_anki, "apply_card_plan"):
+            result = sync_4000_production_to_anki.sync_english(
+                {key: 1},
+                {key: "düşürmek"},
+                active_limit=400,
+                sense_rows={
+                    key: {
+                        "EnglishMeaning": "To lower something is to make it go down."
+                    }
+                },
+            )
+
+        self.assertEqual(1, result["skipped_locked"])
+        self.assertEqual(1, result["typing_enabled_locked"])
+        mock_update.assert_called_once_with([(1, {"ProductionAnswer": "lower"})])
+
     def test_english_4000_legacy_generated_cue_migrates_without_locking(self):
         """The old plain production cue is recognized as generated on first sync."""
         key = "4000 Essential English Words::1.Book::::agree"
@@ -1911,7 +2058,7 @@ class TestAnkiAutomation(unittest.TestCase):
         self.assertIn("Context", cue)
         self.assertIn("A backpack is a bag", cue)
         self.assertIn("{{type:ProductionAnswer}}", sync_4000_production_to_anki.SPANISH_PRODUCTION_FRONT)
-        self.assertIn("{{^ProductionAnswer}}", sync_4000_production_to_anki.SPANISH_PRODUCTION_FRONT)
+        self.assertNotIn("{{^ProductionAnswer}}", sync_4000_production_to_anki.SPANISH_PRODUCTION_FRONT)
         self.assertNotIn("{{Image}}", sync_4000_production_to_anki.SPANISH_PRODUCTION_FRONT)
 
     def test_english_production_cue_masks_answer_and_supports_self_grading(self):
@@ -1926,7 +2073,33 @@ class TestAnkiAutomation(unittest.TestCase):
         self.assertIn("A _____ is a mental or physical ability.", cue)
         self.assertNotIn("A faculty is", cue)
         self.assertIn("Bağlam", cue)
-        self.assertIn("{{^ProductionAnswer}}", sync_4000_production_to_anki.ENGLISH_PRODUCTION_FRONT)
+        self.assertNotIn("{{^ProductionAnswer}}", sync_4000_production_to_anki.ENGLISH_PRODUCTION_FRONT)
+
+    def test_card_templates_do_not_repeat_generic_answer_instructions(self):
+        templates = (
+            sync_4000_production_to_anki.SPANISH_PRODUCTION_FRONT,
+            sync_4000_production_to_anki.SPANISH_PRODUCTION_BACK,
+            sync_4000_production_to_anki.SPANISH_CONTEXT_PRODUCTION_FRONT,
+            sync_4000_production_to_anki.ENGLISH_PRODUCTION_FRONT,
+            sync_4000_production_to_anki.ENGLISH_PRODUCTION_BACK_MAIN,
+            sync_4000_production_to_anki.ENGLISH_PRODUCTION_BACK_EXTRA,
+            sync_english_mastery_to_anki.FRONT_TEMPLATE,
+            sync_spanish_core_to_anki.FRONT_TEMPLATE,
+        )
+        redundant_phrases = (
+            "source-deck answer",
+            "Natural synonyms count",
+            "Valid synonyms count",
+            "then reveal and self-grade",
+            "then compare carefully",
+            "before showing the back",
+            "Include the article for nouns",
+        )
+        rendered_templates = "\n".join(templates)
+        self.assertNotIn("{{Level}} · {{CardType}}", rendered_templates)
+        for phrase in redundant_phrases:
+            with self.subTest(phrase=phrase):
+                self.assertNotIn(phrase, rendered_templates)
 
     def test_english_production_cue_masks_inflections_and_uses_neutral_label(self):
         cases = [
@@ -2109,7 +2282,7 @@ class TestAnkiAutomation(unittest.TestCase):
             self.skipTest("English Turkish production TSV is not generated")
 
         expected = {
-            "shake": "sallamak; tokalaşmak bağlamı",
+            "shake": "el sıkışmak / tokalaşmak",
             "profit": "kâr / kazanç",
             "dull": "sıkıcı / heyecansız",
             "former": "önceki / artık olmayan",
@@ -2161,7 +2334,7 @@ class TestAnkiAutomation(unittest.TestCase):
             "twist": "bükmek / ekseninde döndürmek",
             "unless": "... sürece",
             "confidence": "güven / özgüven",
-            "consequence": "sonuç / sonuç olarak",
+            "consequence": "sonuç",
             "pale": "soluk / solgun",
             "supplement": "destekleyici gıda / madde",
             "band": "müzik grubu / bant",
@@ -2216,6 +2389,55 @@ class TestAnkiAutomation(unittest.TestCase):
             "platform": "platform / mecra",
             "presence": "varlık / bulunma",
             "equipment": "ekipman / donanım",
+            "stroll": "ağır ağır yürümek / dolaşmak",
+            "depend": "dayanmak / ihtiyaç duymak",
+            "actual": "gerçek / asıl / gerçeğe dayalı",
+            "base": "taban / alt kısım",
+            "organize": "düzenlemek / organize etmek",
+            "cost": "mal olmak / tutmak",
+            "consequence": "sonuç",
+            "incredible": "inanılmaz / olağanüstü",
+            "can": "-ebilmek / yapabilmek",
+            "clear": "boşaltmak / temizlemek",
+            "depart": "ayrılmak / yola çıkmak",
+            "nevertheless": "yine de / buna rağmen",
+            "ruins": "harabeler / kalıntılar",
+            "significant": "önemli / kayda değer",
+            "capable": "yetenekli / yapabilecek durumda",
+            "convey": "iletmek / aktarmak",
+            "delight": "sevinç / mutluluk",
+            "against": "-e karşı / -e yaslanmış",
+            "prevent": "önlemek",
+            "enormous": "devasa / çok büyük",
+            "extraordinary": "olağanüstü / sıra dışı",
+            "mad": "öfkeli / kızgın",
+            "trap": "tuzağa düşürmek / yakalamak",
+            "trial": "yargılama / dava",
+            "admission": "giriş izni / kabul",
+            "forecast": "hava tahmini",
+            "afford": "parası yetmek / karşılayabilmek",
+            "mess": "dağınıklık",
+            "fortune": "talih",
+            "engineer": "tasarlamak / ustaca planlamak",
+            "kid": "şaka yapmak",
+            "disguise": "kılık / kılık değiştirme",
+            "puff": "bir tutam / duman bulutu",
+            "stem": "gövde / sap",
+            "howl": "ulumak",
+            "peer": "dikkatle bakmak",
+            "consequent": "sonuç olarak ortaya çıkan",
+            "curve": "kavis çizmek / eğrilmek",
+            "practice": "alışkanlık / uygulama",
+            "verify": "doğrulamak / teyit etmek",
+            "render": "hâle getirmek",
+            "upgrade": "geliştirmek / yükseltmek",
+            "utensil": "mutfak gereci / araç",
+            "crisp": "çıtır / gevrek",
+            "review": "inceleme / değerlendirme",
+            "nick": "hafifçe kesmek / çizmek",
+            "orbit": "yörüngede dönmek",
+            "tract": "geniş arazi / bölge",
+            "amend": "düzeltmek / iyileştirmek",
         }
         forbidden = {
             "plate": "plaka",
@@ -2226,6 +2448,17 @@ class TestAnkiAutomation(unittest.TestCase):
             "dive": "dalış",
             "household": "ev",
             "log": "günlük",
+            "base": "baz",
+            "fortune": "servet",
+            "mad": "deli",
+            "trial": "deneme",
+            "afford": "göze almak",
+            "engineer": "mühendisliğe",
+            "kid": "çocuğa",
+            "stem": "kök",
+            "peer": "akran",
+            "crisp": "net",
+            "tract": "yol",
         }
         rows = {}
         with path.open(encoding="utf-8", newline="") as handle:
@@ -2236,6 +2469,24 @@ class TestAnkiAutomation(unittest.TestCase):
             self.assertEqual(cue.lower(), rows[english]["TurkishCue"].strip().lower())
         for english, bad_cue in forbidden.items():
             self.assertNotEqual(bad_cue, rows[english]["TurkishCue"].strip().lower())
+
+    def test_english_turkish_cue_audit_has_no_machine_artifacts(self):
+        """Test all durable Turkish cues are complete and free of known machine debris."""
+        path = Path("generated/english_4000/english_turkish_production.tsv")
+        bad_rows = []
+        with path.open(encoding="utf-8", newline="") as handle:
+            for row in csv.DictReader(handle, delimiter="\t"):
+                cue = row["TurkishCue"].strip()
+                if (
+                    not cue
+                    or row["Status"].startswith(("error", "pending"))
+                    or any(marker in cue for marker in ("<", ">", "&nbsp;", "Ã", "Â", "�", "EOF", "\u00a0"))
+                    or re.search(r"\biçin$", cue, re.IGNORECASE)
+                    or re.search(r"'[ae]$", cue, re.IGNORECASE)
+                ):
+                    bad_rows.append((row["SourceID"], cue, row["Status"]))
+
+        self.assertEqual([], bad_rows[:20])
 
     def test_active_english_turkish_production_cues_are_unique(self):
         """Test active English production fronts are not ambiguous duplicate Turkish cues."""
