@@ -618,6 +618,19 @@ class TestAnkiAutomation(unittest.TestCase):
         for pattern in bad_patterns:
             self.assertNotIn(pattern, all_text)
 
+    def test_spanish_grammar_review_fixes_stay_correct(self):
+        """Test reviewed grammar examples preserve the intended Spanish distinction."""
+        all_text = "\n".join(
+            str(card.get(field, ""))
+            for card in spanish_grammar_levels.get_cards()
+            for field in ("front", "answer", "explanation", "examples", "common_mistake")
+        )
+        self.assertIn("Aunque llueva mañana, saldré.", all_text)
+        self.assertIn("Me gustaría un café.", all_text)
+        self.assertIn("Vivimos en Lima durante dos años.", all_text)
+        self.assertNotIn("Aunque es caro, lo compraría si fuera más barato.", all_text)
+        self.assertNotIn("Me gustaría café.", all_text)
+
     def test_spanish_core_learning_structure(self):
         """Test active Spanish core deck uses typed retrieval and sourced examples."""
         cards = spanish_core_learning.get_cards()
@@ -744,12 +757,242 @@ class TestAnkiAutomation(unittest.TestCase):
 
     def test_spanish_core_no_known_bad_source_sentences(self):
         """Test known bad mined source text is corrected or rejected."""
+        cards = spanish_core_learning.get_cards()
         all_text = "\n".join(
             " ".join(str(card.get(field, "")) for field in ("Front", "Examples", "Back"))
-            for card in spanish_core_learning.get_cards()
+            for card in cards
         )
         self.assertNotIn("A mi también", all_text)
         self.assertNotIn("¨¿Viste", all_text)
+        self.assertNotIn("nos marks what we like", all_text)
+        self.assertNotIn("reflexive/reciprocal action for nosotros", all_text)
+        self.assertIn("nos marks the experiencer", all_text)
+        self.assertIn("quedarse is pronominal", all_text)
+
+        source_ids = {card["SourceID"] for card in cards}
+        for sentence_id in spanish_core_learning.REJECT_TATOEBA_SENTENCE_IDS:
+            self.assertFalse(
+                any(f"::{sentence_id}::" in source_id for source_id in source_ids),
+                f"Rejected Tatoeba sentence {sentence_id} reached the deck",
+            )
+
+    def test_spanish_tatoeba_validator_rejects_wrong_grammar_functions(self):
+        """Test sentence mining validates grammar function, not only a regex match."""
+        base = {
+            "topic": "sentence mining",
+            "spa_id": "test",
+            "eng_id": "test-en",
+        }
+        valid_rows = (
+            {
+                **base,
+                "level": "a1_2_core_sentences",
+                "target": "voy a",
+                "spa_text": "Voy a cantar mañana.",
+                "eng_text": "I am going to sing tomorrow.",
+            },
+            {
+                **base,
+                "level": "a2_2_natural_spanish",
+                "target": "he",
+                "spa_text": "He comido arroz hoy.",
+                "eng_text": "I have eaten rice today.",
+            },
+        )
+        invalid_rows = (
+            {
+                **base,
+                "level": "a1_1_foundations",
+                "target": "puede",
+                "spa_text": "No puede ser que estés aquí.",
+                "eng_text": "You cannot possibly be here.",
+            },
+            {
+                **base,
+                "level": "a1_2_core_sentences",
+                "target": "voy a",
+                "spa_text": "Voy a Madrid mañana.",
+                "eng_text": "I am going to Madrid tomorrow.",
+            },
+            {
+                **base,
+                "level": "a2_2_natural_spanish",
+                "target": "he",
+                "spa_text": "He aquí el problema.",
+                "eng_text": "Here is the problem.",
+            },
+            {
+                **base,
+                "level": "a0_survival",
+                "target": "hay",
+                "spa_text": "Hay un hombre que sabe todo.",
+                "eng_text": "There is a man who knows everything.",
+            },
+            {
+                **base,
+                "level": "a1_1_foundations",
+                "target": "nunca",
+                "spa_text": "Nunca digas nunca.",
+                "eng_text": "Never say never.",
+            },
+            {
+                **base,
+                "level": "a1_1_foundations",
+                "target": "vamos",
+                "spa_text": "¡Vamos, despierta!",
+                "eng_text": "Come on, wake up!",
+            },
+            {
+                **base,
+                "level": "a1_2_core_sentences",
+                "target": "porque",
+                "spa_text": "Porque tengo hambre.",
+                "eng_text": "Because I am hungry.",
+            },
+            {
+                **base,
+                "level": "a2_1_daily_past",
+                "target": "menos que",
+                "spa_text": "A menos que vengas, saldré.",
+                "eng_text": "Unless you come, I will leave.",
+            },
+            {
+                **base,
+                "level": "a2_1_daily_past",
+                "target": "más que",
+                "spa_text": "No hace más que reírse.",
+                "eng_text": "He does nothing but laugh.",
+            },
+            {
+                **base,
+                "level": "a2_2_natural_spanish",
+                "target": "por",
+                "spa_text": "Por favor, ayúdame.",
+                "eng_text": "Please help me.",
+            },
+            {
+                **base,
+                "level": "a2_2_natural_spanish",
+                "target": "aunque",
+                "spa_text": "Aunque es caro.",
+                "eng_text": "It is expensive though.",
+            },
+            {
+                **base,
+                "level": "b1_bridge",
+                "target": "si",
+                "spa_text": "Si queréis, podéis ir.",
+                "eng_text": "You can go if you want.",
+            },
+        )
+        for row in valid_rows:
+            with self.subTest(row=row):
+                self.assertTrue(spanish_core_learning._valid_tatoeba_pair(row))
+        for row in invalid_rows:
+            with self.subTest(row=row):
+                self.assertFalse(spanish_core_learning._valid_tatoeba_pair(row))
+
+        simple = {
+            **base,
+            "level": "a0_survival",
+            "target": "es",
+            "spa_text": "Esta es mi casa.",
+            "eng_text": "This is my house.",
+        }
+        complex_row = {
+            **base,
+            "level": "a0_survival",
+            "target": "es",
+            "spa_text": "Él es un empresario melancólico.",
+            "eng_text": "He is a melancholic entrepreneur.",
+        }
+        self.assertLess(
+            spanish_core_learning._tatoeba_pair_quality_key(simple),
+            spanish_core_learning._tatoeba_pair_quality_key(complex_row),
+        )
+
+    def test_spanish_tatoeba_cache_is_revalidated(self):
+        """Test stale cached pairs cannot bypass current selection rules."""
+        fieldnames = [
+            "selection_version",
+            "level",
+            "topic",
+            "target",
+            "spa_id",
+            "spa_text",
+            "eng_id",
+            "eng_text",
+            "audio_id",
+            "audio_contributor",
+            "audio_license",
+            "license",
+        ]
+        rows = [
+            {
+                "selection_version": spanish_core_learning.TATOEBA_SELECTION_VERSION,
+                "level": "a1_2_core_sentences",
+                "topic": "sentence mining",
+                "target": "voy a",
+                "spa_id": "valid",
+                "spa_text": "Voy a cantar mañana.",
+                "eng_id": "valid-en",
+                "eng_text": "I am going to sing tomorrow.",
+            },
+            {
+                "selection_version": spanish_core_learning.TATOEBA_SELECTION_VERSION,
+                "level": "a1_2_core_sentences",
+                "topic": "sentence mining",
+                "target": "voy a",
+                "spa_id": "invalid",
+                "spa_text": "Voy a Madrid mañana.",
+                "eng_id": "invalid-en",
+                "eng_text": "I am going to Madrid tomorrow.",
+            },
+            {
+                "selection_version": "stale",
+                "level": "a1_2_core_sentences",
+                "topic": "sentence mining",
+                "target": "voy a",
+                "spa_id": "stale",
+                "spa_text": "Voy a bailar mañana.",
+                "eng_id": "stale-en",
+                "eng_text": "I am going to dance tomorrow.",
+            },
+        ]
+        with tempfile.TemporaryDirectory() as tmpdir:
+            cache_path = Path(tmpdir) / "selected.tsv"
+            with cache_path.open("w", encoding="utf-8", newline="") as handle:
+                writer = csv.DictWriter(handle, delimiter="\t", fieldnames=fieldnames)
+                writer.writeheader()
+                writer.writerows(rows)
+            with (
+                patch.object(spanish_core_learning, "TATOEBA_SELECTED_PATH", cache_path),
+                patch.object(
+                    spanish_core_learning,
+                    "_tatoeba_selection_complete",
+                    return_value=True,
+                ),
+                patch.object(
+                    spanish_core_learning,
+                    "_tatoeba_pair_rows",
+                    side_effect=AssertionError("valid cache should not regenerate"),
+                ),
+            ):
+                selected = spanish_core_learning._load_tatoeba_pairs()
+
+        self.assertEqual(["valid"], [row["spa_id"] for row in selected])
+        self.assertEqual(
+            "I am a shy man.",
+            spanish_core_learning._apply_tatoeba_text_fixes(
+                {"spa_id": "340269", "eng_text": "I am a shy boy."}
+            )["eng_text"],
+        )
+        self.assertEqual(
+            "Si pudiera, lo haría.",
+            spanish_core_learning._apply_tatoeba_text_fixes(
+                {"spa_id": "529783", "spa_text": "Si podría, lo haría."}
+            )["spa_text"],
+        )
 
     def test_spanish_core_learning_tatoeba_attribution(self):
         """Test real sentence-mining cards keep stable Tatoeba source IDs."""
@@ -843,6 +1086,18 @@ class TestAnkiAutomation(unittest.TestCase):
         self.assertIn("check irregular or stem-changing forms separately", verb["spanish_forms"])
         self.assertNotIn("aprobo", verb["spanish_forms"])
 
+        pronominal = spanish_deck.infer_spanish_metadata("apagarse")
+        self.assertEqual("pronominal verb", pronominal["spanish_part_of_speech"])
+        self.assertIn("infinitive: apagarse", pronominal["spanish_forms"])
+        self.assertIn("pronouns: me, te, se, nos, se", pronominal["spanish_forms"])
+
+        sea_urchin = spanish_deck.infer_spanish_metadata("el erizo de mar")
+        self.assertEqual("masculine", sea_urchin["spanish_gender"])
+        self.assertEqual(
+            "singular: el erizo de mar; plural: los erizos de mar",
+            sea_urchin["spanish_forms"],
+        )
+
     def test_spanish_glossary_has_complete_mirror_fields_and_sense_notes(self):
         """Test durable Spanish glossary keeps English mirrors and duplicate-sense notes."""
         glossary_path = Path("generated/spanish_reviewed_glossary_full.tsv")
@@ -857,6 +1112,60 @@ class TestAnkiAutomation(unittest.TestCase):
         self.assertIn("military", notes_by_pair[("navy", "armada")])
         self.assertIn("body part", notes_by_pair[("bottom", "el trasero")])
         self.assertIn("lowest point", notes_by_pair[("bottom", "fondo")])
+
+    def test_spanish_reviewed_glossary_rejects_known_invalid_content(self):
+        """Test reviewed status cannot bypass deterministic content validation."""
+        self.assertEqual(
+            ["invalid Spanish token(s): romer, rompio"],
+            spanish_deck.reviewed_glossary_errors(
+                {
+                    "spanish": "romer",
+                    "spanish_meaning": "Romer significa romper algo.",
+                    "spanish_example": "Jacob rompio la ventana.",
+                }
+            ),
+        )
+        self.assertEqual(
+            [],
+            spanish_deck.reviewed_glossary_errors(
+                {
+                    "spanish": "romper",
+                    "spanish_meaning": "Romper significa hacer que algo se quiebre.",
+                    "spanish_example": "Jacob rompió la ventana.",
+                }
+            ),
+        )
+        # This is a valid unaccented verb form, so the regression list must not
+        # grow into a context-free Spanish spellchecker.
+        self.assertEqual(
+            [],
+            spanish_deck.reviewed_glossary_errors(
+                {
+                    "spanish": "ejercitar",
+                    "spanish_meaning": "Yo ejercito los brazos.",
+                    "spanish_example": "Ejercito los brazos cada mañana.",
+                }
+            ),
+        )
+
+    def test_spanish_reviewed_glossary_content_fixes_stay_aligned(self):
+        """Test corrected headwords and examples preserve their source sense."""
+        glossary_path = Path("generated/spanish_reviewed_glossary_full.tsv")
+        with glossary_path.open(encoding="utf-8", newline="") as handle:
+            rows = {row["english"]: row for row in csv.DictReader(handle, delimiter="\t")}
+
+        self.assertEqual("el erizo de mar", rows["sea urchin"]["spanish"])
+        self.assertEqual("romper", rows["smash"]["spanish"])
+        self.assertIn("rompió", rows["smash"]["spanish_example"])
+        self.assertEqual("apagarse", rows["stall"]["spanish"])
+        self.assertIn("motor", rows["stall"]["spanish_meaning"])
+        self.assertIn("él les dio dinero", rows["corrupt"]["spanish_example"])
+        self.assertIn("suricatos", rows["upright"]["spanish_example"])
+        self.assertEqual("encantar", rows["charm"]["spanish"])
+        self.assertEqual("unir", rows["bind"]["spanish"])
+
+        for row in rows.values():
+            self.assertEqual([], spanish_deck.reviewed_glossary_errors(row), row["english"])
 
     def test_spanish_examples_track_source_examples_for_known_rows(self):
         """Test source-backed rows do not use unrelated Spanish example sentences."""

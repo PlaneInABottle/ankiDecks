@@ -15,7 +15,12 @@ OUTPUT_DIR = Path("generated/spanish_core")
 TATOEBA_DIR = Path("generated/sources/tatoeba")
 TATOEBA_SELECTED_PATH = TATOEBA_DIR / "selected_spa_eng_pairs.tsv"
 TATOEBA_LIMIT_PER_TARGET = 11
-MIN_SELECTED_TATOEBA_PAIRS = 780
+TATOEBA_LIMIT_BY_LEVEL = {
+    "a0_survival": 5,
+    "a1_1_foundations": 7,
+    "a1_2_core_sentences": 9,
+}
+TATOEBA_SELECTION_VERSION = "7"
 
 TATOEBA_LICENSE = "Tatoeba sentence text, CC BY 2.0 FR unless marked otherwise by contributor export."
 TATOEBA_ATTRIBUTION = "Source: Tatoeba.org sentence IDs {spa_id}/{eng_id}."
@@ -37,9 +42,171 @@ INACCESSIBLE_AUDIO_SENTENCE_IDS = {
     "342298",
     "345183",
 }
-REJECT_TATOEBA_SENTENCE_IDS = {"2538", "2565", "2738", "2809", "2861", "3041", "330689"}
+REJECT_TATOEBA_SENTENCE_IDS = {
+    "2538",
+    "2565",
+    "2738",
+    "2809",
+    "2861",
+    "3041",
+    "330689",
+    # Incorrect or materially loose Spanish/English pairings.
+    "329956",  # present hay paired with English past had
+    "398238",  # orilla (shore/edge) paired with store
+    # Fragments, awkward source wording, or a mismatched target function.
+    "2629",
+    "2661",
+    "330008",  # epistemic no puede ser, not ordinary ability
+    "338619",
+    # Content well above the assigned A0/A1 level.
+    "2510",
+    "2540",
+    "2663",
+    "2669",
+    "2678",
+    "2784",
+    "2958",
+    "329871",
+    "329914",
+    "330648",
+    "336808",
+    "338539",
+    "338562",
+    "338729",
+    "339818",
+    "343160",
+    "347537",
+    "360009",
+    "434677",
+    "452946",
+    "454605",
+    # Peninsular vosotros/os wording conflicts with this deck's Latin-American baseline.
+    "338946",
+    # Offensive, stereotyped, disturbing, or unsuitable beginner examples.
+    "2846",
+    "534291",
+    "535836",
+    "574399",
+    "688021",
+    "855054",
+    "1129658",
+    "1194212",
+    # Idiomatic, advanced, unnatural, or loosely translated rows that survived
+    # simple length filtering but are poor teaching examples at their level.
+    "2944",
+    "331445",
+    "331447",
+    "338589",
+    "341801",
+    "342332",
+    "347454",
+    "354962",
+    "355009",
+    "449685",
+    "456182",
+    "544439",
+    "609693",
+    "842135",
+    "853914",
+    "857347",
+    "1198074",
+    "1129703",
+    # Additional translation, register, and level failures found by reviewing
+    # the ranked beginner candidate set.
+    "2925",
+    "2932",
+    "3072",
+    "2916",
+    "331737",
+    "339102",
+    "339565",
+    "358504",
+    "434481",
+    "456056",
+    "455960",
+    "507443",
+    "534290",
+    "537740",
+    "566608",
+    "574565",
+    "589597",
+    "687805",
+    "687807",
+    "746444",
+    "859147",
+    "942421",
+    "959207",
+    "1001457",
+    "1003287",
+    "1463114",
+    # Later-level function, translation, dialect, and suitability failures.
+    "2523",
+    "2652",
+    "336548",
+    "338584",
+    "339844",
+    "347317",
+    "357242",
+    "435065",
+    "454615",
+    "473479",
+    "483744",
+    "540303",
+    "541191",
+    "640396",
+    "6795924",
+    "687801",
+    "688009",
+    "689053",
+    "795382",
+    "329789",
+    "1144032",
+    "1711001",
+    "2554",
+    "760130",
+    "769316",
+    "945889",
+    "983509",
+    "1418686",
+    "2077749",
+}
 TATOEBA_SPANISH_TEXT_FIXES = {
     "410616": "A mí también me gustan los pasteles.",
+    "436762": "Me gusta este.",
+    "4877688": "Aunque lo intentes, nunca me detendrás.",
+    "529783": "Si pudiera, lo haría.",
+    "536551": "Si tengo tiempo, lo haré.",
+    "551428": "Ya he tenido suficiente.",
+    "629980": "Estoy más que feliz.",
+    "721878": "Aunque llovía, jugamos fútbol.",
+    "8699295": "¿Desde hace cuánto compones canciones?",
+    "1090768": "Vamos de pícnic.",
+    "1176577": "Lo conozco desde hace un año.",
+    "1178705": "Sería mejor que no fueras.",
+    "1526212": "Hemos progresado mucho.",
+    "339303": "Lo que trata de decir es muy sencillo de entender.",
+    "354967": "Hice una reverencia cortés.",
+    "354983": "Tenía el pelo canoso.",
+    "398217": "Si fallara, lo intentaría de nuevo.",
+    "336306": "Por su enfermedad, inevitablemente tuvo que dejar el colegio.",
+    "346211": "Si fuera rico, lo compraría.",
+    "4531562": "Eso tampoco es lo que quise decir.",
+    "615955": "Era una noche muy, muy calurosa.",
+}
+TATOEBA_ENGLISH_TEXT_FIXES = {
+    # The linked translation said boy, but hombre means man.
+    "340269": "I am a shy man.",
+    "2840": "Is it serious?",
+    "449319": "Is there anything important?",
+    "330113": "Are you Japanese?",
+    "345297": "Do you have a cough?",
+    "505853": "Have you lost your mind?",
+    "5967612": "We weren't asked either.",
+    "6848351": "I'm not Canadian either.",
+    "687987": "Do you want to pay in cash?",
+    "775188": "Stop, I said.",
+    "329771": "I had a previous engagement at ten.",
+    "459233": "So where were you?",
 }
 
 EXTRA_PRODUCTION_EXAMPLES_BY_LEVEL = {
@@ -625,6 +792,19 @@ SENTENCE_TARGETS = [
 ]
 TARGET_PATTERNS = {target: pattern for _, _, target, pattern in SENTENCE_TARGETS}
 
+
+def _tatoeba_target_limit(level, default_limit):
+    return min(default_limit, TATOEBA_LIMIT_BY_LEVEL.get(level, default_limit))
+
+
+def _tatoeba_selection_complete(rows, default_limit):
+    counts = Counter((row.get("level", ""), row.get("target", "")) for row in rows)
+    return all(
+        counts[(level, target)] == _tatoeba_target_limit(level, default_limit)
+        for level, _, target, _ in SENTENCE_TARGETS
+    )
+
+
 def _word_count(sentence):
     return len(re.findall(r"\w+", sentence, flags=re.UNICODE))
 
@@ -638,7 +818,7 @@ def _is_clean_sentence(sentence):
         return False
     if sentence.count("!") > 1 or sentence.count(";") > 0:
         return False
-    return 3 <= _word_count(sentence) <= 12
+    return 2 <= _word_count(sentence) <= 12
 
 
 def _level_sentence_length_ok(level, spa_text, eng_text):
@@ -716,6 +896,183 @@ def _level_content_ok(level, spa_text, eng_text):
     return True
 
 
+_EARLY_LEVEL_COMPLEXITY_MARKERS = {
+    "a0_survival": (
+        "evidencia",
+        "evidence",
+        "empresario",
+        "entrepreneur",
+        "genio",
+        "genius",
+        "improbable",
+        "increíble",
+        "incredible",
+        "intrigante",
+        "intriguing",
+        "juego de palabras",
+        "loathsome",
+        "melancólica",
+        "melancholic",
+        "odioso",
+        "problemática",
+        "pun",
+        "soltera",
+        "troublesome",
+        "unmarried",
+    ),
+    "a1_1_foundations": (
+        "cualquier librería",
+        "comestibles",
+        "convencidos de su inocencia",
+        "digas lo que digas",
+        "eternamente",
+        "fed up",
+        "fortalezas y debilidades",
+        "growing pains",
+        "harto",
+        "hipoteca",
+        "importando una gran cantidad",
+        "ingresos mensuales",
+        "intencionalmente",
+        "medicación",
+        "prioridades",
+    ),
+}
+
+
+def _tatoeba_pair_quality_key(row):
+    """Rank valid pairs toward short, direct, level-appropriate teaching examples."""
+    level = row.get("level", "")
+    spa_text = row.get("spa_text", "")
+    eng_text = row.get("eng_text", "")
+    text = f"{spa_text} {eng_text}".casefold()
+    marker_penalty = sum(
+        marker in text
+        for marker in _EARLY_LEVEL_COMPLEXITY_MARKERS.get(level, ())
+    )
+    dialogue_penalty = int(any(mark in text for mark in ('"', "“", "”")))
+    punctuation_penalty = spa_text.count("!") + max(0, spa_text.count("?") - 1)
+    spa_words = _word_count(spa_text)
+    eng_words = _word_count(eng_text)
+    target_match = re.search(TARGET_PATTERNS.get(row.get("target", ""), r"$^"), spa_text)
+    target_position_penalty = int(bool(target_match and target_match.start() > 2))
+
+    def numeric_id(value):
+        return int(value) if str(value).isdigit() else 10**12
+
+    return (
+        marker_penalty,
+        dialogue_penalty,
+        punctuation_penalty,
+        target_position_penalty,
+        max(spa_words, eng_words),
+        spa_words + eng_words,
+        len(spa_text) + len(eng_text),
+        numeric_id(row.get("spa_id", "")),
+        numeric_id(row.get("eng_id", "")),
+    )
+
+
+def _valid_tatoeba_pair(row):
+    """Validate cached and newly selected Tatoeba rows before card generation."""
+    level = row.get("level", "")
+    target = row.get("target", "")
+    spa_text = row.get("spa_text", "")
+    eng_text = row.get("eng_text", "")
+    if row.get("spa_id", "") in REJECT_TATOEBA_SENTENCE_IDS:
+        return False
+    if not any(
+        active_level == level and active_target == target
+        for active_level, _, active_target, _ in SENTENCE_TARGETS
+    ):
+        return False
+    pattern = TARGET_PATTERNS.get(target)
+    if not pattern or len(re.findall(pattern, spa_text)) != 1:
+        return False
+    if not _is_clean_sentence(spa_text) or not _is_clean_sentence(eng_text):
+        return False
+    if not _level_sentence_length_ok(level, spa_text, eng_text):
+        return False
+    if not _level_content_ok(level, spa_text, eng_text):
+        return False
+
+    lowered = spa_text.casefold()
+    if re.search(
+        r"\b(?:vosotros|vosotras|vuestro|vuestra|vuestros|vuestras|os|"
+        r"sois|estáis|tenéis|queréis|podéis|vais|habéis|hacéis|sabéis|"
+        r"comed|hablad|escuchad|mirad|recordad)\b",
+        lowered,
+    ):
+        return False
+    if target == "puede" and re.search(r"\bno puede ser\b", lowered):
+        return False
+    if target in {"puedo", "puedes", "puede"} and not re.search(
+        rf"\b{target}\s+(?:ir|[a-záéíóúñü]+(?:ar|er|ir))(?:me|te|se|lo|la|los|las|le|les|nos)?\b",
+        lowered,
+    ):
+        return False
+    if target == "vamos" and re.match(r"^\s*[¡¿]?vamos\s*[,!]", lowered):
+        # Interjection meaning "come on", not first-person plural ir.
+        return False
+    if target == "porque" and re.match(r"^\s*[¡¿]?porque\b", lowered):
+        # A bare "because ..." fragment does not demonstrate clause linking.
+        return False
+    if target == "por" and re.search(
+        r"\bpor\s+(?:qué|favor|ejemplo|fin|cierto)\b",
+        lowered,
+    ):
+        # Lexicalized question/discourse chunks do not teach por as a preposition.
+        return False
+    if target == "menos que" and "a menos que" in lowered:
+        # a menos que means "unless", not the comparison "less than".
+        return False
+    if target == "más que" and (
+        "más que nada" in lowered
+        or "más que claro" in lowered
+        or re.search(r"\bno\s+(?:[a-záéíóúñü]+\s+){0,3}más que\b", lowered)
+    ):
+        return False
+    if target == "aunque" and re.match(r"^\s*aunque\b", lowered) and "," not in spa_text:
+        # Initial aunque needs a main clause; otherwise the row is a fragment.
+        return False
+    if target in {"voy a", "vas a", "va a"}:
+        subject = target.split()[0]
+        if not re.search(
+            rf"\b{subject} a\s+(?:ir|[a-záéíóúñü]+(?:ar|er|ir))(?:me|te|se|lo|la|los|las|le|les|nos)?\b",
+            lowered,
+        ):
+            return False
+    if target in {"he", "has", "ha", "hemos"} and not re.search(
+        rf"\b{target}\s+(?:ido|[a-záéíóúñü]+(?:ado|ido|to|so|cho))\b",
+        lowered,
+    ):
+        return False
+    if level == "a0_survival" and re.search(
+        r"\b(?:que|estaba|estaban|era|eran|fue|fueron|pueda|puedas|puedan|podría|habría)\b",
+        lowered,
+    ):
+        return False
+    if level == "a1_1_foundations" and re.search(
+        r"\b(?:haya|hayas|hayan|sea|seas|sean|fuera|fueras|fueran|habría|podría|sorprendería|vendrías)\b",
+        lowered,
+    ):
+        return False
+    if level == "a1_1_foundations" and re.search(
+        r"\b(?:he|has|ha|hemos|han)\s+(?:ido|[a-záéíóúñü]+(?:ado|ido|to|so|cho))\b",
+        lowered,
+    ):
+        return False
+    if level == "a1_1_foundations" and re.search(
+        r"\b(?:haré|harás|hará|habrá|estaré|estarás|estará|tendré|tendrás|tendrá|"
+        r"vendré|vendrás|vendrá|podré|podrás|podrá|querré|querrás|querrá|"
+        r"[a-záéíóúñü]+(?:aré|eré|iré|arás|erás|irás|ará|erá|irá|aremos|eremos|iremos|arán|erán|irán)|"
+        r"llueva|lluevas|lluevan)\b",
+        lowered,
+    ):
+        return False
+    return True
+
+
 def _load_sentences(path):
     rows = {}
     with bz2.open(path, "rt", encoding="utf-8", newline="") as handle:
@@ -775,11 +1132,15 @@ def _tatoeba_pair_rows(limit_per_target):
             return
         spa_text = spa[spa_id]
         eng_text = eng[eng_id]
+        if spa_id in REJECT_TATOEBA_SENTENCE_IDS:
+            return
         if not _is_clean_sentence(eng_text):
             return
         for level, topic, target, pattern in target_by_regex:
             bucket = pairs_by_target[(level, target)]
-            if len(bucket) >= limit_per_target:
+            target_limit = _tatoeba_target_limit(level, limit_per_target)
+            candidate_limit = max(target_limit * 12, 80)
+            if len(bucket) >= candidate_limit:
                 continue
             pair_key = (level, target, spa_id, eng_id)
             if pair_key in seen_target_pairs:
@@ -794,7 +1155,16 @@ def _tatoeba_pair_rows(limit_per_target):
                 continue
             if not _level_content_ok(level, spa_text, eng_text):
                 continue
-            if pattern.search(spa_text):
+            candidate = {
+                "level": level,
+                "topic": topic,
+                "target": target,
+                "spa_id": spa_id,
+                "spa_text": spa_text,
+                "eng_id": eng_id,
+                "eng_text": eng_text,
+            }
+            if pattern.search(spa_text) and _valid_tatoeba_pair(candidate):
                 audio_meta = audio.get(spa_id, {})
                 seen_target_pairs.add(pair_key)
                 seen_target_english.add(english_key)
@@ -830,7 +1200,9 @@ def _tatoeba_pair_rows(limit_per_target):
 
     pairs = []
     for level, _, target, _ in SENTENCE_TARGETS:
-        pairs.extend(pairs_by_target[(level, target)])
+        candidates = pairs_by_target[(level, target)]
+        target_limit = _tatoeba_target_limit(level, limit_per_target)
+        pairs.extend(sorted(candidates, key=_tatoeba_pair_quality_key)[:target_limit])
     return pairs
 
 
@@ -838,6 +1210,7 @@ def _write_selected_tatoeba_pairs(pairs):
     TATOEBA_SELECTED_PATH.parent.mkdir(parents=True, exist_ok=True)
     with TATOEBA_SELECTED_PATH.open("w", encoding="utf-8", newline="") as handle:
         fieldnames = [
+            "selection_version",
             "level",
             "topic",
             "target",
@@ -856,6 +1229,7 @@ def _write_selected_tatoeba_pairs(pairs):
             writer.writerow(
                 {
                     **row,
+                    "selection_version": TATOEBA_SELECTION_VERSION,
                     "license": TATOEBA_LICENSE,
                 }
             )
@@ -865,24 +1239,28 @@ def _apply_tatoeba_text_fixes(row):
     fixed = dict(row)
     if fixed.get("spa_id") in TATOEBA_SPANISH_TEXT_FIXES:
         fixed["spa_text"] = TATOEBA_SPANISH_TEXT_FIXES[fixed["spa_id"]]
+    if fixed.get("spa_id") in TATOEBA_ENGLISH_TEXT_FIXES:
+        fixed["eng_text"] = TATOEBA_ENGLISH_TEXT_FIXES[fixed["spa_id"]]
     return fixed
 
 
 def _load_tatoeba_pairs(limit_per_target=TATOEBA_LIMIT_PER_TARGET):
     if TATOEBA_SELECTED_PATH.exists():
         with TATOEBA_SELECTED_PATH.open(encoding="utf-8", newline="") as handle:
-            rows = [
-                _apply_tatoeba_text_fixes(row)
-                for row in csv.DictReader(handle, delimiter="\t")
-                if row["spa_id"] not in REJECT_TATOEBA_SENTENCE_IDS
-            ]
-        if len(rows) >= MIN_SELECTED_TATOEBA_PAIRS:
+            rows = []
+            for row in csv.DictReader(handle, delimiter="\t"):
+                if row.get("selection_version") != TATOEBA_SELECTION_VERSION:
+                    continue
+                fixed = _apply_tatoeba_text_fixes(row)
+                if _valid_tatoeba_pair(fixed):
+                    rows.append(fixed)
+        if _tatoeba_selection_complete(rows, limit_per_target):
             return rows
 
     pairs = _tatoeba_pair_rows(limit_per_target)
     pairs = [_apply_tatoeba_text_fixes(row) for row in pairs]
     _write_selected_tatoeba_pairs(pairs)
-    return [row for row in pairs if row["spa_id"] not in REJECT_TATOEBA_SENTENCE_IDS]
+    return [row for row in pairs if _valid_tatoeba_pair(row)]
 
 
 def _audio_url(spa_id):
@@ -1215,11 +1593,11 @@ TARGETED_RECALL_CARDS = [
     ("a1_2_core_sentences", "gustar targeted recall", "Me _____ el café.", "gusta", "gustar agrees with the thing liked", "singular thing -> gusta", "- Me gusta el café<br>- Te gusta la música"),
     ("a1_2_core_sentences", "gustar targeted recall", "Me _____ las películas.", "gustan", "gustar agrees with the thing liked", "plural thing -> gustan", "- Me gustan las películas<br>- Nos gustan los libros"),
     ("a1_2_core_sentences", "gustar targeted recall", "A ella _____ gusta bailar.", "le", "le marks the person who likes something", "a ella -> le", "- A ella le gusta bailar<br>- A Juan le gusta correr"),
-    ("a1_2_core_sentences", "gustar targeted recall", "A nosotros _____ gustan los perros.", "nos", "nos marks what we like", "a nosotros -> nos", "- A nosotros nos gustan los perros<br>- Nos gusta estudiar"),
+    ("a1_2_core_sentences", "gustar targeted recall", "A nosotros _____ gustan los perros.", "nos", "nos marks the experiencer: the people who like something", "a nosotros -> nos", "- A nosotros nos gustan los perros<br>- Nos gusta estudiar"),
     ("a1_2_core_sentences", "reflexive verb targeted recall", "Yo _____ levanto temprano.", "me", "me marks a reflexive action for yo", "yo -> me", "- Me levanto temprano<br>- Me ducho por la mañana"),
     ("a1_2_core_sentences", "reflexive verb targeted recall", "Tú _____ acuestas tarde.", "te", "te marks a reflexive action for tú", "tú -> te", "- Te acuestas tarde<br>- Te despiertas a las siete"),
     ("a1_2_core_sentences", "reflexive verb targeted recall", "Ella _____ viste rápido.", "se", "se marks a reflexive action for él/ella/usted", "ella -> se", "- Ella se viste rápido<br>- Él se lava las manos"),
-    ("a1_2_core_sentences", "reflexive verb targeted recall", "Nosotros _____ quedamos en casa.", "nos", "nos marks a reflexive/reciprocal action for nosotros", "nosotros -> nos", "- Nos quedamos en casa<br>- Nos vemos mañana"),
+    ("a1_2_core_sentences", "reflexive verb targeted recall", "Nosotros _____ quedamos en casa.", "nos", "quedarse is pronominal; nosotros uses nos", "nosotros -> nos", "- Nos quedamos en casa<br>- Nos vemos mañana"),
     ("a2_1_daily_past", "preterite targeted recall", "Ayer yo _____ al mercado.", "fui", "preterite of ir for completed movement", "ayer + ir -> fui", "- Ayer fui al mercado<br>- Fui a la oficina"),
     ("a2_1_daily_past", "preterite targeted recall", "Anoche nosotros _____ tarde.", "llegamos", "preterite for completed action at a specific time", "anoche + llegar", "- Anoche llegamos tarde<br>- Llegamos a las ocho"),
     ("a2_1_daily_past", "preterite targeted recall", "La semana pasada ella _____ mucho.", "trabajó", "preterite for completed past period", "la semana pasada + trabajar", "- Ella trabajó mucho<br>- Trabajó en casa"),
