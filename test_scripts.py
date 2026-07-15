@@ -1013,6 +1013,22 @@ class TestAnkiAutomation(unittest.TestCase):
             self.assertTrue(card["AudioContributor"])
             self.assertTrue(card["AudioLicense"])
 
+    def test_spanish_core_excludes_inaccessible_tatoeba_audio(self):
+        """Test known 404 audio rows fall back to non-audio card roles."""
+        inaccessible = {"338515", "398261", "338657", "3666497"}
+        self.assertTrue(
+            inaccessible <= spanish_core_learning.INACCESSIBLE_AUDIO_SENTENCE_IDS
+        )
+        audio_source_ids = {
+            card["SourceID"]
+            for card in spanish_core_learning.get_cards(card_type="audio_cloze")
+        }
+        for sentence_id in inaccessible:
+            self.assertFalse(
+                any(f"::{sentence_id}::" in source_id for source_id in audio_source_ids),
+                sentence_id,
+            )
+
     def test_spanish_audio_dictation_is_full_sentence_listening(self):
         """Test dictation cards reconstruct a whole sentence without written context."""
         cards = [
