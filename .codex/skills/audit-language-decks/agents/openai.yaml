@@ -1,0 +1,4 @@
+interface:
+  display_name: "Language Deck Audit"
+  short_description: "Audit and repair generated language-learning decks"
+  default_prompt: "Use $audit-language-decks to review this language deck, trace content failures to their source, fix the pipeline, regenerate, and verify it."
