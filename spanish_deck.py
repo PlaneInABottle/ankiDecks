@@ -93,6 +93,13 @@ _NOUN_PHRASE_METADATA_OVERRIDES = {
         "spanish_part_of_speech": "noun",
         "spanish_forms": "singular: el fútbol americano; plural: los fútboles americanos",
     },
+    "el erizo de mar": {
+        "spanish_article": "el",
+        "spanish_gender": "masculine",
+        "spanish_number": "singular",
+        "spanish_part_of_speech": "noun",
+        "spanish_forms": "singular: el erizo de mar; plural: los erizos de mar",
+    },
     "las artes marciales": {
         "spanish_article": "las",
         "spanish_gender": "feminine",
@@ -158,6 +165,97 @@ _SPANISH_ARTICLE_SKIP = {
     "por",
     "por despecho",
 }
+
+# A reviewed glossary row is executable content: its headword becomes the typed
+# answer and drives generated articles, inflections, and pronunciation. Keep a
+# narrow fail-closed regression list for corpus artifacts that previously reached
+# production as "reviewed" data. This is deliberately not a general spellchecker.
+_INVALID_REVIEWED_SPANISH_TOKENS = {
+    "abadia",
+    "acuatico",
+    "advirtio",
+    "africa",
+    "aislo",
+    "america",
+    "aprobo",
+    "arido",
+    "armonia",
+    "autonomia",
+    "azucar",
+    "ciclon",
+    "clasifico",
+    "comenzo",
+    "concesion",
+    "cosio",
+    "debil",
+    "decada",
+    "decidi",
+    "delfin",
+    "destruccion",
+    "distribuyo",
+    "duracion",
+    "ecologia",
+    "ecologicamente",
+    "eligio",
+    "empeoro",
+    "erosion",
+    "esforzo",
+    "extrano",
+    "exotico",
+    "formacion",
+    "guia",
+    "hirio",
+    "ideologico",
+    "indigena",
+    "informacion",
+    "japon",
+    "jurisdiccion",
+    "laton",
+    "maton",
+    "mearcas",
+    "moleculas",
+    "musculos",
+    "numero",
+    "obstaculo",
+    "oceano",
+    "opcion",
+    "panaderia",
+    "peliculas",
+    "perdon",
+    "periodo",
+    "permitio",
+    "peticion",
+    "pidio",
+    "policia",
+    "poblacion",
+    "repitio",
+    "reunion",
+    "romer",
+    "rompio",
+    "simpatia",
+    "sucesion",
+    "terminos",
+    "tragico",
+    "vehiculo",
+    "victimas",
+    "via",
+}
+
+
+def reviewed_glossary_errors(entry: Dict[str, str]) -> List[str]:
+    """Return deterministic errors that make a glossary row unsafe to sync."""
+    errors = []
+    if not entry.get("spanish", "").strip():
+        errors.append("blank Spanish answer")
+    authored_text = " ".join(
+        entry.get(field, "")
+        for field in ("spanish", "spanish_meaning", "spanish_example")
+    ).casefold()
+    tokens = set(re.findall(r"\b[^\W\d_]+\b", authored_text, flags=re.UNICODE))
+    invalid = sorted(tokens & _INVALID_REVIEWED_SPANISH_TOKENS)
+    if invalid:
+        errors.append(f"invalid Spanish token(s): {', '.join(invalid)}")
+    return errors
 
 
 def normalize_word(value: str) -> str:
@@ -376,6 +474,14 @@ def infer_spanish_metadata(spanish: str, english: str = "") -> Dict[str, str]:
         metadata["spanish_forms"] = f"singular: {singular_article} {singular_head}; plural: {plural_article} {plural_head}"
         if head in _NOUN_METADATA_OVERRIDES:
             metadata.update(_NOUN_METADATA_OVERRIDES[head])
+    elif head.endswith("se") and head[:-2].endswith(("ar", "er", "ir")):
+        infinitive = head[:-2]
+        metadata["spanish_part_of_speech"] = "pronominal verb"
+        metadata["spanish_forms"] = _regular_verb_forms(infinitive).replace(
+            f"infinitive: {infinitive}",
+            f"infinitive: {head}; pronouns: me, te, se, nos, se",
+            1,
+        )
     elif head.endswith(("ar", "er", "ir")):
         metadata["spanish_part_of_speech"] = "verb"
         metadata["spanish_forms"] = _regular_verb_forms(head)
@@ -672,7 +778,7 @@ def load_glossary(glossary_path: str | None) -> Dict[str, Dict[str, str]]:
             return {}
 
         entries: List[Tuple[str, str, str, Dict[str, str]]] = []
-        for row in reader:
+        for line_number, row in enumerate(reader, start=2):
             english = (row.get(english_key) or "").strip()
             if not english:
                 continue
@@ -692,6 +798,12 @@ def load_glossary(glossary_path: str | None) -> Dict[str, Dict[str, str]]:
                 "spanish_example_en": (row.get(spanish_example_en_key) or "").strip() if spanish_example_en_key else "",
                 "notes": (row.get(notes_key) or "").strip() if notes_key else "",
             }
+            errors = reviewed_glossary_errors(entry)
+            if errors:
+                raise ValueError(
+                    f"Invalid reviewed glossary row {line_number} ({english}): "
+                    + "; ".join(errors)
+                )
             english_meaning = (row.get(english_meaning_key) or "").strip() if english_meaning_key else ""
             english_example = (row.get(english_example_key) or "").strip() if english_example_key else ""
             entries.append((english, english_meaning, english_example, entry))
