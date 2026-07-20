@@ -1075,8 +1075,14 @@ class TestAnkiAutomation(unittest.TestCase):
             "queso": "KE-so",
             "guitarra": "gi-TAR-ra",
             "llave": "YA-be",
+            "orgulloso": "or-gu-YO-so",
+            "collar": "ko-YAR",
             "jardín": "har-DİN",
             "círculo": "SİR-ku-lo",
+            "tía": "Tİ-a",
+            "país": "pa-İS",
+            "teatro": "te-A-tro",
+            "hoy": "Oİ",
             "el cinturón": "el sin-tu-RON",
         }
         for word, expected in examples.items():
@@ -1107,12 +1113,41 @@ class TestAnkiAutomation(unittest.TestCase):
         self.assertIn("infinitive: apagarse", pronominal["spanish_forms"])
         self.assertIn("pronouns: me, te, se, nos, se", pronominal["spanish_forms"])
 
+        accented_infinitive = spanish_deck.infer_spanish_metadata("sonreír")
+        self.assertEqual("verb", accented_infinitive["spanish_part_of_speech"])
+        self.assertIn("infinitive: sonreír", accented_infinitive["spanish_forms"])
+        self.assertIn("-ir pattern", accented_infinitive["spanish_forms"])
+
         sea_urchin = spanish_deck.infer_spanish_metadata("el erizo de mar")
         self.assertEqual("masculine", sea_urchin["spanish_gender"])
         self.assertEqual(
             "singular: el erizo de mar; plural: los erizos de mar",
             sea_urchin["spanish_forms"],
         )
+
+        for stressed_a_noun, plural in {
+            "el área": "las áreas",
+            "el hacha": "las hachas",
+            "el alma": "las almas",
+            "el arma": "las armas",
+        }.items():
+            metadata = spanish_deck.infer_spanish_metadata(stressed_a_noun)
+            self.assertEqual("feminine", metadata["spanish_gender"])
+            self.assertIn(f"plural: {plural}", metadata["spanish_forms"])
+
+        for noun, plural in {
+            "el país": "los países",
+            "el autobús": "los autobuses",
+            "el mes": "los meses",
+        }.items():
+            self.assertIn(
+                f"plural: {plural}",
+                spanish_deck.infer_spanish_metadata(noun)["spanish_forms"],
+            )
+
+        sunglasses = spanish_deck.infer_spanish_metadata("las gafas de sol")
+        self.assertEqual("noun", sunglasses["spanish_part_of_speech"])
+        self.assertEqual("", sunglasses["spanish_forms"])
 
     def test_spanish_glossary_has_complete_mirror_fields_and_sense_notes(self):
         """Test durable Spanish glossary keeps English mirrors and duplicate-sense notes."""
@@ -1151,6 +1186,16 @@ class TestAnkiAutomation(unittest.TestCase):
                 }
             ),
         )
+        self.assertEqual(
+            ["invalid Spanish token(s): bilíngüe, móvilizar"],
+            spanish_deck.reviewed_glossary_errors(
+                {
+                    "spanish": "bilíngüe",
+                    "spanish_meaning": "La forma móvilizar tampoco es válida.",
+                    "spanish_example": "El texto contiene errores conocidos.",
+                }
+            ),
+        )
         # This is a valid unaccented verb form, so the regression list must not
         # grow into a context-free Spanish spellchecker.
         self.assertEqual(
@@ -1179,6 +1224,36 @@ class TestAnkiAutomation(unittest.TestCase):
         self.assertIn("suricatos", rows["upright"]["spanish_example"])
         self.assertEqual("encantar", rows["charm"]["spanish"])
         self.assertEqual("unir", rows["bind"]["spanish"])
+        self.assertEqual("principal", rows["primary"]["spanish"])
+        self.assertIn("lo más importante", rows["primary"]["spanish_meaning"])
+        self.assertEqual("orgulloso", rows["proud"]["spanish"])
+
+        expected_targets = {
+            "admission": "la entrada",
+            "basis": "la base",
+            "casual": "informal",
+            "couple": "un par",
+            "disseminate": "difundir",
+            "dive": "zambullirse",
+            "extension": "la ampliación",
+            "ferry": "el transbordador",
+            "instance": "un caso",
+            "jealousy": "la envidia",
+            "management": "el manejo",
+            "moral": "la moraleja",
+            "neither": "ni... ni...",
+            "nausea": "las náuseas",
+            "overwork": "sobrecargar de trabajo",
+            "scrap": "el recorte",
+            "shallow": "poco profundo",
+            "valentine": "la pareja de San Valentín",
+            "virtual": "de facto",
+            "vocal": "expresar abiertamente",
+            "wild": "silvestre",
+            "worthwhile": "valer la pena",
+        }
+        for english, spanish in expected_targets.items():
+            self.assertEqual(spanish, rows[english]["spanish"])
 
         for row in rows.values():
             self.assertEqual([], spanish_deck.reviewed_glossary_errors(row), row["english"])
@@ -2015,6 +2090,12 @@ class TestAnkiAutomation(unittest.TestCase):
             "avergonzado y avergonzado",
             " accion ",
             " carcel ",
+            "Las mangostas son frutas",
+            "fuente autoritaria",
+            "no se pagar",
+            "panadero tamizo",
+            "Sé algo ignorante",
+            "gérmenes finos",
         ]
         for path in paths:
             text = path.read_text(encoding="utf-8")
