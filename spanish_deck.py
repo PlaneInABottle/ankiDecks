@@ -19,27 +19,64 @@ _SPANISH_ARTICLES = {"el", "la", "los", "las", "un", "una", "unos", "unas"}
 _VOWELS = "aeiouáéíóúü"
 _ACCENT_MAP = str.maketrans("áéíóúü", "aeiouu")
 _ARTICLE_OVERRIDES = {
+    "acróbata": "el",
     "alcohol": "el",
+    "alarma": "la",
+    "alma": "el",
     "análisis": "el",
+    "ancla": "el",
+    "área": "el",
+    "aristócrata": "el",
+    "arma": "el",
     "arte": "el",
+    "asa": "el",
+    "astronauta": "el",
     "azúcar": "el",
     "agua": "el",
     "capital": "la",
+    "capitalista": "el",
     "catedral": "la",
     "clima": "el",
+    "cometa": "el",
+    "crisis": "la",
     "día": "el",
+    "diabetes": "la",
+    "dosis": "la",
+    "espiral": "la",
+    "firma": "la",
+    "gestión": "la",
+    "guardarropa": "el",
+    "hacha": "el",
+    "hambre": "el",
+    "hipótesis": "la",
     "idioma": "el",
     "informe": "el",
     "llama": "la",
     "mano": "la",
     "mapa": "el",
     "mes": "el",
+    "norma": "la",
+    "optimista": "el",
+    "parálisis": "la",
+    "patriota": "el",
+    "pesticida": "el",
+    "pirata": "el",
     "planeta": "el",
     "poema": "el",
+    "prima": "la",
     "problema": "el",
     "programa": "el",
+    "rama": "la",
+    "razón": "la",
+    "región": "la",
+    "religión": "la",
+    "rima": "la",
+    "señal": "la",
+    "síntesis": "la",
     "sistema": "el",
+    "suma": "la",
     "tema": "el",
+    "yema": "la",
 }
 _NOUN_METADATA_OVERRIDES = {
     "agua": {
@@ -48,6 +85,41 @@ _NOUN_METADATA_OVERRIDES = {
         "spanish_number": "singular",
         "spanish_part_of_speech": "noun",
         "spanish_forms": "singular: el agua; plural: las aguas",
+    },
+    "alma": {
+        "spanish_article": "el",
+        "spanish_gender": "feminine",
+        "spanish_number": "singular",
+        "spanish_part_of_speech": "noun",
+        "spanish_forms": "singular: el alma; plural: las almas",
+    },
+    "ancla": {
+        "spanish_article": "el",
+        "spanish_gender": "feminine",
+        "spanish_number": "singular",
+        "spanish_part_of_speech": "noun",
+        "spanish_forms": "singular: el ancla; plural: las anclas",
+    },
+    "área": {
+        "spanish_article": "el",
+        "spanish_gender": "feminine",
+        "spanish_number": "singular",
+        "spanish_part_of_speech": "noun",
+        "spanish_forms": "singular: el área; plural: las áreas",
+    },
+    "arma": {
+        "spanish_article": "el",
+        "spanish_gender": "feminine",
+        "spanish_number": "singular",
+        "spanish_part_of_speech": "noun",
+        "spanish_forms": "singular: el arma; plural: las armas",
+    },
+    "asa": {
+        "spanish_article": "el",
+        "spanish_gender": "feminine",
+        "spanish_number": "singular",
+        "spanish_part_of_speech": "noun",
+        "spanish_forms": "singular: el asa; plural: las asas",
     },
     "catedral": {
         "spanish_article": "la",
@@ -62,6 +134,20 @@ _NOUN_METADATA_OVERRIDES = {
         "spanish_number": "singular",
         "spanish_part_of_speech": "noun",
         "spanish_forms": "singular: la llama; plural: las llamas",
+    },
+    "hacha": {
+        "spanish_article": "el",
+        "spanish_gender": "feminine",
+        "spanish_number": "singular",
+        "spanish_part_of_speech": "noun",
+        "spanish_forms": "singular: el hacha; plural: las hachas",
+    },
+    "hambre": {
+        "spanish_article": "el",
+        "spanish_gender": "feminine",
+        "spanish_number": "singular",
+        "spanish_part_of_speech": "noun",
+        "spanish_forms": "singular: el hambre; plural: las hambres",
     },
 }
 _NOUN_PHRASE_METADATA_OVERRIDES = {
@@ -121,6 +207,7 @@ _ENGLISH_ARTICLE_SKIP = {
     "black",
     "blue",
     "brown",
+    "celsius",
     "december",
     "eight",
     "february",
@@ -128,6 +215,7 @@ _ENGLISH_ARTICLE_SKIP = {
     "friday",
     "gray",
     "green",
+    "intuitive",
     "january",
     "july",
     "june",
@@ -136,13 +224,16 @@ _ENGLISH_ARTICLE_SKIP = {
     "monday",
     "nine",
     "november",
+    "never",
     "october",
     "one",
     "orange",
+    "pink",
     "purple",
     "red",
     "saturday",
     "september",
+    "several",
     "seven",
     "six",
     "sunday",
@@ -150,6 +241,7 @@ _ENGLISH_ARTICLE_SKIP = {
     "thursday",
     "tuesday",
     "two",
+    "virgin",
     "wednesday",
     "white",
     "yellow",
@@ -160,7 +252,9 @@ _SPANISH_ARTICLE_SKIP = {
     "aún",
     "de moda",
     "dar la casualidad",
+    "mil millones",
     "más allá",
+    "mientras tanto",
     "no",
     "por",
     "por despecho",
@@ -172,6 +266,7 @@ _SPANISH_ARTICLE_SKIP = {
 # production as "reviewed" data. This is deliberately not a general spellchecker.
 _INVALID_REVIEWED_SPANISH_TOKENS = {
     "abadia",
+    "absuro",
     "acuatico",
     "advirtio",
     "africa",
@@ -182,6 +277,7 @@ _INVALID_REVIEWED_SPANISH_TOKENS = {
     "armonia",
     "autonomia",
     "azucar",
+    "bilíngüe",
     "ciclon",
     "clasifico",
     "comenzo",
@@ -192,10 +288,12 @@ _INVALID_REVIEWED_SPANISH_TOKENS = {
     "decidi",
     "delfin",
     "destruccion",
+    "diminuir",
     "distribuyo",
     "duracion",
     "ecologia",
     "ecologicamente",
+    "emergir",
     "eligio",
     "empeoro",
     "erosion",
@@ -214,28 +312,35 @@ _INVALID_REVIEWED_SPANISH_TOKENS = {
     "maton",
     "mearcas",
     "moleculas",
+    "móvilizar",
     "musculos",
     "numero",
     "obstaculo",
     "oceano",
     "opcion",
+    "oyieron",
     "panaderia",
     "peliculas",
     "perdon",
     "periodo",
+    "phenomeno",
     "permitio",
     "peticion",
     "pidio",
     "policia",
     "poblacion",
+    "proteina",
+    "recente",
     "repitio",
     "reunion",
     "romer",
     "rompio",
     "simpatia",
     "sucesion",
+    "sophisticado",
     "terminos",
     "tragico",
+    "udible",
     "vehiculo",
     "victimas",
     "via",
@@ -327,12 +432,33 @@ def _plain_spanish_word(value: str) -> str:
     return text
 
 
+def _forms_spanish_diphthong(left: str, right: str) -> bool:
+    """Return whether adjacent vowels normally share a Spanish syllable."""
+    if left in "íú" or right in "íú":
+        return False
+    strong = set("aáeéoó")
+    return not (left in strong and right in strong)
+
+
 def _split_spanish_syllables(word: str) -> List[str]:
     """Return a readable approximate syllable split for pronunciation hints."""
     if not word:
         return []
-    chunks = re.findall(r"[^aeiouáéíóúü]*[aeiouáéíóúü]+(?:[mnrsld](?=$|[^aeiouáéíóúü]))?|[^aeiouáéíóúü]+$", word)
-    syllables = [chunk for chunk in chunks if chunk]
+    marked = []
+    previous = ""
+    for char in word:
+        if previous in _VOWELS and char in _VOWELS and not _forms_spanish_diphthong(previous, char):
+            marked.append("·")
+        marked.append(char)
+        previous = char
+
+    syllables = []
+    for segment in "".join(marked).split("·"):
+        chunks = re.findall(
+            r"[^aeiouáéíóúü]*[aeiouáéíóúü]+(?:[mnrsld](?=$|[^aeiouáéíóúü]))?|[^aeiouáéíóúü]+$",
+            segment,
+        )
+        syllables.extend(chunk for chunk in chunks if chunk)
     if not syllables:
         return [word]
     return syllables
@@ -422,8 +548,15 @@ def _pronounce_word(word: str) -> str:
         return ""
     if plain in _SPANISH_ARTICLES:
         return plain
-    syllables = _split_spanish_syllables(plain)
-    stress = _stress_index(plain, syllables)
+    # ``ll`` is the /y/-like sound in this deck's Latin-American baseline.  It
+    # must be normalized before syllabification; otherwise an internal ``ll``
+    # is split across syllables and survives as a false L sound.  Final ``y``
+    # is vocalic, as in ``hoy`` and ``muy``.
+    phonetic_word = plain.replace("ll", "y")
+    if phonetic_word.endswith("y"):
+        phonetic_word = phonetic_word[:-1] + "i"
+    syllables = _split_spanish_syllables(phonetic_word)
+    stress = _stress_index(phonetic_word, syllables)
     sounded = []
     for index, syllable in enumerate(syllables):
         rendered = _sound_out_syllable(syllable)
@@ -463,6 +596,11 @@ def infer_spanish_metadata(spanish: str, english: str = "") -> Dict[str, str]:
         metadata["spanish_part_of_speech"] = "noun"
         metadata["spanish_gender"] = "feminine" if article in {"la", "las", "una", "unas"} else "masculine"
         metadata["spanish_number"] = "plural" if article in {"los", "las", "unos", "unas"} else "singular"
+        # Do not invent incomplete phrase inflections such as ``los días`` for
+        # ``el día festivo``.  Reviewed phrase-specific forms belong in the
+        # explicit override table above.
+        if len(tokens) > 2:
+            return metadata
         singular_article = "la" if metadata["spanish_gender"] == "feminine" else "el"
         plural_article = "las" if metadata["spanish_gender"] == "feminine" else "los"
         if metadata["spanish_number"] == "plural":
@@ -474,7 +612,7 @@ def infer_spanish_metadata(spanish: str, english: str = "") -> Dict[str, str]:
         metadata["spanish_forms"] = f"singular: {singular_article} {singular_head}; plural: {plural_article} {plural_head}"
         if head in _NOUN_METADATA_OVERRIDES:
             metadata.update(_NOUN_METADATA_OVERRIDES[head])
-    elif head.endswith("se") and head[:-2].endswith(("ar", "er", "ir")):
+    elif head.endswith("se") and head[:-2].endswith(("ar", "er", "ir", "ír")):
         infinitive = head[:-2]
         metadata["spanish_part_of_speech"] = "pronominal verb"
         metadata["spanish_forms"] = _regular_verb_forms(infinitive).replace(
@@ -482,7 +620,7 @@ def infer_spanish_metadata(spanish: str, english: str = "") -> Dict[str, str]:
             f"infinitive: {head}; pronouns: me, te, se, nos, se",
             1,
         )
-    elif head.endswith(("ar", "er", "ir")):
+    elif head.endswith(("ar", "er", "ir", "ír")):
         metadata["spanish_part_of_speech"] = "verb"
         metadata["spanish_forms"] = _regular_verb_forms(head)
     elif "/" in spanish:
@@ -555,6 +693,25 @@ def add_article_to_clear_noun(spanish: str, english: str, english_meaning: str) 
 def _pluralize_spanish_noun(noun: str) -> str:
     if not noun:
         return noun
+    plural_exceptions = {
+        "autobús": "autobuses",
+        "automóvil": "automóviles",
+        "béisbol": "béisboles",
+        "cárcel": "cárceles",
+        "estándar": "estándares",
+        "estiércol": "estiércoles",
+        "estrés": "estreses",
+        "fósil": "fósiles",
+        "mármol": "mármoles",
+        "mástil": "mástiles",
+        "mes": "meses",
+        "país": "países",
+        "sándwich": "sándwiches",
+        "suéter": "suéteres",
+        "túnel": "túneles",
+    }
+    if noun in plural_exceptions:
+        return plural_exceptions[noun]
     if noun.endswith(("s", "x")):
         return noun
     if noun[-1] in _VOWELS:
@@ -580,6 +737,19 @@ def _pluralize_spanish_noun(noun: str) -> str:
 
 
 def _singularize_spanish_noun(noun: str) -> str:
+    singular_exceptions = {
+        "boxers": "boxer",
+        "bóxeres": "bóxer",
+        "calcetines": "calcetín",
+        "guantes": "guante",
+        "overoles": "overol",
+        "pantalones": "pantalón",
+        "parientes": "pariente",
+        "pendientes": "pendiente",
+        "piñones": "piñón",
+    }
+    if noun in singular_exceptions:
+        return singular_exceptions[noun]
     if noun.endswith("ces"):
         return noun[:-3] + "z"
     if noun.endswith("es") and len(noun) > 3:
@@ -592,7 +762,8 @@ def _singularize_spanish_noun(noun: str) -> str:
 def _regular_verb_forms(verb: str) -> str:
     if len(verb) < 3:
         return ""
-    ending = verb[-2:]
+    written_ending = verb[-2:]
+    ending = "ir" if written_ending == "ír" else written_ending
     endings = {
         "ar": "yo -o; tú -as; él/ella -a; nosotros -amos; ellos -an",
         "er": "yo -o; tú -es; él/ella -e; nosotros -emos; ellos -en",
