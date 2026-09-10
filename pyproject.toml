@@ -1,0 +1,16 @@
+[project]
+name = "anki-decks"
+version = "0.1.0"
+description = "Personal Anki deck automation (vocabulary, grammar, production + listening)"
+requires-python = ">=3.10"
+readme = "README.md"
+
+[project.optional-dependencies]
+dev = []
+
+[tool.pytest.ini_options]
+testpaths = ["."]
+
+[build-system]
+requires = ["setuptools>=61"]
+build-backend = "setuptools.build_meta"

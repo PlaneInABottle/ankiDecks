@@ -1,0 +1,7 @@
+# Runtime is stdlib-only on purpose (urllib, csv, bz2, subprocess, ...).
+# No pip packages required. System dependencies are checked by check_env.py:
+# - Python >= 3.10
+# - ffmpeg (brew install ffmpeg / apt install ffmpeg)
+# - Anki Desktop + AnkiConnect add-on 2055492159 (for sync scripts only)
+# - macOS `say` OR Linux `espeak-ng`/`espeak` (for TTS, optional --no-audio ile atlanabilir)
+# - PEXELS_API_KEY in .env (for images, optional)
