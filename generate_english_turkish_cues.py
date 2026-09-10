@@ -15,6 +15,8 @@ from typing import Dict, List
 
 import spanish_deck
 
+import deck_io
+
 
 OUTPUT_PATH = Path("generated/english_4000/english_turkish_production.tsv")
 REVIEWED_ENGLISH_PATH = Path("generated/spanish_full/english_spanish_review.tsv")
@@ -694,7 +696,7 @@ def load_cache(path: Path) -> Dict[str, str]:
 
 
 def save_cache(path: Path, cache: Dict[str, str]) -> None:
-    path.parent.mkdir(parents=True, exist_ok=True)
+    deck_io.ensure_dir(path.parent)
     path.write_text(json.dumps(cache, ensure_ascii=False, indent=2, sort_keys=True), encoding="utf-8")
 
 
@@ -881,7 +883,7 @@ def build_rows(
 
 
 def write_rows(path: Path, rows: List[Dict[str, str]]) -> None:
-    path.parent.mkdir(parents=True, exist_ok=True)
+    deck_io.ensure_dir(path.parent)
     fieldnames = [
         "SourceID",
         "Order",

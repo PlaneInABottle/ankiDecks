@@ -1,7 +1,8 @@
 import argparse
 import csv
 import io
-from pathlib import Path
+
+import deck_io
 
 
 LEVELS = [
@@ -1329,10 +1330,9 @@ def render_tsv(cards):
 
 
 def write_import_files(output_dir="generated/spanish_grammar"):
-    output_path = Path(output_dir)
-    output_path.mkdir(parents=True, exist_ok=True)
+    output_path = deck_io.ensure_dir(output_dir)
     path = output_path / "spanish_grammar_a0_a2.tsv"
-    path.write_text(render_tsv(get_cards()), encoding="utf-8")
+    deck_io.write_utf8(path, render_tsv(get_cards()))
     return str(path)
 
 

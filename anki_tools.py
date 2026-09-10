@@ -2,11 +2,10 @@ import os
 import json
 import urllib.request
 import urllib.error
-import subprocess
-import base64
 import argparse
 
 import anki_protect
+import tts_provider
 
 def load_env(file_path):
     env = {}
@@ -100,20 +99,8 @@ def get_image_url(word):
     return None
 
 def generate_audio_base64(text, filename_core):
-    if not text: return None
-    temp_aiff, output_mp3 = f"{filename_core}.aiff", f"{filename_core}.mp3"
-    try:
-        subprocess.run(["say", "-o", temp_aiff, text], check=True)
-        subprocess.run(["ffmpeg", "-y", "-i", temp_aiff, "-codec:a", "libmp3lame", "-qscale:a", "2", output_mp3], 
-                       stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL, check=True)
-        with open(output_mp3, "rb") as f:
-            data = base64.b64encode(f.read()).decode('utf-8')
-        return data
-    except (OSError, subprocess.CalledProcessError):
-        return None
-    finally:
-        if os.path.exists(temp_aiff): os.remove(temp_aiff)
-        if os.path.exists(output_mp3): os.remove(output_mp3)
+    """Backward-compatible wrapper; cross-platform logic lives in tts_provider."""
+    return tts_provider.generate_audio_base64(text, filename_core)
 
 def find_note_id(word):
     query = f"\"Word:{word}\""

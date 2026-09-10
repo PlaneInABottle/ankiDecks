@@ -10,6 +10,8 @@ from collections import Counter
 from pathlib import Path
 from typing import Dict, List, Sequence, Tuple
 
+import deck_io
+
 
 STATUS_REVIEWED = "reviewed"
 STATUS_NEEDS_TRANSLATION = "needs_translation"
@@ -1363,8 +1365,7 @@ def write_spanish_files(
 ) -> str:
     """Write the reviewed Spanish TSV used by the Anki sync pipeline."""
     merged = build_spanish_rows(source_rows, glossary, limit=limit)
-    output_path = Path(output_dir)
-    output_path.mkdir(parents=True, exist_ok=True)
+    output_path = deck_io.ensure_dir(output_dir)
 
     review_rows = [
         [

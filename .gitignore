@@ -2,3 +2,8 @@
 .DS_Store
 __pycache__/
 generated/english_4000/google_translate_cache.json
+# Rolling Tatoeba source archives (~38MB) — re-download with fetch_tatoeba.py.
+generated/sources/tatoeba/eng_sentences.tsv.bz2
+generated/sources/tatoeba/spa_sentences.tsv.bz2
+generated/sources/tatoeba/spa-eng_links.tsv.bz2
+generated/sources/tatoeba/sentences_with_audio.tar.bz2

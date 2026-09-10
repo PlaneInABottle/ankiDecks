@@ -10,6 +10,8 @@ from pathlib import Path
 import english_phrases
 import grammar_levels
 
+import deck_io
+
 
 OUTPUT_DIR = Path("generated/english_mastery")
 TATOEBA_DIR = Path("generated/sources/tatoeba")
@@ -1065,7 +1067,7 @@ def _load_english_audio_sentences():
             ):
                 selected.append({"eng_id": sent_id, "text": text, "target": text, "audio_id": audio[sent_id], "kind": "dictation"})
                 used.add(sent_id)
-    TATOEBA_SELECTED_PATH.parent.mkdir(parents=True, exist_ok=True)
+    deck_io.ensure_dir(TATOEBA_SELECTED_PATH.parent)
     with TATOEBA_SELECTED_PATH.open("w", encoding="utf-8", newline="") as handle:
         writer = csv.DictWriter(handle, delimiter="\t", lineterminator="\n", fieldnames=["eng_id", "text", "target", "audio_id", "kind"])
         writer.writeheader()
@@ -1167,7 +1169,7 @@ def _load_sentence_mining_sentences():
                     used.add(sent_id)
                     used_texts.add(normalized_text)
                     break
-    cache_path.parent.mkdir(parents=True, exist_ok=True)
+    deck_io.ensure_dir(cache_path.parent)
     with cache_path.open("w", encoding="utf-8", newline="") as handle:
         writer = csv.DictWriter(handle, delimiter="\t", lineterminator="\n",
                                 fieldnames=["eng_id", "text", "target", "level", "audio_id", "has_audio"])
@@ -1822,10 +1824,9 @@ def write_import_file(output_dir=OUTPUT_DIR):
     errors = validate_cards(cards)
     if errors:
         raise ValueError("\n".join(errors[:30]))
-    output_path = Path(output_dir)
-    output_path.mkdir(parents=True, exist_ok=True)
+    output_path = deck_io.ensure_dir(output_dir)
     path = output_path / "english_mastery.tsv"
-    path.write_text(render_tsv(cards), encoding="utf-8")
+    deck_io.write_utf8(path, render_tsv(cards))
     return str(path)
 
 

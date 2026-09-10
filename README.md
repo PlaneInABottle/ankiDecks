@@ -14,22 +14,38 @@ This repository contains a suite of Python scripts designed to automate the crea
 ## 🛠 Setup
 
 ### 1. Prerequisites
-- **macOS**: Required for the `say` command (TTS).
-- **Anki Desktop**: Must be running for the scripts to talk to your collection.
-- **AnkiConnect Add-on**:
-  - Open Anki -> Tools -> Add-ons -> Get Add-ons.
-  - Enter code: `2055492159`.
-  - Restart Anki.
+- **Python** >= 3.10 (stdlib-only, no pip packages needed — see `pyproject.toml`).
 - **FFmpeg**: Required for audio conversion.
   ```bash
   brew install ffmpeg
   ```
+- **TTS** (optional, audio skipped gracefully without it): macOS `say` or Linux `espeak-ng`/`espeak`. Override with `ANKI_TTS=none`.
+- **Anki Desktop** + **AnkiConnect Add-on** (only for sync scripts):
+  - Open Anki -> Tools -> Add-ons -> Get Add-ons.
+  - Enter code: `2055492159`.
+  - Restart Anki.
+
+Check everything at once:
+```bash
+python3 check_env.py
+```
 
 ### 2. Environment Configuration
-Create a `.env` file in the root directory:
+Copy `.env.example` to `.env`:
+```bash
+cp .env.example .env
+```
 ```env
 PEXELS_API_KEY=your_api_key_here
 ```
+
+### 3. Source data (fresh clone only)
+Tatoeba archives (~38MB) are not in git. Download them once:
+```bash
+python3 fetch_tatoeba.py
+```
+
+Shared modules: `deck_io.py` (TSV/dir helpers), `sync_core.py` (AnkiConnect client), `tts_provider.py` (cross-platform TTS), `anki_protect.py` (fingerprint + `locked` protection).
 
 ## 📖 Usage
 

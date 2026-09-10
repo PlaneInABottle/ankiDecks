@@ -7,14 +7,13 @@ import csv
 import html
 import json
 import re
-import time
-import urllib.request
 from pathlib import Path
 from typing import Dict, Iterable, List, Tuple
 
 import spanish_deck
 
 import anki_protect
+from sync_core import invoke, invoke_multi
 
 
 SPANISH_MODEL = "Spanish Recognition"
@@ -477,44 +476,6 @@ ENGLISH_PRODUCTION_BACK_EXTRA = """
 """
 
 
-def invoke(action: str, **params):
-    payload = json.dumps({"action": action, "params": params, "version": 6}).encode("utf-8")
-    request = urllib.request.Request("http://127.0.0.1:8765", payload, headers={"Content-Type": "application/json"})
-    for attempt in range(3):
-        with urllib.request.urlopen(request, timeout=60) as response:
-            result = json.loads(response.read().decode("utf-8"))
-        if not result.get("error"):
-            return result["result"]
-        if result["error"] != "collection is not available" or attempt == 2:
-            raise RuntimeError(result["error"])
-        time.sleep(2)
-    raise RuntimeError("collection is not available")
-
-
-def invoke_multi(actions: List[Dict[str, object]], batch_size: int = BATCH_SIZE) -> List[object]:
-    results: List[object] = []
-    for offset in range(0, len(actions), batch_size):
-        batch = actions[offset : offset + batch_size]
-        payload = json.dumps({"action": "multi", "params": {"actions": batch}, "version": 6}).encode("utf-8")
-        request = urllib.request.Request(
-            "http://127.0.0.1:8765",
-            payload,
-            headers={"Content-Type": "application/json"},
-        )
-        with urllib.request.urlopen(request, timeout=120) as response:
-            result = json.loads(response.read().decode("utf-8"))
-        if result.get("error"):
-            raise RuntimeError(result["error"])
-        for item in result["result"]:
-            if isinstance(item, dict) and item.get("error"):
-                raise RuntimeError(item["error"])
-            if isinstance(item, dict) and "result" in item:
-                results.append(item.get("result"))
-            else:
-                results.append(item)
-    return results
-
-
 def chunks(values: List[int], size: int = 500) -> Iterable[List[int]]:
     for offset in range(0, len(values), size):
         yield values[offset : offset + size]
@@ -800,7 +761,7 @@ def update_note_fields_many(updates: List[Tuple[int, Dict[str, str]]]) -> None:
         {"action": "updateNoteFields", "params": {"note": {"id": note_id, "fields": fields}}}
         for note_id, fields in updates
     ]
-    invoke_multi(actions)
+    invoke_multi(actions, batch_size=BATCH_SIZE)
 
 
 def card_maps_for_notes(notes: List[Dict[str, object]]) -> Dict[int, Dict[int, int]]:

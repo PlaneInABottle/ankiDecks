@@ -10,6 +10,8 @@ from pathlib import Path
 
 import spanish_grammar_levels
 
+import deck_io
+
 
 OUTPUT_DIR = Path("generated/spanish_core")
 TATOEBA_DIR = Path("generated/sources/tatoeba")
@@ -1211,7 +1213,7 @@ def _tatoeba_pair_rows(limit_per_target):
 
 
 def _write_selected_tatoeba_pairs(pairs):
-    TATOEBA_SELECTED_PATH.parent.mkdir(parents=True, exist_ok=True)
+    deck_io.ensure_dir(TATOEBA_SELECTED_PATH.parent)
     with TATOEBA_SELECTED_PATH.open("w", encoding="utf-8", newline="") as handle:
         fieldnames = [
             "selection_version",
@@ -1826,14 +1828,13 @@ def render_tsv(cards):
 
 
 def write_import_files(output_dir=OUTPUT_DIR):
-    output_path = Path(output_dir)
-    output_path.mkdir(parents=True, exist_ok=True)
+    output_path = deck_io.ensure_dir(output_dir)
     cards = get_cards()
     errors = validate_cards(cards)
     if errors:
         raise ValueError("\n".join(errors[:20]))
     path = output_path / "spanish_core_learning.tsv"
-    path.write_text(render_tsv(cards), encoding="utf-8")
+    deck_io.write_utf8(path, render_tsv(cards))
     return str(path)
 
 

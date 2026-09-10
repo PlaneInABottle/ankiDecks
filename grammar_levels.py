@@ -1,7 +1,8 @@
 import argparse
 import csv
 import io
-from pathlib import Path
+
+import deck_io
 
 
 LEVELS = [
@@ -1407,12 +1408,11 @@ def render_cloze_tsv(cards):
 
 
 def write_import_files(output_dir="generated"):
-    output_path = Path(output_dir)
-    output_path.mkdir(parents=True, exist_ok=True)
+    output_path = deck_io.ensure_dir(output_dir)
     basic_path = output_path / "english_grammar_basic.tsv"
     cloze_path = output_path / "english_grammar_cloze.tsv"
-    basic_path.write_text(render_basic_tsv(get_cards()), encoding="utf-8")
-    cloze_path.write_text(render_cloze_tsv([]), encoding="utf-8")
+    deck_io.write_utf8(basic_path, render_basic_tsv(get_cards()))
+    deck_io.write_utf8(cloze_path, render_cloze_tsv([]))
     return str(basic_path), str(cloze_path)
 
 

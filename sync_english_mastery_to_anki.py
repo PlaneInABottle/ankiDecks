@@ -3,13 +3,12 @@ import base64
 import csv
 import json
 import subprocess
-import time
-import urllib.request
 from pathlib import Path
 
 import english_mastery
 
 import anki_protect
+from sync_core import invoke
 
 
 MODEL_NAME = "English Mastery"
@@ -138,20 +137,6 @@ BACK_TEMPLATE = """
   {{/SelfGrade}}
 </div>
 """
-
-
-def invoke(action, **params):
-    payload = json.dumps({"action": action, "params": params, "version": 6}).encode("utf-8")
-    request = urllib.request.Request("http://127.0.0.1:8765", payload)
-    for attempt in range(3):
-        with urllib.request.urlopen(request, timeout=60) as response:
-            result = json.loads(response.read().decode("utf-8"))
-        if not result.get("error"):
-            return result["result"]
-        if result["error"] != "collection is not available" or attempt == 2:
-            raise RuntimeError(result["error"])
-        time.sleep(2)
-    raise RuntimeError("collection is not available")
 
 
 def ensure_model(update_existing=False):
