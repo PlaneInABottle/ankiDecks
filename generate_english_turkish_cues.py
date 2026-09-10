@@ -652,6 +652,7 @@ SOURCE_SPECIFIC_TURKISH_OVERRIDES = {
     ("4000 Essential English Words::2.Book", "", "prime"): "en önemli / başlıca",
     ("4000 Essential English Words::5.Book", "", "promote"): "terfi ettirmek / tanıtmak",
     ("4000 Essential English Words::2.Book", "", "grave"): "mezar / vahim",
+    ("4000 Essential English Words::2.Book", "", "glory"): "şan / görkem",
 }
 
 
