@@ -1,3 +1,4 @@
 .env
 .DS_Store
 __pycache__/
+generated/english_4000/google_translate_cache.json
