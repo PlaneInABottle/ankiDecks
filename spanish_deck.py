@@ -150,8 +150,16 @@ _NOUN_METADATA_OVERRIDES = {
         "spanish_forms": "singular: el hambre; plural: las hambres",
     },
 }
-_NOUN_PHRASE_METADATA_OVERRIDES = {
-    "el adn": {
+# 2026-09-10 audit: Spanish headwords that are both a noun and a verb
+# ("poder" = power/to be able, "deber" = duty/must). The noun metadata
+# overrides below must not fire for the verb-sense rows ("can", "ought"),
+# which keep the regular verb conjugation.
+_VERB_SENSE_HOMOGRAPHS = {
+    ("poder", "can"),
+    ("deber", "ought"),
+    ("regular", "regulate"),
+}
+_NOUN_PHRASE_METADATA_OVERRIDES = {    "el adn": {
         "spanish_article": "el",
         "spanish_gender": "masculine",
         "spanish_number": "singular",
@@ -199,6 +207,237 @@ _NOUN_PHRASE_METADATA_OVERRIDES = {
         "spanish_number": "",
         "spanish_part_of_speech": "adjective/adverb",
         "spanish_forms": "invariable: súper",
+    },
+    # 2026-09-10 audit: "quizá" is an adverb, but the "algo posible/quizá"
+    # headword contains "/" so it was misread as an adjective.
+    "algo posible quizá": {
+        "spanish_article": "",
+        "spanish_gender": "",
+        "spanish_number": "",
+        "spanish_part_of_speech": "adverb",
+        "spanish_forms": "invariable: quizá",
+    },
+    # 2026-09-10 audit: single-form adjectives ending in -ar/-er/-ir were
+    # misread as verbs (e.g. "polar" got a bogus -ar conjugation). These are
+    # invariable adjectives, so no o/a forms are invented.
+    "polar": {
+        "spanish_article": "",
+        "spanish_gender": "",
+        "spanish_number": "",
+        "spanish_part_of_speech": "adjective",
+        "spanish_forms": "invariable: polar",
+    },
+    "solar": {
+        "spanish_article": "",
+        "spanish_gender": "",
+        "spanish_number": "",
+        "spanish_part_of_speech": "adjective",
+        "spanish_forms": "invariable: solar",
+    },
+    "lunar": {
+        "spanish_article": "",
+        "spanish_gender": "",
+        "spanish_number": "",
+        "spanish_part_of_speech": "adjective",
+        "spanish_forms": "invariable: lunar",
+    },
+    "regular": {
+        "spanish_article": "",
+        "spanish_gender": "",
+        "spanish_number": "",
+        "spanish_part_of_speech": "adjective",
+        "spanish_forms": "invariable: regular",
+    },
+    "celular": {
+        "spanish_article": "",
+        "spanish_gender": "",
+        "spanish_number": "",
+        "spanish_part_of_speech": "adjective",
+        "spanish_forms": "invariable: celular",
+    },
+    "nuclear": {
+        "spanish_article": "",
+        "spanish_gender": "",
+        "spanish_number": "",
+        "spanish_part_of_speech": "adjective",
+        "spanish_forms": "invariable: nuclear",
+    },
+    "popular": {
+        "spanish_article": "",
+        "spanish_gender": "",
+        "spanish_number": "",
+        "spanish_part_of_speech": "adjective",
+        "spanish_forms": "invariable: popular",
+    },
+    "similar": {
+        "spanish_article": "",
+        "spanish_gender": "",
+        "spanish_number": "",
+        "spanish_part_of_speech": "adjective",
+        "spanish_forms": "invariable: similar",
+    },
+    "espectacular": {
+        "spanish_article": "",
+        "spanish_gender": "",
+        "spanish_number": "",
+        "spanish_part_of_speech": "adjective",
+        "spanish_forms": "invariable: espectacular",
+    },
+    "irregular": {
+        "spanish_article": "",
+        "spanish_gender": "",
+        "spanish_number": "",
+        "spanish_part_of_speech": "adjective",
+        "spanish_forms": "invariable: irregular",
+    },
+    "preliminar": {
+        "spanish_article": "",
+        "spanish_gender": "",
+        "spanish_number": "",
+        "spanish_part_of_speech": "adjective",
+        "spanish_forms": "invariable: preliminar",
+    },
+    # 2026-09-10 audit: nouns ending in -ar/-er (pulgar, collar, altar, ...)
+    # were misread as verbs with a bogus conjugation. All masculine.
+    "pulgar": {
+        "spanish_article": "",
+        "spanish_gender": "masculine",
+        "spanish_number": "singular",
+        "spanish_part_of_speech": "noun",
+        "spanish_forms": "singular: el pulgar; plural: los pulgares",
+    },
+    "collar": {
+        "spanish_article": "",
+        "spanish_gender": "masculine",
+        "spanish_number": "singular",
+        "spanish_part_of_speech": "noun",
+        "spanish_forms": "singular: el collar; plural: los collares",
+    },
+    "altar": {
+        "spanish_article": "",
+        "spanish_gender": "masculine",
+        "spanish_number": "singular",
+        "spanish_part_of_speech": "noun",
+        "spanish_forms": "singular: el altar; plural: los altares",
+    },
+    "glaciar": {
+        "spanish_article": "",
+        "spanish_gender": "masculine",
+        "spanish_number": "singular",
+        "spanish_part_of_speech": "noun",
+        "spanish_forms": "singular: el glaciar; plural: los glaciares",
+    },
+    "paladar": {
+        "spanish_article": "",
+        "spanish_gender": "masculine",
+        "spanish_number": "singular",
+        "spanish_part_of_speech": "noun",
+        "spanish_forms": "singular: el paladar; plural: los paladares",
+    },
+    "carácter": {
+        "spanish_article": "",
+        "spanish_gender": "masculine",
+        "spanish_number": "singular",
+        "spanish_part_of_speech": "noun",
+        "spanish_forms": "singular: el carácter; plural: los caracteres",
+    },
+    "néctar": {
+        "spanish_article": "",
+        "spanish_gender": "masculine",
+        "spanish_number": "singular",
+        "spanish_part_of_speech": "noun",
+        "spanish_forms": "singular: el néctar; plural: los néctares",
+    },
+    "cáncer": {
+        "spanish_article": "",
+        "spanish_gender": "masculine",
+        "spanish_number": "singular",
+        "spanish_part_of_speech": "noun",
+        "spanish_forms": "singular: el cáncer; plural: los cánceres",
+    },
+    "azúcar": {
+        "spanish_article": "",
+        "spanish_gender": "masculine",
+        "spanish_number": "singular",
+        "spanish_part_of_speech": "noun",
+        "spanish_forms": "singular: el azúcar; plural: los azúcares",
+    },
+    "poder": {
+        "spanish_article": "",
+        "spanish_gender": "masculine",
+        "spanish_number": "singular",
+        "spanish_part_of_speech": "noun",
+        "spanish_forms": "singular: el poder; plural: los poderes",
+    },
+    "deber": {
+        "spanish_article": "",
+        "spanish_gender": "masculine",
+        "spanish_number": "singular",
+        "spanish_part_of_speech": "noun",
+        "spanish_forms": "singular: el deber; plural: los deberes",
+    },
+    "amanecer": {
+        "spanish_article": "",
+        "spanish_gender": "masculine",
+        "spanish_number": "singular",
+        "spanish_part_of_speech": "noun",
+        "spanish_forms": "singular: el amanecer; plural: los amaneceres",
+    },
+    "anochecer": {
+        "spanish_article": "",
+        "spanish_gender": "masculine",
+        "spanish_number": "singular",
+        "spanish_part_of_speech": "noun",
+        "spanish_forms": "singular: el anochecer; plural: los anocheceres",
+    },
+    "titular": {
+        "spanish_article": "",
+        "spanish_gender": "masculine",
+        "spanish_number": "singular",
+        "spanish_part_of_speech": "noun",
+        "spanish_forms": "singular: el titular; plural: los titulares",
+    },
+    "placer": {
+        "spanish_article": "",
+        "spanish_gender": "masculine",
+        "spanish_number": "singular",
+        "spanish_part_of_speech": "noun",
+        "spanish_forms": "singular: el placer; plural: los placeres",
+    },
+    "alquiler": {
+        "spanish_article": "",
+        "spanish_gender": "masculine",
+        "spanish_number": "singular",
+        "spanish_part_of_speech": "noun",
+        "spanish_forms": "singular: el alquiler; plural: los alquileres",
+    },
+    "bienestar": {
+        "spanish_article": "",
+        "spanish_gender": "masculine",
+        "spanish_number": "singular",
+        "spanish_part_of_speech": "noun",
+        "spanish_forms": "singular: el bienestar; plural: los bienestares",
+    },
+    "lugar de trabajo": {
+        "spanish_article": "",
+        "spanish_gender": "masculine",
+        "spanish_number": "singular",
+        "spanish_part_of_speech": "noun",
+        "spanish_forms": "singular: el lugar de trabajo; plural: los lugares de trabajo",
+    },
+    "lugar de nacimiento": {
+        "spanish_article": "",
+        "spanish_gender": "masculine",
+        "spanish_number": "singular",
+        "spanish_part_of_speech": "noun",
+        "spanish_forms": "singular: el lugar de nacimiento; plural: los lugares de nacimiento",
+    },
+    "líder": {
+        "spanish_article": "",
+        "spanish_gender": "masculine",
+        "spanish_number": "singular",
+        "spanish_part_of_speech": "noun",
+        "spanish_forms": "singular: el líder; plural: los líderes",
     },
 }
 _ENGLISH_ARTICLE_SKIP = {
@@ -590,8 +829,9 @@ def infer_spanish_metadata(spanish: str, english: str = "") -> Dict[str, str]:
         "spanish_forms": "",
     }
     if normalized_spanish in _NOUN_PHRASE_METADATA_OVERRIDES:
-        metadata.update(_NOUN_PHRASE_METADATA_OVERRIDES[normalized_spanish])
-        return metadata
+        if (normalized_spanish, (english or "").strip().lower()) not in _VERB_SENSE_HOMOGRAPHS:
+            metadata.update(_NOUN_PHRASE_METADATA_OVERRIDES[normalized_spanish])
+            return metadata
     if article:
         metadata["spanish_part_of_speech"] = "noun"
         metadata["spanish_gender"] = "feminine" if article in {"la", "las", "una", "unas"} else "masculine"
