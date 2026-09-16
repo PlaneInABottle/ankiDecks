@@ -1405,6 +1405,10 @@ SOURCE_SPECIFIC_TURKISH_OVERRIDES = {
     ("4000 Essential English Words::6.Book", "", "dubious"): "şüpheli (inandırıcı olmayan)",
     ("4000 Essential English Words::3.Book", "", "suspicious"): "şüpheli (kuşkuyla bakan)",
     ("4000 Essential English Words::4.Book", "", "ensure"): "sağlamak / garanti etmek",
+    # 2026-09-16: grant = talebi onaylayarak verme (allow = bir seye izin verme).
+    ("4000 Essential English Words::2.Book", "", "grant"): "vermek (talebi onaylayarak)",
+    # recognition kitapta "ovgu/takdir alma" anlaminda; makine "tanima" yazmisti.
+    ("4000 Essential English Words::2.Book", "", "recognition"): "takdir / övgü",
 }
 
 
