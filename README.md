@@ -39,12 +39,6 @@ cp .env.example .env
 PEXELS_API_KEY=your_api_key_here
 ```
 
-### 3. Source data (fresh clone only)
-Tatoeba archives (~38MB) are not in git. Download them once:
-```bash
-python3 fetch_tatoeba.py
-```
-
 Shared modules: `deck_io.py` (TSV/dir helpers), `sync_core.py` (AnkiConnect client), `tts_provider.py` (cross-platform TTS), `anki_protect.py` (fingerprint + `locked` protection).
 
 ## 📖 Usage
@@ -64,19 +58,6 @@ Reliably checks if a word exists in the original 4000 txt file OR your active An
 ```bash
 python3 check_word.py [word]
 ```
-
-### Generate English Grammar Deck Seed
-Create B2/C1/C2 choose-the-correct-form grammar TSV files for import into Anki (no Anki connection required):
-```bash
-python3 grammar_levels.py
-python3 grammar_levels.py --output-dir generated_custom
-python3 grammar_levels.py --summary
-```
-- Output:
-  - `generated/english_grammar_basic.tsv` (choose cards with answer, grammar name, formula, reason, examples, and self-grade guidance)
-  - `generated/english_grammar_cloze.tsv` (header-only placeholder; the deck intentionally avoids cloze guessing cards)
-- You can import the basic file into the `Grammar Maintenance` note type in Anki.
-- `--summary` prints per-level card counts and does not create files.
 
 ### Create Spanish Duplicate Decks
 Create a duplicate workflow for learning the same 4000 English words in Spanish.
@@ -112,8 +93,6 @@ Generate the Turkish cues and the structured Spanish/English decks before syncin
 
 ```bash
 python3 generate_english_turkish_cues.py
-python3 spanish_core_learning.py
-python3 english_mastery.py
 ```
 
 The 4000-word production fronts include a short reviewed context cue with the answer and common inflections masked. Every vocabulary production card keeps a typing box for its canonical source-deck answer. When another natural synonym also fits the displayed sense, count it as correct during self-grading even if Anki's exact comparison differs.
@@ -123,8 +102,6 @@ With Anki open, apply content and template updates safely:
 ```bash
 python3 protect_manual_edits.py --apply
 python3 sync_4000_production_to_anki.py --sync-spanish-content --update-models
-python3 sync_spanish_core_to_anki.py --update-model
-python3 sync_english_mastery_to_anki.py --update-model
 ```
 
 These commands update existing note IDs in place. Do not add `--force` unless intentionally replacing protected manual edits.
@@ -141,7 +118,7 @@ python3 protect_manual_edits.py --apply  # also tag detected edits as locked
 
 Notes tagged `locked` are skipped by every sync script's content update and by stale-note pruning, so manual edits survive. New notes are still created and deck moves still happen. Stale pruning also refuses to delete legacy notes without a fingerprint. To intentionally overwrite locked or changed notes, pass `--force` to the relevant sync script.
 
-Existing note templates and CSS are also preserved by default. Use `--update-model` on the English Mastery or Spanish Core sync, or `--update-models` on the 4000 production sync, only when you intentionally want to replace model presentation.
+Existing note templates and CSS are also preserved by default. Use `--update-models` on the 4000 production sync only when you intentionally want to replace model presentation.
 
 ## 🧪 Testing
 Run the unit test suite to verify script logic (uses mocks, no internet/Anki required):
@@ -154,7 +131,6 @@ python3 test_scripts.py
 - `anki_protect.py`: Shared fingerprint and locked-tag protection used by all bulk syncs.
 - `protect_manual_edits.py`: Report or proactively lock live notes that differ from their generated source.
 - `check_word.py`: Synchronized duplicate checker.
-- `grammar_levels.py`: Level-based English grammar seed generator.
 - `spanish_deck.py`: Safe English-to-Spanish review/import generator.
 - `get_pexels_image.py`: Standalone image downloader.
 - `4000 Essential English Words.txt`: Base vocabulary reference.

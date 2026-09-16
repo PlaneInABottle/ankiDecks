@@ -1,12 +1,9 @@
 """Shared AnkiConnect client (stdlib only).
 
-sync_english_mastery_to_anki.py ve sync_spanish_core_to_anki.py içindeki
-`invoke` birebir aynıydı; sync_4000_production_to_anki.py'deki sürüm de
-aynı retry mantığı + Content-Type header kullanıyor. Tek kanonik sürüm burada.
-
-Mevcut sync dosyaları `from sync_core import invoke` ile ince alias tutar,
-böylece testlerdeki `patch.object(sync_..._to_anki, "invoke", ...)` çalışmaya
-devam eder.
+Single canonical `invoke` with retry logic + Content-Type header, used by the
+sync scripts. Tests patch `invoke` on the sync modules via
+`patch.object(sync_..._to_anki, "invoke", ...)`; the sync files keep a thin
+alias (`from sync_core import invoke`) so that keeps working.
 """
 
 from __future__ import annotations

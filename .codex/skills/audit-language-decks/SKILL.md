@@ -49,17 +49,12 @@ Treat deck content as executable data. Fix the durable source and the pipeline t
 ## This Repository
 
 - Treat `generated/spanish_reviewed_glossary_full.tsv` as the durable Spanish 4,000-word glossary.
-- Treat `generated/sources/tatoeba/selected_spa_eng_pairs.tsv` as a derived, policy-versioned cache.
 - Generate the vocabulary deck with:
 
   `python3 spanish_deck.py --glossary generated/spanish_reviewed_glossary_full.tsv --output-dir generated/spanish_full`
-
-- Generate Spanish Core with:
-
-  `python3 spanish_core_learning.py`
 
 - Verify with:
 
   `python3 test_scripts.py`
 
-- When the user explicitly requests live Anki synchronization, first run `python3 protect_manual_edits.py --apply`. Then sync the changed deck through its documented script without `--force`. Use `--prune-stale` for Spanish Core only when removal of obsolete generated notes is part of the approved change.
+- When the user explicitly requests live Anki synchronization, first run `python3 protect_manual_edits.py --apply`. Then sync the changed deck through its documented script without `--force`.

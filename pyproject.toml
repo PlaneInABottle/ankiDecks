@@ -1,7 +1,7 @@
 [project]
 name = "anki-decks"
 version = "0.1.0"
-description = "Personal Anki deck automation (vocabulary, grammar, production + listening)"
+description = "Personal Anki deck automation (4000-word vocabulary production)"
 requires-python = ">=3.10"
 readme = "README.md"
 
